@@ -33,10 +33,34 @@ class vec3 {
         vec3& operator /= (const T &a);
 
         T norm2() const;
+        vec3 unit() const;
+        void turn_unit();
 
     private:
         T e[3];
 };
+
+
+/** External functions defintions
+
+ Regular algebra +, -, /, * for vec2vec, scalar2vec, vec2scalar
+ Returns a new vec3 object
+
+ Scalar is required to be the same type as T!!
+
+ OutStream (<<) operator produces:
+
+    os << v[0] << " " << v[1] << " " << v[2];
+
+ Cross product of two vectors:
+ **/
+
+template <typename T>
+T cross(const vec3<T> &v1, const vec3<T> &v2);
+
+/**
+ * Source code
+ */
 
 // Returns ith element
 template <typename T>
@@ -222,6 +246,18 @@ T cross(const vec3<T> &v1, const vec3<T> &v2) {
 template <typename T>
 T vec3<T>::norm2() const {
     return std::sqrt(cross(*this, *this));
+};
+
+//unit vector
+template <typename T>
+vec3<T> vec3<T>::unit() const {
+    return *this / this->norm2();
+};
+
+// make unit
+template <typename T>
+void vec3<T>::turn_unit() {
+    *this /= this->norm2();
 };
 
 #endif //PATH_TRACER_VEC3_H
