@@ -5,27 +5,26 @@
 #ifndef PATH_TRACER_RAY_H
 #define PATH_TRACER_RAY_H
 
-#include "vec3.h"
+#include "vector/vec3.h"
 
-/* Ray is a function p(t) = A + t*b where A is the ray origin and B the
- * ray direction. t is a float parameter. P(t) describes a point at the ray.
- */
-
-
+template <typename T>
 class ray
 {
     public:
         ray() = default;
-        ray(const vec3<float>& a, const vec3<float>& b)
+
+        ray(const vec3<T>& a, const vec3<T>& b)
         : A(a), B(b) { }
 
-        vec3<float> origin() const {return A;}
-        vec3<float> direction() const {return B;}
-        vec3<float> point(float t) {return A + B * t;}
+        vec3<T> origin() const {return A;}
+        vec3<T> direction() const {return B;}
+        vec3<T> point( const T t) {return A + B * t;}
     private:
-        vec3<float> A;
-        vec3<float> B;
+        vec3<T> A;
+        vec3<T> B;
 
 };
+
+vec3<float> color(const ray<float>& r);
 
 #endif //PATH_TRACER_RAY_H
