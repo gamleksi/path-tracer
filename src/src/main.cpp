@@ -1,5 +1,22 @@
-    #include <iostream>
+#include <iostream>
 #include "../include/vec3.h"
+#include "../include/ray.h"
+/*
+ *  test function for ray
+ *  linearly blends white and blue depending on the
+ *  up/downess of the y coordinate.
+ *  step 1 creates an unit vector -1 < y < 1
+ *  step 2 scaling to 0 < t < 1
+ *  when t = 1 return blue, when t = 0 return white
+ *  blend in between
+ */
+vec3<float> color(const ray& r)
+{
+    vec3<float> unit_direction = unit_vector(r.direction());
+    float t = 0.5 * (unit_direction[1] + 1.0);
+    float diff = (1.0 - t);
+    return vec3<float>(1.0, 1.0, 1.0) * diff + vec3<float>(0.5, 0.7, 1.0) * t;
+}
 
 int main() {
     std::cout << "Hello, World!" << std::endl;

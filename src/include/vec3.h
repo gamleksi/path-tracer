@@ -32,6 +32,7 @@ class vec3 {
         vec3& operator /= (const T &a);
 
         T& norm2() const;
+        vec3 unit_vector() const;
 
     private:
         T e[3];
@@ -189,6 +190,12 @@ template <typename T>
 T& vec3<T>::norm2() const {
     vec3<T> v = &this * &this;
     return sqrt(v[0] + v[1] + v[2]);
+};
+
+//unit vector
+template <typename T>
+vec3<T> vec3<T>::unit_vector() const {
+    return &this / this->thisnorm2();
 };
 
 #endif //PATH_TRACER_VEC3_H
