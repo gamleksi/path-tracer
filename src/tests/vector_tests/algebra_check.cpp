@@ -2,12 +2,6 @@
 // Created by Aleksi Hämäläinen on 06/11/2018.
 //
 
-//#include "gtest/gtest.h"
-//
-//TEST(vector_test, test_1) {
-//    EXPECT_EQ(1, 0);
-//}
-
 #include <iostream>
 #include <cmath>
 #include "gtest/gtest.h"
