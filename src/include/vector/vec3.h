@@ -5,8 +5,8 @@
 #ifndef PATH_TRACER_VEC3_H
 #define PATH_TRACER_VEC3_H
 
-
 #include <ostream>
+#include <cmath>
 
 template <typename T>
 
@@ -21,6 +21,7 @@ class vec3 {
         T& operator[](int i);
 
         vec3& operator = (const vec3& v);
+
         vec3& operator += (const vec3& v);
         vec3& operator -= (const vec3& v);
         vec3& operator *= (const vec3& v);
@@ -31,7 +32,7 @@ class vec3 {
         vec3& operator *= (const T &a);
         vec3& operator /= (const T &a);
 
-        T& norm2() const;
+        T norm2() const;
 
     private:
         T e[3];
@@ -134,6 +135,16 @@ vec3<T>& vec3<T>::operator/=(const T &a) {
     return *this;
 };
 
+template <typename T>
+vec3<T> operator-(const vec3<T> &v1) {
+    return vec3<T>(-v1[0], -v1[1], -v1[2]);
+};
+
+template <typename T>
+vec3<T> operator+(const vec3<T> &v1) {
+    return vec3<T>(v1[0], v1[1], v1[2]);
+};
+
 // Vector <> Vector Algebra
 
 template <typename T>
@@ -152,13 +163,8 @@ vec3<T> operator*(const vec3<T> &v1, const vec3<T> &v2) {
 };
 
 template <typename T>
-T& cross(const vec3<T> &v1, const vec3<T> &v2) {
-    return v1[0] * v2[0] + v1[1] + v2[1] + v1[2] * v2[2];
-};
-
-template <typename T>
 vec3<T> operator/(const vec3<T> &v1, const vec3<T> &v2) {
-    return vec3<T> (v1[0] * v2[0], v1[1] * v2[1], v1[2] * v2[2]);
+    return vec3<T> (v1[0] / v2[0], v1[1] / v2[1], v1[2] / v2[2]);
 };
 
 
@@ -184,11 +190,38 @@ vec3<T> operator/(const vec3<T> &v1, const T &a) {
     return vec3<T> (v1[0] / a, v1[1] / a, v1[2] / a);
 };
 
+// Scalar <> Vector Algebra
+
+template <typename T>
+vec3<T> operator+(const T &a, const vec3<T> &v1) {
+    return v1 + a;
+};
+
+template <typename T>
+vec3<T> operator-(const T &a, const vec3<T> &v1) {
+    return -v1 + a;
+};
+
+template <typename T>
+vec3<T> operator*(const T &a, const vec3<T> &v1) {
+    return v1 * a;
+};
+
+template <typename T>
+vec3<T> operator/(const T &a, const vec3<T> &v1) {
+    return v1 / a;
+};
+
+// Cross product
+template <typename T>
+T cross(const vec3<T> &v1, const vec3<T> &v2) {
+    return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
+};
+
 // Norm
 template <typename T>
-T& vec3<T>::norm2() const {
-    vec3<T> v = &this * &this;
-    return sqrt(v[0] + v[1] + v[2]);
+T vec3<T>::norm2() const {
+    return std::sqrt(cross(*this, *this));
 };
 
 #endif //PATH_TRACER_VEC3_H

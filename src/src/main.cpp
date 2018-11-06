@@ -1,5 +1,5 @@
-    #include <iostream>
-#include "../include/vec3.h"
+#include <iostream>
+#include "vector/vec3.h"
 
 int main() {
     std::cout << "Hello, World!" << std::endl;
