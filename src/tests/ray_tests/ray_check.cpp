@@ -26,16 +26,4 @@ TEST(ray_test, direction_test)
     EXPECT_EQ(v2[1], v4[1]);
     EXPECT_EQ(v2[2], v4[2]);
 }
-/*
-TEST(ray_test, wrong_input_test)
-{
-    vec3<int> v1(1, 2, 3);
-    vec3<int> v2(0, 4, 6);
-    ray<int> ray1(v1, v2);
-    int t = 2;
-    ray1.point(t);
-    ray1);
-    EXPECT_DEATH(color(ray1), "");
-
-}*/
 
