@@ -8,7 +8,7 @@ int main() {
     int nx = 400;
     int ny = 200;
 
-    uchar image[nx][ny][3];
+    uchar image[ny][nx][3];
 
     std::cout << "P3\n" << nx << " " << ny << "\n255\n";
     for (int j = ny-1; j >= 0; j--)
@@ -24,14 +24,14 @@ int main() {
             auto ib = uchar(255.99*b);
 
             // BRG format
-            image[i][j][0] = ib;
-            image[i][j][1] = ir;
-            image[i][j][2] = ig;
+            image[j][i][0] = ib;
+            image[j][i][1] = ir;
+            image[j][i][2] = ig;
 
         }
     }
 
-    cv::Mat rgb_mat(nx, ny, CV_8UC3, &image);
+    cv::Mat rgb_mat(ny, nx, CV_8UC3, &image);
     cv::imshow("Image", rgb_mat);
     cv::waitKey(0);
 
