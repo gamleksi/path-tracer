@@ -236,16 +236,10 @@ vec3<T> operator/(const T &a, const vec3<T> &v1) {
     return v1 / a;
 };
 
-// Dot Product
+// Cross product
 template <typename T>
-T dot(const vec3<T> &v1, const vec3<T> &v2) {
+T cross(const vec3<T> &v1, const vec3<T> &v2) {
     return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
-};
-
-//Cross Product
-template <typename T>
-vec3<T> dot(const vec3<T> &v1, const vec3<T> &v2){
-  return vec3<T>(v1[1]*v2[2]-v1[2]*v2[1], v1[2]*v2[0]-v1[0]*v2[2], v1[0]*v2[1]-v1[1]*v2[0]);
 };
 
 // Norm
@@ -267,3 +261,4 @@ void vec3<T>::turn_unit() {
 };
 
 #endif //PATH_TRACER_VEC3_H
+
