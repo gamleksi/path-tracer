@@ -20,5 +20,4 @@ TEST(geometry_test, hello) {
     EXPECT_EQ(v2[0], v3[0]);
     EXPECT_EQ(v2[1], v3[1]);
     EXPECT_EQ(v2[2], v3[2]);
-
 }
