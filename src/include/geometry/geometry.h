@@ -51,7 +51,7 @@ private:
 class Sphere : public Geometry{
     //RayHits algorithm by Peter Shirley, from Ray Tracing in One Weekend, version 1.55
 public:
-    Sphere(std::string name = "abc", Material mat = Matte, vec3<float> position = vec3<float>(1.0,2.0,3.0), float radius = 0.0)
+    Sphere(std::string name = "abc", Material mat = Matte, vec3<float> position = vec3<float>(0.0,0.0,-1.0), float radius = 0.5)
             : Geometry(name, mat, position), radius_(radius) { }
     //get radius and ray hits Sphere
     virtual ~Sphere() { };
