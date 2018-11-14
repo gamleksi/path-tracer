@@ -18,7 +18,6 @@ TEST(vector_test, vector_copy) {
     EXPECT_EQ(v1[0], v3[0]);
     EXPECT_EQ(v1[1], v3[1]);
     EXPECT_EQ(v1[2], v3[2]);
-
     v3 = v2;
     EXPECT_EQ(v2[0], v3[0]);
     EXPECT_EQ(v2[1], v3[1]);
@@ -64,8 +63,8 @@ TEST(vector_test, vector_algebra) {
     EXPECT_EQ(v3[1], v1[1]);
     EXPECT_EQ(v3[2], v1[2]);
 
-    // cross product
-    float c = cross(v1, v2);
+    // dot product
+    float c = dot(v1, v2);
     EXPECT_EQ(v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2], c);
 
     // norm2
