@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include "vector/vec3.h"
-#include "ray.h"
+#include "ray/ray.h"
 #include <opencv2/highgui/highgui.hpp>
 
 int main() {

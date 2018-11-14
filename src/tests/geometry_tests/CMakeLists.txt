@@ -4,5 +4,5 @@ include_directories(
 
 include_directories(../../include)
 
-add_executable(geometry_test geometry_check.cpp ../../include ../../include/geometry/geometry.h ../../src/geometry.cpp)
+add_executable(geometry_test geometry_check.cpp ../../include ../../include/geometry/geometry.h ../../include/geometry/geometry.cpp)
 target_link_libraries(geometry_test gtest gtest_main)

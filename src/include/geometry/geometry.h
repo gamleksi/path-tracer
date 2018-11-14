@@ -6,7 +6,7 @@
 #define PATH_TRACER_GEOMETRY_H
 
 #include "vector/vec3.h"
-#include "ray.h"
+#include "ray/ray.h"
 
 
 enum Material
