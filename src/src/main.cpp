@@ -11,6 +11,11 @@ int main() {
     uchar image[ny][nx][3];
 
     std::cout << "P3\n" << nx << " " << ny << "\n255\n";
+    vec3<float> lower_left_corner(-2.0, -1.0, -1.0);
+    vec3<float> horizontal(4.0, 0.0, 0.0);
+    vec3<float> vertical(0.0, 2.0, 0.0);
+    vec3<float> origin(0.0, 0.0, 0.0);
+
     for (int j = ny-1; j >= 0; j--)
     {
         for (int i = 0; i < nx; i++)
@@ -18,6 +23,11 @@ int main() {
             float r = float(i) / float(nx);
             float g = float(j) / float(ny);
             float b = 0.2;
+
+            float u = float(i) / float(nx);
+            float v = float(j) / float(ny);
+            ray<float> R(origin, lower_left_corner + u*horizontal + v*vertical);
+            //vec3<float> col = color(r);
 
             auto ir = uchar(255.99*r);
             auto ig = uchar(255.99*g);
