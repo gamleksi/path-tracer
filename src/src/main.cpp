@@ -26,7 +26,7 @@ int main() {
 
             float u = float(i) / float(nx);
             float v = float(j) / float(ny);
-            ray<float> R(origin, lower_left_corner + u*horizontal + v*vertical);
+            ray<float> r(origin, lower_left_corner + u*horizontal + v*vertical);
             //vec3<float> col = color(r);
 
             auto ir = uchar(255.99*r);
