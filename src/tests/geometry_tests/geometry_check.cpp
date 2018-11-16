@@ -35,23 +35,23 @@ TEST(geometry_test, default_sphere){
 }
 TEST(geometry_test, n_default_sphere){
     Sphere* d = new Sphere("Im groot!", Glass, v2, 20.0);
-    EXPECT_EQ("Im groot!" ,d->get_Name());
-    EXPECT_EQ(Glass, d->get_Material());
-    EXPECT_EQ(0.5,d->get_Position()[0]);
-    EXPECT_EQ(4.0,d->get_Position()[1]);
-    EXPECT_EQ(6.0,d->get_Position()[2]);
-    EXPECT_EQ(20.0,d->get_Radius());
+    EXPECT_EQ("Im groot!" ,d->GetName());
+    EXPECT_EQ(Glass, d->GetMaterial());
+    EXPECT_EQ(0.5,d->GetPosition()[0]);
+    EXPECT_EQ(4.0,d->GetPosition()[1]);
+    EXPECT_EQ(6.0,d->GetPosition()[2]);
+    EXPECT_EQ(20.0,d->GetRadius());
 
     //cloning d to a default sphere
     Sphere c =  Sphere();
     EXPECT_EQ("abc", c.get_Name());
     c = *d; //what is happening here? This is not a copy?
-    EXPECT_EQ("Im groot!", c.get_Name());
-    EXPECT_EQ(Glass, c.get_Material());
-    EXPECT_EQ(0.5,c.get_Position()[0]);
-    EXPECT_EQ(4.0,c.get_Position()[1]);
-    EXPECT_EQ(6.0,c.get_Position()[2]);
-    EXPECT_EQ(20.0, c.get_Radius()); //this should not work?!
+    EXPECT_EQ("Im groot!", c.GetName());
+    EXPECT_EQ(Glass, c.GetMaterial());
+    EXPECT_EQ(0.5,c.GetPosition()[0]);
+    EXPECT_EQ(4.0,c.GetPosition()[1]);
+    EXPECT_EQ(6.0,c.GetPosition()[2]);
+    EXPECT_EQ(20.0, c.GetRadius()); //this should not work?!
     //seems like the copy works
 }
 

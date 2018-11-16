@@ -19,7 +19,7 @@ int main() {
     vec3<float> vertical(0.0, 2.0, 0.0);
     vec3<float> origin(0.0, 0.0, 0.0);
 
-    Sphere* sphere = new Sphere();
+    Sphere sphere;
 
     for (int j = ny-1; j >= 0; j--)
     {

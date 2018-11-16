@@ -6,12 +6,12 @@
 //#include "ray/ray.h"
 //#include "geometry/geometry.h"
 
-vec3<float> color(const ray<float>& r, Sphere* s)
+vec3<float> color(const ray<float>& r, Sphere& s)
 {
 
-    float t = s->RayHits(r);
+    float t = s.RayHits(r);
     if(t>0.0){
-        vec3<float> N = (r.point(t) - s->get_Position()).unit();
+        vec3<float> N = (r.point(t) - s.GetPosition()).unit();
         return (float)0.5*vec3<float>(N[0]+1,N[1]+1,N[2]+1);
     }
     vec3<float> unit_direction = r.direction().unit();
