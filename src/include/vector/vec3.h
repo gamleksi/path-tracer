@@ -13,6 +13,7 @@ template <typename T>
 class vec3 {
 
     public:
+        vec3() = default;
         vec3(T e1, T e2, T e3) { e[0] = e1; e[1] = e2; e[2] = e3; };
 
         ~vec3() = default;
@@ -52,11 +53,11 @@ class vec3 {
 
     os << v[0] << " " << v[1] << " " << v[2];
 
- Cross product of two vectors:
+ Dot product of two vectors:
  **/
 
 template <typename T>
-T cross(const vec3<T> &v1, const vec3<T> &v2);
+T dot(const vec3<T> &v1, const vec3<T> &v2);
 
 /**
  * Source code
@@ -236,16 +237,16 @@ vec3<T> operator/(const T &a, const vec3<T> &v1) {
     return v1 / a;
 };
 
-// Cross product
+// Dot product
 template <typename T>
-T cross(const vec3<T> &v1, const vec3<T> &v2) {
+T dot(const vec3<T> &v1, const vec3<T> &v2) {
     return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
 };
 
 // Norm
 template <typename T>
 T vec3<T>::norm2() const {
-    return std::sqrt(cross(*this, *this));
+    return std::sqrt(dot(*this, *this));
 };
 
 //unit vector
