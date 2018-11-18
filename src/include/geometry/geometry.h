@@ -16,6 +16,12 @@ enum Material
     Metal
 };
 
+struct Hit_record{
+    float time;
+    vec3<float> point;
+    vec3<float> normal;
+};
+
 
 class Geometry {
 public:
@@ -35,6 +41,7 @@ public:
     vec3<float> GetPosition() const{
         return position_;
     }
+    virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const = 0;
 
 
 private:
@@ -52,15 +59,25 @@ public:
             : Geometry(name, mat, position), radius_(radius) { }
     //get radius and ray hits Sphere
     virtual ~Sphere() { };
-    float GetRadius(){
+    float GetRadius() const {
         return radius_;
     }
 
-    float RayHits(const ray<float>& r);
+    virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
     //discriminant stuff
 private:
     //radius here
     float radius_;
+
+};
+
+class Geomlist : public Geometry{
+public:
+    Geomlist() { }
+    Geomlist(Geometry **g, int n){list_ = g; list_size_ = n;}
+    virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
+    Geometry **list_;
+    int list_size_;
 
 };
 

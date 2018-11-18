@@ -5,7 +5,7 @@
 #ifndef PATH_TRACER_CAMERA_H
 #define PATH_TRACER_CAMERA_H
 
-#include "ray.h"
+#include "ray/ray.h"
 
 class camera {
 public:
