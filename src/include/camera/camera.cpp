@@ -4,7 +4,7 @@
 
 #include "camera/camera.h"
 //#include "ray/ray.h"
-#include "geometry/geometry.h"
+
 
 vec3<float> color(const ray<float>& r, Geometry *s)
 {
