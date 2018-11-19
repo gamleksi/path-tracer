@@ -13,14 +13,14 @@ bool Sphere::RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& 
     float discriminant = b*b - 4*a*c;
     //float res;
     if (discriminant > 0){
-        float temp = (-b - sqrtf(b*b-4*a*c))/2*a; //literature example lacked 4 and 2
+        float temp = (-b - sqrtf(b*b-a*c))/a; // Isn't this supposed to be: -b - sqrtf(b*b - 4 * a * c)/ (2*a)
         if (temp < t_max && temp > t_min){
             rec.time = temp;
             rec.point = r.point((temp));
             rec.normal = (rec.point-pos)/GetRadius(); //why do we have to divide by radius? Is this cause we want unit length vector?
             return true;
         }
-        temp = (-b + sqrtf(b*b-4*a*c))/2*a; //here again different from literature
+        temp = (-b + sqrtf(b*b-a*c))/a; //here again different from literature
         if (temp < t_max && temp > t_min){
             rec.time = temp;
             rec.point = r.point(temp);

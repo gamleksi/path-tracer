@@ -22,7 +22,7 @@ int main() {
     Geometry *li[3];
     li[0] = new Sphere("abc", Matte, vec3<float>(0,0,-1), 0.5);
     li[1] = new Sphere("def", Metal, vec3<float>(0,-100.5,-1),100);
-    li[2] = new Sphere("g", Glass, vec3<float>(0.5,0.5,-1),0.5);
+    li[2] = new Sphere("g", Glass, vec3<float>(0,-0.5,-1),0.5);
     //Sphere sphere;
     Geometry * world = new Geomlist(li,3);
 
