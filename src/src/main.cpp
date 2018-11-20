@@ -23,6 +23,7 @@ int main() {
     li[0] = new Sphere("abc", Matte, vec3<float>(0,0,-1), 0.5);
     li[1] = new Sphere("def", Metal, vec3<float>(0,-100.5,-1),100);
     li[2] = new Sphere("g", Glass, vec3<float>(0,-0.5,-1),0.5);
+
     //Sphere sphere;
     Geometry * world = new Geomlist(li,3);
 
@@ -30,9 +31,6 @@ int main() {
     {
         for (int i = 0; i < nx; i++)
         {
-//            float r = float(i) / float(nx);
-//            float g = float(j) / float(ny);
-//            float b = 0.2;
 
             float u = float(i) / float(nx);
             float v = float(j) / float(ny);
@@ -45,9 +43,6 @@ int main() {
             auto ig = uchar(255.99*col[1]);
             auto ib = uchar(255.99*col[2]);
 
-//            auto ir = uchar(255.99);
-//            auto ig = uchar(255.99);
-//            auto ib = uchar(255.99);
             // BRG format
             image[j][i][0] = ib;
             image[j][i][1] = ir;
