@@ -4,7 +4,7 @@
 #include "geometry/geometry.h"
 
 float Sphere::RayHits(const ray<float>& r) {
-    vec3<float> pos = get_Position();
+    vec3<float> pos = GetPosition();
     vec3<float> oc = r.origin() - pos;
     float a = dot(r.direction(), r.direction()); // function should be called dot, instead of cross
     float b = (float)2.0 * dot(oc, r.direction());

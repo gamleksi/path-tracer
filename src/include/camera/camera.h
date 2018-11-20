@@ -28,7 +28,7 @@ public:
     vec3<float> vertical;
 };
 
-vec3<float> color(const ray<float>& r, Sphere* s);
+vec3<float> color(const ray<float>& r, Sphere& s);
 
 
 #endif //PATH_TRACER_CAMERA_H
