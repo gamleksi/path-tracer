@@ -30,17 +30,3 @@ bool Sphere::RayHits(const ray<float>& r, float t_min, float t_max, hit_record& 
     }
     return false;
 }
-
-bool Geomlist::RayHits(const ray<float>& r, float t_min, float t_max, hit_record& rec) const{
-    hit_record temp_rec;
-    bool hit = false;
-    double closest_distance = t_max;
-    for (int i = 0; i < list_size_; i++){
-        if(list_[i]->RayHits(r, t_min, closest_distance, temp_rec)){
-            hit = true;
-            closest_distance = temp_rec.time;
-            rec = temp_rec;
-        }
-    }
-    return hit;
-}

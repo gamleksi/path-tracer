@@ -10,7 +10,7 @@
 #include <ray/ray.h>
 #include <hitable/hitable.h>
 
-class material {
+class Material {
 public:
     virtual bool scatter(const ray<float>& r_in, float t_min, float t_max, hit_record& rec) const = 0;
 
@@ -27,9 +27,9 @@ vec3<float> random_in_unit_sphere() {
 }
 
 
-class lambertian : public material {
+class Lambertian : public Material {
 public:
-    lambertian(const vec3<float>& a) : albedo(a) {}
+    Lambertian(const vec3<float>& a) : albedo(a) {}
     virtual bool scatter(const ray<float>& r_in, const hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const {
         vec3<float> target = rec.point + rec.normal + random_in_unit_sphere();
         scattered = ray<float>(rec.point, target-rec.point);
@@ -44,9 +44,9 @@ vec3<float> reflect(const vec3<float>& v, const vec3<float>& n) {
 }
 
 
-class metal : public material {
+class Metal : public Material {
 public:
-    metal(const vec3<float>& a) : albedo(a) {}
+    Metal(const vec3<float>& a) : albedo(a) {}
     virtual bool scatter(const ray<float>& r_in, const hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const {
         vec3<float> reflected = reflect(r_in.direction().turn_unit(), rec.normal);
         scattered = ray<float>(rec.point, reflected);

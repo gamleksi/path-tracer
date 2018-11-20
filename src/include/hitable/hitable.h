@@ -8,13 +8,13 @@
 
 #include "ray/ray.h"
 
-class material;
+class Material;
 
 struct hit_record{
     float time;
     vec3<float> point;
     vec3<float> normal;
-    material *mat_ptr;
+    Material *mat_ptr;
 };
 
 class hitable{
