@@ -8,8 +8,9 @@
 
 int main() {
 
-    int nx = 400;
-    int ny = 200;
+    int nx = 800;
+    int ny = 400;
+    int ns = 100;
 
     uchar image[ny][nx][3];
 
@@ -27,14 +28,18 @@ int main() {
     {
         for (int i = 0; i < nx; i++)
         {
+            vec3<float> col(0, 0, 0);
+            //antialiasing that averages the colors of rays going through a pixel
+            for(int s=0; s < ns; s++)
+            {
+                float u = float(i + drand48()) / float(nx);
+                float v = float(j + drand48()) / float(ny);
+                ray<float> r = cam.get_ray(u, v);
 
-            float u = float(i) / float(nx);
-            float v = float(j) / float(ny);
-            ray<float> r = cam.get_ray(u, v);
-
-            vec3<float> p = r.point(2.0);
-            vec3<float> col = color(r, world);
-
+                vec3<float> p = r.point(2.0);
+                col += color(r, world);
+            }
+            col /= float(ns);
             auto ir = uchar(255.99*col[0]);
             auto ig = uchar(255.99*col[1]);
             auto ib = uchar(255.99*col[2]);
