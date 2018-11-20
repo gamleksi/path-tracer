@@ -20,9 +20,9 @@ int main() {
     vec3<float> origin(0.0, 0.0, 0.0);
 
     Geometry *li[3];
-    li[0] = new Sphere("abc", Matte, vec3<float>(0,0,-1), 0.5);
-    li[1] = new Sphere("def", Metal, vec3<float>(0,-100.5,-1),100);
-    li[2] = new Sphere("g", Glass, vec3<float>(0,-0.5,-1),0.5);
+    li[0] = new Sphere(vec3<float>(0,0,-1), 0.5);
+    li[1] = new Sphere(vec3<float>(0,-100.5,-1),100);
+    li[2] = new Sphere(vec3<float>(0,-0.5,-1),0.5);
 
     Geometry * world = new Geomlist(li,3);
     //camera can be fetched later from the camera class
@@ -33,8 +33,8 @@ int main() {
         for (int i = 0; i < nx; i++)
         {
 
-            float u = float(i) / float(nx);
-            float v = float(j) / float(ny);
+            float u = 1 - float(i) / float(nx);
+            float v = 1 - float(j) / float(ny);
             ray<float> r(origin, lower_left_corner + u*horizontal + v*vertical);
 
             vec3<float> p = r.point(2.0);
@@ -44,10 +44,10 @@ int main() {
             auto ig = uchar(255.99*col[1]);
             auto ib = uchar(255.99*col[2]);
 
-            // BRG format
+            // BGR format
             image[j][i][0] = ib;
-            image[j][i][1] = ir;
-            image[j][i][2] = ig;
+            image[j][i][1] = ig;
+            image[j][i][2] = ir;
 
         }
     }
