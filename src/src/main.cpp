@@ -24,8 +24,9 @@ int main() {
     li[1] = new Sphere("def", Metal, vec3<float>(0,-100.5,-1),100);
     li[2] = new Sphere("g", Glass, vec3<float>(0,-0.5,-1),0.5);
 
-    //Sphere sphere;
     Geometry * world = new Geomlist(li,3);
+    //camera can be fetched later from the camera class
+    //Camera cam;
 
     for (int j = ny-1; j >= 0; j--)
     {
