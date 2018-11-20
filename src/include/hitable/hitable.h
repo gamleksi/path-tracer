@@ -12,6 +12,7 @@ struct hit_record{
     float time;
     vec3<float> point;
     vec3<float> normal;
+    
 };
 
 class hitable{
