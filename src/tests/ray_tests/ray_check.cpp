@@ -2,7 +2,7 @@
 #include <cmath>
 #include "gtest/gtest.h"
 #include "vector/vec3.h"
-#include "ray.h"
+#include "ray/ray.h"
 
 TEST(ray_test, origin_test)
 {
