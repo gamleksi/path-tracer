@@ -10,7 +10,7 @@ int main() {
 
     int nx = 800;
     int ny = 400;
-    int ns = 100;
+    int ns = 20;//determines how many rays are sent through a pixel for antialiasing
 
     uchar image[ny][nx][3];
 
@@ -29,7 +29,6 @@ int main() {
         for (int i = 0; i < nx; i++)
         {
             vec3<float> col(0, 0, 0);
-            //antialiasing that averages the colors of rays going through a pixel
             for(int s=0; s < ns; s++)
             {
                 float u = float(i + drand48()) / float(nx);
@@ -39,6 +38,7 @@ int main() {
                 vec3<float> p = r.point(2.0);
                 col += color(r, world);
             }
+            //averages the colors of rays going through a pixel
             col /= float(ns);
             auto ir = uchar(255.99*col[0]);
             auto ig = uchar(255.99*col[1]);
