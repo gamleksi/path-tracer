@@ -14,10 +14,6 @@ int main() {
     uchar image[ny][nx][3];
 
     std::cout << "P3\n" << nx << " " << ny << "\n255\n";
-    vec3<float> lower_left_corner(-2.0, -1.0, -1.0);
-    vec3<float> horizontal(4.0, 0.0, 0.0);
-    vec3<float> vertical(0.0, 2.0, 0.0);
-    vec3<float> origin(0.0, 0.0, 0.0);
 
     Geometry *li[3];
     li[0] = new Sphere("abc", Matte, vec3<float>(0,0,-1), 0.5);
@@ -25,8 +21,7 @@ int main() {
     li[2] = new Sphere("g", Glass, vec3<float>(0,-0.5,-1),0.5);
 
     Geometry * world = new Geomlist(li,3);
-    //camera can be fetched later from the camera class
-    //Camera cam;
+    Camera cam;
 
     for (int j = ny-1; j >= 0; j--)
     {
@@ -35,7 +30,7 @@ int main() {
 
             float u = float(i) / float(nx);
             float v = float(j) / float(ny);
-            ray<float> r(origin, lower_left_corner + u*horizontal + v*vertical);
+            ray<float> r = cam.get_ray(u, v);
 
             vec3<float> p = r.point(2.0);
             vec3<float> col = color(r, world);
