@@ -3,7 +3,7 @@
 //
 #include "geometry/geometry.h"
 
-bool Sphere::RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const
+bool Sphere::RayHits(const ray<float>& r, float t_min, float t_max, hit_record& rec) const
 {
     vec3<float> pos = GetPosition();
     vec3<float> oc = r.Origin() - pos;
@@ -31,8 +31,8 @@ bool Sphere::RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& 
     return false;
 }
 
-bool Geomlist::RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const{
-    Hit_record temp_rec;
+bool Geomlist::RayHits(const ray<float>& r, float t_min, float t_max, hit_record& rec) const{
+    hit_record temp_rec;
     bool hit = false;
     double closest_distance = t_max;
     for (int i = 0; i < list_size_; i++){

@@ -37,6 +37,10 @@ class vec3 {
         vec3 unit() const;
         void turn_unit();
 
+        float squared_length() {
+            return e[0]*e[0] + e[1]*e[1] + e[2]*e[2];
+        };
+
     private:
         T e[3];
 };

@@ -5,6 +5,7 @@
 #ifndef PATH_TRACER_GEOMETRY_H
 #define PATH_TRACER_GEOMETRY_H
 
+#include <hitable/hitable.h>
 #include "vector/vec3.h"
 #include "ray/ray.h"
 
@@ -15,13 +16,6 @@
 //    Glass,
 //    Metal
 //};
-
-struct Hit_record{
-    float time;
-    vec3<float> point;
-    vec3<float> normal;
-};
-
 
 class Geometry {
 public:
@@ -40,7 +34,7 @@ public:
     vec3<float> GetPosition() const{
         return position_;
     }
-    virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const = 0;
+    virtual bool RayHits(const ray<float>& r, float t_min, float t_max, hit_record& rec) const = 0;
 
 
 private:
@@ -62,7 +56,7 @@ public:
         return radius_;
     }
 
-    virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
+    virtual bool RayHits(const ray<float>& r, float t_min, float t_max, hit_record& rec) const;
     //discriminant stuff
 private:
     //radius here
@@ -74,7 +68,7 @@ class Geomlist : public Geometry{
 public:
     Geomlist() { }
     Geomlist(Geometry **g, int n){list_ = g; list_size_ = n;}
-    virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
+    virtual bool RayHits(const ray<float>& r, float t_min, float t_max, hit_record& rec) const;
     Geometry **list_;
     int list_size_;
 

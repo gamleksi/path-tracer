@@ -2,16 +2,18 @@
 // Created by Aleksi Hämäläinen on 14/11/2018.
 //
 
+#include <hitable/hitable.h>
 #include "camera/camera.h"
 //#include "ray/ray.h"
 
 
-vec3<float> Color(const ray<float>& r, Geometry *s)
+vec3<float> color(const ray<float>& r, hitable *world)
 {
-    Hit_record rec;
+    hit_record rec;
 
-    if(s->RayHits(r, 0.0, MAXFLOAT, rec)){
-        return (float)0.5*vec3<float>(rec.normal[0]+1,rec.normal[1]+1,rec.normal[2]+1);
+    if(world->hit(r, 0.000001, MAXFLOAT, rec)){
+        vec3<float> target = rec.point + rec.normal + random_in_unit_sphere();
+        return (float)0.5*color( ray<float>( rec.point, target-rec.point),world);
     }else{
         vec3<float> unit_direction = r.Direction().unit();
         float t = 0.5*(unit_direction[1]+1.0);

@@ -31,7 +31,7 @@ int main() {
             float u = 1 - float(i) / float(nx);
             float v = 1 - float(j) / float(ny);
             ray<float> r = cam.GetRay(u, v);
-            vec3<float> col = Color(r, world);
+            vec3<float> col = color(r, world);
 
             auto ir = uchar(255.99*col[0]);
             auto ig = uchar(255.99*col[1]);
