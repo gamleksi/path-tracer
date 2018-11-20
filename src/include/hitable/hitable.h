@@ -5,7 +5,7 @@
 #ifndef PATH_TRACER_HITABLE_H
 #define PATH_TRACER_HITABLE_H
 
-#include <material/material.h>
+
 #include "ray/ray.h"
 
 class material;

@@ -35,7 +35,7 @@ class vec3 {
 
         T norm2() const;
         vec3 unit() const;
-        void turn_unit();
+        vec3 turn_unit();
 
         float squared_length() {
             return e[0]*e[0] + e[1]*e[1] + e[2]*e[2];
@@ -261,8 +261,8 @@ vec3<T> vec3<T>::unit() const {
 
 // make unit
 template <typename T>
-void vec3<T>::turn_unit() {
-    *this /= this->norm2();
+vec3<T> vec3<T>::turn_unit() {
+    return *this /= this->norm2();
 };
 
 #endif //PATH_TRACER_VEC3_H
