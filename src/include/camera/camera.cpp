@@ -6,7 +6,7 @@
 //#include "ray/ray.h"
 
 
-vec3<float> color(const ray<float>& r, Geometry *s)
+vec3<float> Color(const ray<float>& r, Geometry *s)
 {
     Hit_record rec;
     //float t = s->RayHits(r);
