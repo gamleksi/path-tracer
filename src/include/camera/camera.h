@@ -17,7 +17,7 @@ public:
         vertical = vec3<float>(0.0, 2.0, 0.0);
         origin = vec3<float>(0.0, 0.0, 0.0);
     }
-    ray<float> get_ray(float u, float v)
+    ray<float> GetRay(float u, float v)
     {
         return ray<float>(origin, lower_left_corner + u*horizontal + v*vertical - origin);
     }
@@ -28,7 +28,7 @@ public:
     vec3<float> vertical;
 };
 
-vec3<float> color(const ray<float>& r, Geometry *s);
+vec3<float> Color(const ray<float>& r, Geometry *s);
 
 
 #endif //PATH_TRACER_CAMERA_H

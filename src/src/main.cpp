@@ -17,9 +17,9 @@ int main() {
     std::cout << "P3\n" << nx << " " << ny << "\n255\n";
 
     Geometry *li[3];
-    li[0] = new Sphere("abc", Matte, vec3<float>(0,0,-1), 0.5);
-    li[1] = new Sphere("def", Metal, vec3<float>(0,-100.5,-1),100);
-    li[2] = new Sphere("g", Glass, vec3<float>(0,-0.5,-1),0.5);
+    li[0] = new Sphere(vec3<float>(0,0,-1), 0.5);
+    li[1] = new Sphere(vec3<float>(0,-100.5,-1),100);
+    li[2] = new Sphere(vec3<float>(0,-0.5,-1),0.5);
 
     Geometry * world = new Geomlist(li,3);
     Camera cam;
@@ -31,12 +31,10 @@ int main() {
             vec3<float> col(0, 0, 0);
             for(int s=0; s < ns; s++)
             {
-                float u = float(i + drand48()) / float(nx);
-                float v = float(j + drand48()) / float(ny);
-                ray<float> r = cam.get_ray(u, v);
-
-                vec3<float> p = r.point(2.0);
-                col += color(r, world);
+                float u = 1 - float(i + drand48()) / float(nx);
+                float v = 1 - float(j + drand48()) / float(ny);
+                ray<float> r = cam.GetRay(u, v);
+                col += Color(r, world);
             }
             //averages the colors of rays going through a pixel
             col /= float(ns);
@@ -44,10 +42,10 @@ int main() {
             auto ig = uchar(255.99*col[1]);
             auto ib = uchar(255.99*col[2]);
 
-            // BRG format
+            // BGR format
             image[j][i][0] = ib;
-            image[j][i][1] = ir;
-            image[j][i][2] = ig;
+            image[j][i][1] = ig;
+            image[j][i][2] = ir;
 
         }
     }
