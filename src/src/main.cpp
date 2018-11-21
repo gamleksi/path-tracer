@@ -22,7 +22,7 @@ int main() {
     li[2] = new Sphere(vec3<float>(0,-0.5,-1),0.5);
 
     Geometry * world = new Geomlist(li,3);
-    Camera cam;
+    Camera cam(90, float(nx)/float(ny));
 
     for (int j = ny-1; j >= 0; j--)
     {
