@@ -20,7 +20,7 @@
 
 class Geometry {
 public:
-    Geometry(vec3<float> pos, Material& mat) : material_(mat), position_(pos) {}
+    Geometry(vec3<float> pos, Material mat) : material_(mat), position_(pos) {}
 
     //destructor virtual
     virtual ~Geometry() { };
@@ -32,9 +32,6 @@ public:
 
 
 private:
-    //material will be used later.
-
-//
     Material& material_;
     vec3<float> position_;
 };
@@ -43,7 +40,7 @@ private:
 class Sphere : public Geometry{
     //RayHits algorithm by Peter Shirley, from Ray Tracing in One Weekend, version 1.55
 public:
-    Sphere(vec3<float> pos, float radius, Material& mat) : Geometry(pos, mat), radius_(radius) { }
+    Sphere(vec3<float> pos, float radius, Material mat) : Geometry(pos, mat), radius_(radius) { }
     //get radius and ray hits Sphere
     virtual ~Sphere() { };
     float GetRadius() const {

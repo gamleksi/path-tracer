@@ -12,7 +12,7 @@
 
 class Material {
 public:
-    virtual bool scatter(const ray<float>& r_in, hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const = 0;
+    virtual bool scatter(const ray<float>& r_in, const hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const = 0;
 
 };
 
@@ -30,7 +30,7 @@ vec3<float> random_in_unit_sphere() {
 class Lambertian : public Material {
 public:
     Lambertian(const vec3<float>& a) : albedo(a) {}
-    virtual bool scatter(const ray<float>& r_in, const hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const {
+    bool scatter(const ray<float>& r_in, const hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const {
         vec3<float> target = rec.point + rec.normal + random_in_unit_sphere();
         scattered = ray<float>(rec.point, target-rec.point);
         attenuation = albedo;
@@ -47,7 +47,7 @@ vec3<float> reflect(const vec3<float>& v, const vec3<float>& n) {
 class Metal : public Material {
 public:
     Metal(const vec3<float>& a) : albedo(a) {}
-    virtual bool scatter(const ray<float>& r_in, const hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const {
+    bool scatter(const ray<float>& r_in, const hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const {
         vec3<float> reflected = reflect(r_in.direction().turn_unit(), rec.normal);
         scattered = ray<float>(rec.point, reflected);
         attenuation = albedo;

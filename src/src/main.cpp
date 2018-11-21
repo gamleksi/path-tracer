@@ -17,12 +17,11 @@ int main() {
     std::cout << "P3\n" << nx << " " << ny << "\n255\n";
 
     Geometry *li[3];
-    vec3<float> (0.8,0.3,0,3);
-    li[0] = new Sphere(vec3<float>(0,0,-1), 0.5, new Lambertian());
-    li[1] = new Sphere(vec3<float>(0,-100.5,-1),100,  new Lambertian(vec3<float>(0.8,0.3,0,3)));
-    li[2] = new Sphere(vec3<float>(0,-0.5,-1),0.5,  new Lambertian(vec3<float>(0.8,0.3,0,3)));
+    li[0] = new Sphere(vec3<float>(0,0,-1), 0.5, new Lambertian(vec3<float>(0.8,0.3,0.3)));
+    li[1] = new Sphere(vec3<float>(0,-100.5,-1),100,  new Lambertian(vec3<float>(0.8,0.3,0.3)));
+    li[2] = new Sphere(vec3<float>(0,-0.5,-1),0.5,  new Lambertian(vec3<float>(0.8,0.3,0.3)));
 
-    Geometry * world = new Geomlist(li,3);
+    //Geometry * world = new Geomlist(li,3);
     Camera cam;
 
     for (int j = ny-1; j >= 0; j--)
