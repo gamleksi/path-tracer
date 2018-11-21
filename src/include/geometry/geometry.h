@@ -21,7 +21,7 @@
 class Geometry {
 public:
     Geometry(vec3<float> pos, Material* mat) : material_(mat), position_(pos) {}
-    Geometry();
+    Geometry(){};
     //destructor virtual
     virtual ~Geometry() { };
 
@@ -41,6 +41,7 @@ class Sphere : public Geometry{
     //RayHits algorithm by Peter Shirley, from Ray Tracing in One Weekend, version 1.55
 public:
     Sphere(vec3<float> pos, float radius, Material* mat) : Geometry(pos, mat), radius_(radius) { }
+    Sphere(){};
     //get radius and ray hits Sphere
     virtual ~Sphere() { };
     float GetRadius() const {
@@ -58,6 +59,7 @@ private:
 
 class Geomlist : public Geometry{
 public:
+    Geomlist(){};
     Geomlist(Geometry **g, int n){list_ = g; list_size_ = n;}
     virtual bool RayHits(const ray<float>& r, float t_min, float t_max, hit_record& rec) const;
     Geometry **list_;

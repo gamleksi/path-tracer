@@ -11,6 +11,7 @@ int main() {
 
     int nx = 400;
     int ny = 200;
+    int ns = 100; // antialising
 
     uchar image[ny][nx][3];
 
@@ -28,20 +29,27 @@ int main() {
     {
         for (int i = 0; i < nx; i++)
         {
+            vec3<float> col(0,0,0);
+            for (int s=0; s < ns; s++) {
+                float u = float(i+ drand48()) / float(nx);
+                float v = float(i+ drand48()) / float(ny);
+                ray<float> r = cam.GetRay(u, v);
+                vec3<float> p = r.point(2.0);
+                col += color(r, world, 0);
+            }
 
-            float u = 1 - float(i) / float(nx);
-            float v = 1 - float(j) / float(ny);
-            ray<float> r = cam.GetRay(u, v);
-            vec3<float> col = color(r, world);
-
-            auto ir = uchar(255.99*col[0]);
-            auto ig = uchar(255.99*col[1]);
-            auto ib = uchar(255.99*col[2]);
+            col /= float(ns);
+            col = vec3<float> (sqrt(col[0]), sqrt(col[1]), sqrt(col[2]) );
+            auto ir = int(255.99*col[0]);
+            auto ig = int(255.99*col[1]);
+            auto ib = int(255.99*col[2]);
 
             // BGR format
             image[j][i][0] = ib;
             image[j][i][1] = ig;
             image[j][i][2] = ir;
+
+
 
         }
     }
