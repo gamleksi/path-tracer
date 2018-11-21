@@ -12,7 +12,7 @@
 
 class Material {
 public:
-    virtual bool scatter(const ray<float>& r_in, float t_min, float t_max, hit_record& rec) const = 0;
+    virtual bool scatter(const ray<float>& r_in, hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const = 0;
 
 };
 
