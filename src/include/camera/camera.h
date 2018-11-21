@@ -10,12 +10,22 @@
 
 class Camera {
 public:
-    Camera()
+    Camera(float vfov, float aspect)
     {
+        float theta = vfov * M_PI/180;
+        float half_height = tan(theta/2);
+        float half_width = aspect * half_height;
+        lower_left_corner = vec3<float>(-half_width, -half_height, -1.0);
+        horizontal = vec3<float>(2 * half_width, 0.0, 0.0);
+        vertical = vec3<float>(0.0, 2 * half_height, 0.0);
+        origin = vec3<float>(0.0, 0.0, 0.0);
+
+        /*
         lower_left_corner = vec3<float>(-2.0, -1.0, -1.0);
         horizontal = vec3<float>(4.0, 0.0, 0.0);
         vertical = vec3<float>(0.0, 2.0, 0.0);
         origin = vec3<float>(0.0, 0.0, 0.0);
+        */
     }
     ray<float> GetRay(float u, float v)
     {
