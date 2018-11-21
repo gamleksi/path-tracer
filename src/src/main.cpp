@@ -10,7 +10,7 @@ int main() {
 
     int nx = 800;
     int ny = 400;
-    int ns = 20;//determines how many rays are sent through a pixel for antialiasing
+    int ns = 100;//determines how many rays are sent through a pixel for antialiasing
 
     uchar image[ny][nx][3];
 
@@ -22,8 +22,8 @@ int main() {
     li[2] = new Sphere(vec3<float>(0,-0.5,-1),0.5);
 
     Geometry * world = new Geomlist(li,3);
-    Camera cam(90, float(nx)/float(ny));
-
+    //Camera cam(90, float(nx)/float(ny));
+    Camera cam(vec3<float>(-2,2,1), vec3<float>(0,0,-1), vec3<float>(0,1,0), 90, float(nx)/float(ny));
     for (int j = ny-1; j >= 0; j--)
     {
         for (int i = 0; i < nx; i++)
