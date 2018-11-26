@@ -40,6 +40,7 @@ public:
     vec3<float> GetPosition() const{
         return position_;
     }
+    virtual float GetRadius() const{return 0.0;}
     virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const = 0;
 
 
@@ -58,12 +59,12 @@ public:
             : Geometry(position), radius_(radius) { }
     //get radius and ray hits Sphere
     virtual ~Sphere() { };
-    float GetRadius() const {
+    virtual float GetRadius() const {
         return radius_;
     }
 
     virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
-    //discriminant stuff
+
 private:
     //radius here
     float radius_;
@@ -75,6 +76,8 @@ public:
     Geomlist() { }
     Geomlist(Geometry **g, int n){list_ = g; list_size_ = n;}
     virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
+    Geometry ** GetObjects(){return list_;} //under development
+    int GetObjectNum(){return list_size_;}
     Geometry **list_;
     int list_size_;
 

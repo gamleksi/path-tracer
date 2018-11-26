@@ -8,6 +8,8 @@
 vec3<float> v1 = vec3<float>(1.0, 2.0, 3.0);
 vec3<float> v2(0.5, 4.0, 6.0);
 
+
+
 TEST(geometry_test, hello) {
 
     auto v3 = v1;
@@ -22,67 +24,33 @@ TEST(geometry_test, hello) {
     EXPECT_EQ(v2[2], v3[2]);
 }
 
-//TEST(geometry_test, default_sphere){
-//    Sphere* d = new Sphere();
-//    EXPECT_EQ("abc", d->get_Name());
-//    EXPECT_NE("ABD", d->get_Name());
-//
-//    EXPECT_EQ(Matte, d->get_Material());
-//
-//
-//    delete d;
-//
-//}
-//TEST(geometry_test, n_default_sphere){
-//    Sphere* d = new Sphere("Im groot!", Glass, v2, 20.0);
-//    EXPECT_EQ("Im groot!" ,d->GetName());
-//    EXPECT_EQ(Glass, d->GetMaterial());
-//    EXPECT_EQ(0.5,d->GetPosition()[0]);
-//    EXPECT_EQ(4.0,d->GetPosition()[1]);
-//    EXPECT_EQ(6.0,d->GetPosition()[2]);
-//    EXPECT_EQ(20.0,d->GetRadius());
-//
-//    //cloning d to a default sphere
-//    Sphere c =  Sphere();
-//    EXPECT_EQ("abc", c.get_Name());
-//    c = *d; //what is happening here? This is not a copy?
-//    EXPECT_EQ("Im groot!", c.GetName());
-//    EXPECT_EQ(Glass, c.GetMaterial());
-//    EXPECT_EQ(0.5,c.GetPosition()[0]);
-//    EXPECT_EQ(4.0,c.GetPosition()[1]);
-//    EXPECT_EQ(6.0,c.GetPosition()[2]);
-//    EXPECT_EQ(20.0, c.GetRadius()); //this should not work?!
-//    //seems like the copy works
-//}
+TEST(GEOMETRY_TEST, SPHERE){
+    Sphere *a = new Sphere(vec3<float>(0,0,-1), 0.5);
+    EXPECT_EQ(0, a->GetPosition()[0]);
+    EXPECT_EQ(0, a->GetPosition()[1]);
+    EXPECT_EQ(-1, a->GetPosition()[2]);
+    EXPECT_EQ(0.5, a->GetRadius());
+    delete a;
 
-//TEST(geometry_test, discriminant_analysis){
-//    vec3<float> v4(0.0,0.0,0.0);
-//    vec3<float> v5(1.0,0.0,0.0);
-//    vec3<float> v6(1.0,1.0,0.0);
-//    vec3<float> v7(20.0,20.0,0.0);
-//
-//    ray<float> r(v4,v5);
-//    EXPECT_EQ(1.0, r.direction()[0]);
-//
-//    ray<float> &ref = r;
-//
-//    //c is centered at x=1
-//    Sphere* f = new Sphere("Im groot!", Glass, v5, 20.0);
-//    //should have two solutions
-//    EXPECT_EQ(true, f->RayHits(ref));
-//
-//    //g is centered at y=1
-//    Sphere* g = new Sphere("a", Metal, v6, 1.0);
-//    //Should have only 1 solution
-//    EXPECT_EQ(true, g->RayHits(ref));
-//
-//    //h is centered at (x =20, y = 20)
-//    Sphere* h = new Sphere("h", Matte, v7, 0.1);
-//    EXPECT_EQ(false, h->RayHits(ref));
-//
-//
-//}
+}
+
+TEST(GEOMETRY_TEST, GEOMLIST){
+    Geometry *li[3]; //pointer to array of 3 Geometries
+    li[0] = new Sphere(vec3<float>(0,0,-1), 0.5); //placing Spheres to Geometry array
+    li[1] = new Sphere(vec3<float>(0,-100.5,-1),100);
+    li[2] = new Sphere(vec3<float>(0,-0.5,-1),2);
+    Geomlist * world = new Geomlist(li,3); // constructing Geometry list with array.
 
 
+    EXPECT_EQ(3,world->GetObjectNum());
+    EXPECT_EQ(0,world->GetObjects()[0]->GetPosition()[0]);
+    EXPECT_EQ(-1,world->GetObjects()[0]->GetPosition()[2]);
+    EXPECT_EQ(-100.5,world->GetObjects()[1]->GetPosition()[1]);
+    EXPECT_EQ(-1,world->GetObjects()[1]->GetPosition()[2]);
+    EXPECT_EQ(2,world->GetObjects()[2]->GetRadius());
 
-//MagicDragon* mdragon = new MagicDragon("Puff", 976, 20);
+    delete li[2];
+    delete li[1];
+    delete li[0];
+
+}
