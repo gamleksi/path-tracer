@@ -5,10 +5,9 @@
 #ifndef PATH_TRACER_GEOMETRY_H
 #define PATH_TRACER_GEOMETRY_H
 
-#include <hitable/hitable.h>
 #include "vector/vec3.h"
 #include "ray/ray.h"
-#include "material/material.h"
+#include "hitable/hitable.h"
 
 //Leaving this here for future.
 //enum Material
@@ -19,53 +18,43 @@
 //};
 
 class Geometry {
-public:
-    Geometry(vec3<float> pos, Material* mat) : material_(mat), position_(pos) {}
-    Geometry(){};
-    //destructor virtual
-    virtual ~Geometry() { };
-
-    vec3<float> GetPosition() const{
-        return position_;
-    }
-    virtual bool RayHits(const ray<float>& r, float t_min, float t_max, hit_record& rec) const = 0;
-
-
-private:
-    Material* material_;
-    vec3<float> position_;
+ public:
+ virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const = 0;
 };
-
 
 class Sphere : public Geometry{
-    //RayHits algorithm by Peter Shirley, from Ray Tracing in One Weekend, version 1.55
-public:
-    Sphere(vec3<float> pos, float radius, Material* mat) : Geometry(pos, mat), radius_(radius) { }
-    Sphere(){};
-    //get radius and ray hits Sphere
-    virtual ~Sphere() { };
-    float GetRadius() const {
-        return radius_;
-    }
+  //RayHits algorithm by Peter Shirley, from Ray Tracing in One Weekend, version 1.55
+ public:
 
-    virtual bool RayHits(const ray<float>& r, float t_min, float t_max, hit_record& rec) const;
-    //discriminant stuff
-private:
-    //radius here
-    float radius_;
 
+  Sphere(vec3<float> position, float radius, Material* mat)
+  : Geometry(), radius_(radius), position_(position), material_(mat) { }
+  //get radius and ray hits Sphere
+  ~Sphere() { };
+  float GetRadius() const {
+      return radius_;
+  }
+
+  virtual vec3<float> GetPosition() const { return position_; };
+
+  virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
+  //discriminant stuff
+ private:
+  //radius here
+  float radius_;
+  Material* material_;
+  vec3<float> position_;
 };
-
 
 class Geomlist : public Geometry{
-public:
-    Geomlist(){};
-    Geomlist(Geometry **g, int n){list_ = g; list_size_ = n;}
-    virtual bool RayHits(const ray<float>& r, float t_min, float t_max, hit_record& rec) const;
-    Geometry **list_;
-    int list_size_;
+ public:
+  Geomlist(){}
+  Geomlist(Geometry **g, int n){list_ = g; list_size_ = n;}
+  virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
+  Geometry **list_;
+  int list_size_;
 
 };
 
-
 #endif //PATH_TRACER_GEOMETRY_H
+
