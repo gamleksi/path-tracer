@@ -2,20 +2,20 @@
 // Created by Aleksi Hämäläinen on 14/11/2018.
 //
 
-#include <hitable/hitable.h>
 #include "camera/camera.h"
 #include "material/material.h"
-//#include "ray/ray.h"
+
+#include "ray/ray.h"
 
 
-vec3<float> color(const ray<float>& r, hitable *world, int depth)
+vec3<float> color(const ray<float>& r, Geometry *world, int depth)
 {
     hit_record rec;
 
-    if(world->hit(r, 0.000001, MAXFLOAT, rec)){
+    if(world->RayHits(r, 0.000001, MAXFLOAT, rec)){
         ray<float> scattered;
         vec3<float> attenuation;
-        if (depth < 50 && rec.mat_ptr->scatter(r, rec, attenuation, scattered)) {
+        if (depth < 50 && rec.mat_ptr->scatter(r, rec,attenuation, scattered)){
             return attenuation*color(scattered, world, depth+1);
         } else {
             return vec3<float>(0,0,0);

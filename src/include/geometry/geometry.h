@@ -5,18 +5,19 @@
 #ifndef PATH_TRACER_GEOMETRY_H
 #define PATH_TRACER_GEOMETRY_H
 
-#include <hitable/hitable.h>
 #include "vector/vec3.h"
 #include "ray/ray.h"
-#include "material/material.h"
 
-//Leaving this here for future.
-//enum Material
-//{
-//    Matte,
-//    Glass,
-//    Metal
-//};
+class Material;
+
+struct hit_record {
+    float time;
+    vec3<float> point;
+    vec3<float> normal;
+    Material *mat_ptr;
+};
+
+
 
 class Geometry {
 public:

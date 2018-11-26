@@ -45,3 +45,5 @@ bool Geomlist::RayHits(const ray<float>& r, float t_min, float t_max, hit_record
     return hit;
 }
 
+
+
