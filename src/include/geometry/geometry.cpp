@@ -2,7 +2,6 @@
 // Created by Jesse Miettinen on 14/11/2018.
 //
 #include "geometry/geometry.h"
-#include "hitable/hitable.h"
 
 bool Sphere::RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const
 {

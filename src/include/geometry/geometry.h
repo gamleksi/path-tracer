@@ -7,15 +7,16 @@
 
 #include "vector/vec3.h"
 #include "ray/ray.h"
-#include "hitable/hitable.h"
 
-//Leaving this here for future.
-//enum Material
-//{
-//    Matte,
-//    Glass,
-//    Metal
-//};
+class Material;
+
+struct Hit_record{
+  float time;
+  vec3<float> point;
+  vec3<float> normal;
+  Material* mat_ptr;
+};
+
 
 class Geometry {
  public:

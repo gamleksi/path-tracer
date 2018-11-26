@@ -5,7 +5,6 @@
 #include "camera/camera.h"
 #include "material/material.h"
 #include "ray/ray.h"
-#include "hitable/hitable.h"
 
 
 ray<float> Camera::GetRay(float u, float v) {

@@ -6,7 +6,6 @@
 #define PATH_TRACER_MATERIAL_H
 
 #include "geometry/geometry.h"
-#include "hitable/hitable.h"
 #include <vector/vec3.h>
 #include <ray/ray.h>
 
