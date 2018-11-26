@@ -10,5 +10,5 @@ set(CMAKE_CXX_STANDARD 11)
 include_directories(include)
 
 add_subdirectory(tests)
-add_executable(path_tracer src/main.cpp include include/geometry/geometry.cpp include/camera/camera.cpp)
+add_executable(path_tracer src/main.cpp include include/geometry/geometry.cpp include/camera/camera.cpp include/io/io.h)
 target_link_libraries(path_tracer ${OpenCV_LIBS})

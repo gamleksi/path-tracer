@@ -5,12 +5,14 @@
 #include <opencv2/highgui/highgui.hpp>
 #include "geometry/geometry.h"
 #include "camera/camera.h"
+#include "io/io.h"
 
 int main() {
 
-    int nx = 800;
-    int ny = 400;
-    int ns = 20;//determines how many rays are sent through a pixel for antialiasing
+    int nx = 400;
+    int ny = 200;
+    int ns = 10;//determines how many rays are sent through a pixel for antialiasing
+    json j;
 
     uchar image[ny][nx][3];
 
@@ -21,7 +23,8 @@ int main() {
     li[1] = new Sphere(vec3<float>(0,-100.5,-1),100);
     li[2] = new Sphere(vec3<float>(0,-0.5,-1),0.5);
 
-    Geometry * world = new Geomlist(li,3);
+    Geomlist * world = new Geomlist(li,3);
+    std::cout << SaveWorld(world).dump(4);
     Camera cam(90, float(nx)/float(ny));
 
     for (int j = ny-1; j >= 0; j--)
