@@ -25,18 +25,17 @@ public:
     vec3<float> random_in_unit_sphere() const;
 };
 
-vec3<float> reflect(const vec3<float>& v, const vec3<float>& n);
 
 class Metal : public Material {
 public:
     Metal(const vec3<float>& a) : albedo(a) {}
 
-    virtual bool scatter(
-        const ray<float>& r_in, const Hit_record& rec, vec3<float>& attenuation,
-        ray<float>& scattered
-        ) const;
+    virtual bool scatter(const ray<float>& r_in, const Hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const;
 
     vec3<float> albedo;
 };
+
+vec3<float> reflect(const vec3<float>& v, const vec3<float>& n);
+
 
 #endif //PATH_TRACER_MATERIAL_H

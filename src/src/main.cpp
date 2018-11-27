@@ -11,19 +11,20 @@ int main() {
 
     int nx = 400;
     int ny = 200;
-    int ns = 10; // antialising
+    int ns = 20; // antialising
 
     uchar image[ny][nx][3];
 
     std::cout << "P3\n" << nx << " " << ny << "\n255\n";
 
-    Geometry *li[3];
+    Geometry *li[4];
 
-    li[0] = new Sphere(vec3<float>(0,0,-1), 0.5, new Lambertian(vec3<float>(0.8,0.3,0.3)));
+    li[0] = new Sphere(vec3<float>(0.5,0.5,-1), 0.3, new Lambertian(vec3<float>(0.8,0.3,0.3)));
     li[1] = new Sphere(vec3<float>(0,-100.5,-1),100, new Lambertian(vec3<float>(0.8,0.3,0.3)));
     li[2] = new Sphere(vec3<float>(0,-0.5,-1),0.5, new Metal(vec3<float>(0.8,0.3,0.3)));
+    li[3] = new Sphere(vec3<float>(3,2,0),0.1, new Metal(vec3<float>(0.4,0.3,0.3)));
 
-    Geometry* world = new Geomlist(li,3);
+    Geometry* world = new Geomlist(li,4);
     Camera cam;
 
     for (int j = ny-1; j >= 0; j--)
@@ -33,7 +34,7 @@ int main() {
             vec3<float> col(0,0,0);
             for (int s=0; s < ns; s++) {
                 float u = 1 - float(i+ drand48()) / float(nx);
-                float v = 1 - float(i+ drand48()) / float(ny);
+                float v = 1 - float(j+ drand48()) / float(ny);
                 ray<float> r = cam.GetRay(u, v);
                 vec3<float> p = r.point(2.0);
                 col += color(r, world, 0);
