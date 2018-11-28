@@ -11,7 +11,7 @@ int main() {
 
     int nx = 400;
     int ny = 200;
-    int ns = 10;//determines how many rays are sent through a pixel for antialiasing
+    int ns = 2  ;//determines how many rays are sent through a pixel for antialiasing
     json j;
 
     uchar image[ny][nx][3];
@@ -24,7 +24,8 @@ int main() {
     li[2] = new Sphere(vec3<float>(0,-0.5,-1),0.5);
 
     Geomlist * world = new Geomlist(li,3);
-    std::cout << SaveWorld(world).dump(4);
+    j =  SaveWorld(world);
+    LoadWorld(j);
     Camera cam(90, float(nx)/float(ny));
 
     for (int j = ny-1; j >= 0; j--)

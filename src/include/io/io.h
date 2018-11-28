@@ -7,26 +7,27 @@
 #define PATH_TRACER_IO_H
 #include <iostream>
 #include <nlohmann/json.hpp>
+#include <string>
 // for convenience
 using json = nlohmann::json;
 #include "geometry/geometry.h"
 
 
 
-json SaveWorld(Geomlist *world){
-    json j;
-    //j["pi"] = 3.141;
-    for (auto i = 0; i<world->GetObjectNum();i++){
-        //std::cout<<"Objectamount: "<<world->GetObjectNum()<<" i: "<< i<<std::endl;
-        //std::cout<<world->GetPosition()<<std::endl;
-        j["position"]["x"]= world->GetPosition()[0];
-        j["position"]["y"] = world->GetPosition()[1];
-        j["position"]["z"] = world->GetPosition()[2];
-    }
-    //for (auto& element : j) {
-//        std::cout<<"!!" << element << '\n';
+json SaveWorld(Geomlist *world);
+
+void LoadWorld(json& j);
+
+//namespace ns {
+//    void to_json(json& j, const person& p) {
+//        j = json{{"name", p.name}, {"address", p.address}, {"age", p.age}};
 //    }
-    return j;
-};
+//
+ //   void from_json(const json& j, person& p) {
+//        j.at("name").get_to(p.name);
+//        j.at("address").get_to(p.address);
+//        j.at("age").get_to(p.age);
+//    }
+//};
 
 #endif //PATH_TRACER_IO_H
