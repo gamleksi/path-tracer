@@ -57,9 +57,13 @@ class vec3 {
 
     os << v[0] << " " << v[1] << " " << v[2];
 
- Dot product of two vectors:
+ Cross product of two vectors:
  **/
 
+template <typename T>
+vec3<T> cross(const vec3<T> &v1, const vec3<T> &v2);
+
+// Dot product of two vectors:
 template <typename T>
 T dot(const vec3<T> &v1, const vec3<T> &v2);
 
@@ -239,6 +243,13 @@ vec3<T> operator*(const T &a, const vec3<T> &v1) {
 template <typename T>
 vec3<T> operator/(const T &a, const vec3<T> &v1) {
     return v1 / a;
+};
+
+//Cross product
+template <typename T>
+vec3<T> cross(const vec3<T> &v1, const vec3<T> &v2){
+    vec3<T> vc(v1[1]*v2[2]-v1[2]*v2[1],v1[2]*v2[0]-v1[0]*v2[2],v1[0]*v2[1]-v1[1]*v2[0]);
+    return vc;
 };
 
 // Dot product

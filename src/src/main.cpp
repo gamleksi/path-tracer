@@ -24,9 +24,9 @@ int main() {
     li[2] = new Sphere(vec3<float>(0,-0.5,-1),0.5, new Metal(vec3<float>(0.8,0.3,0.3)));
     li[3] = new Sphere(vec3<float>(3,2,0),0.1, new Metal(vec3<float>(0.4,0.3,0.3)));
 
-    Geometry* world = new Geomlist(li,4);
-    Camera cam;
-
+    Geometry * world = new Geomlist(li,3);
+    //Camera cam(90, float(nx)/float(ny));
+    Camera cam(vec3<float>(-2,2,1), vec3<float>(0,0,-1), vec3<float>(0,1,0), 90, float(nx)/float(ny));
     for (int j = ny-1; j >= 0; j--)
     {
         for (int i = 0; i < nx; i++)
