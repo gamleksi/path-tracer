@@ -13,10 +13,12 @@ using json = nlohmann::json;
 #include "geometry/geometry.h"
 
 
+std::string & SaveWorld(Geomlist *world);
+json ToJson(Geomlist *world);
 
-json SaveWorld(Geomlist *world);
+Geomlist * LoadWorld(const std::string & filename);
+Geomlist * FromJson(json& j);
 
-void LoadWorld(json& j);
 
 //namespace ns {
 //    void to_json(json& j, const person& p) {

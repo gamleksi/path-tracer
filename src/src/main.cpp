@@ -24,8 +24,9 @@ int main() {
     li[2] = new Sphere(vec3<float>(0,-0.5,-1),0.5);
 
     Geomlist * world = new Geomlist(li,3);
+    std::cout<<" Saving *world with object amount: "<< world->GetObjectNum()<<std::endl;
     j =  SaveWorld(world);
-    LoadWorld(j);
+    Geomlist * world2 = LoadWorld(j);
     Camera cam(90, float(nx)/float(ny));
 
     for (int j = ny-1; j >= 0; j--)
