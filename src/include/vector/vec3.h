@@ -65,7 +65,7 @@ vec3<T> cross(const vec3<T> &v1, const vec3<T> &v2);
 
 // Dot product of two vectors:
 template <typename T>
-T dot(const vec3<T> &v1, const vec3<T> &v2);
+T Dot(const vec3<T> &v1, const vec3<T> &v2);
 
 /**
  * Source code
@@ -261,19 +261,19 @@ T Dot(const vec3<T> &v1, const vec3<T> &v2) {
 // Norm
 template <typename T>
 T vec3<T>::Norm2() const {
-    return std::sqrt(dot(*this, *this));
+    return std::sqrt(Dot(*this, *this));
 };
 
 //unit vector
 template <typename T>
 vec3<T> vec3<T>::Unit() const {
-    return *this / this->norm2();
+    return *this / this->Norm2();
 };
 
 // make unit
 template <typename T>
 vec3<T> vec3<T>::Turn_unit() {
-    return *this /= this->norm2();
+    return *this /= this->Norm2();
 };
 
 #endif //PATH_TRACER_VEC3_H
