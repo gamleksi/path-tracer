@@ -33,11 +33,11 @@ class vec3 {
         vec3& operator *= (const T &a);
         vec3& operator /= (const T &a);
 
-        T norm2() const;
-        vec3 unit() const;
-        vec3 turn_unit();
+        T Norm2() const;
+        vec3 Unit() const;
+        vec3 Turn_unit();
 
-        float squared_length() {
+        float Squared_length() {
             return e[0]*e[0] + e[1]*e[1] + e[2]*e[2];
         };
 
@@ -243,25 +243,25 @@ vec3<T> operator/(const T &a, const vec3<T> &v1) {
 
 // Dot product
 template <typename T>
-T dot(const vec3<T> &v1, const vec3<T> &v2) {
+T Dot(const vec3<T> &v1, const vec3<T> &v2) {
     return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
 };
 
 // Norm
 template <typename T>
-T vec3<T>::norm2() const {
+T vec3<T>::Norm2() const {
     return std::sqrt(dot(*this, *this));
 };
 
 //unit vector
 template <typename T>
-vec3<T> vec3<T>::unit() const {
+vec3<T> vec3<T>::Unit() const {
     return *this / this->norm2();
 };
 
 // make unit
 template <typename T>
-vec3<T> vec3<T>::turn_unit() {
+vec3<T> vec3<T>::Turn_unit() {
     return *this /= this->norm2();
 };
 

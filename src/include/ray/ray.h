@@ -16,9 +16,9 @@ class ray
         ray(const vec3<T>& a, const vec3<T>& b)
         : A(a), B(b) { }
 
-        vec3<T> origin() const {return A;}
-        vec3<T> direction() const {return B;}
-        vec3<T> point(const T& t) const {return A + B * t;}
+        vec3<T> Origin() const {return A;}
+        vec3<T> Direction() const {return B;}
+        vec3<T> Point(const T& t) const {return A + B * t;}
     private:
         vec3<T> A;
         vec3<T> B;
