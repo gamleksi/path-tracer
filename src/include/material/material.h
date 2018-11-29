@@ -11,7 +11,7 @@
 
 class Material {
 public:
-    virtual bool scatter(const ray<float>& r_in, const Hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const = 0;
+    virtual bool Scatter(const ray<float>& r_in, const Hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const = 0;
 };
 
 
@@ -19,10 +19,11 @@ class Lambertian : public Material {
 public:
     Lambertian(const vec3<float>& a) : albedo(a) {}
 
-    virtual bool scatter(const ray<float>& r_in, const Hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const;
+    virtual bool Scatter(const ray<float>& r_in, const Hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const;
 
+private:
     vec3<float> albedo;
-    vec3<float> random_in_unit_sphere() const;
+    vec3<float> Random_in_unit_sphere() const;
 };
 
 
@@ -30,12 +31,14 @@ class Metal : public Material {
 public:
     Metal(const vec3<float>& a) : albedo(a) {}
 
-    virtual bool scatter(const ray<float>& r_in, const Hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const;
+    virtual bool Scatter(const ray<float>& r_in, const Hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const;
 
+
+private:
     vec3<float> albedo;
 };
 
-vec3<float> reflect(const vec3<float>& v, const vec3<float>& n);
+vec3<float> Reflect(const vec3<float>& v, const vec3<float>& n);
 
 
 #endif //PATH_TRACER_MATERIAL_H
