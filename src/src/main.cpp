@@ -36,8 +36,8 @@ int main() {
                 float u = 1 - float(i+ drand48()) / float(nx);
                 float v = 1 - float(j+ drand48()) / float(ny);
                 ray<float> r = cam.GetRay(u, v);
-                vec3<float> p = r.point(2.0);
-                col += color(r, world, 0);
+                vec3<float> p = r.Point(2.0);
+                col += Color(r, world, 0);
             }
 
             col /= float(ns);

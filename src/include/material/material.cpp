@@ -21,7 +21,7 @@ bool Lambertian::Scatter(
     vec3<float> p;
     do {
         p = (float) 2.0*vec3<float>( (float) drand48(), (float) drand48(), (float) drand48()) - vec3<float>(1,1,1);
-    } while (p.squared_length() >= (float) 1.0);
+    } while (p.Squared_length() >= (float) 1.0);
     return p;
  }
 
@@ -31,8 +31,8 @@ vec3<float> Reflect(const vec3<float>& v, const vec3<float>& n) {
 
 bool Metal::Scatter(const ray<float>& r_in, const Hit_record& rec,
     vec3<float>& attenuation, ray<float>& scattered) const {
-    vec3<float> reflected = Reflect(r_in.direction().turn_unit(), rec.normal);
+    vec3<float> reflected = Reflect(r_in.Direction().Turn_unit(), rec.normal);
     scattered = ray<float>(rec.point, reflected);
     attenuation = albedo;
-    return (dot(scattered.direction(), rec.normal) > 0);
+    return (dot(scattered.Direction(), rec.normal) > 0);
 }

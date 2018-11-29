@@ -22,6 +22,7 @@ public:
     virtual bool Scatter(const ray<float>& r_in, const Hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const;
 
 private:
+    // The proportion of the total light striking the surface of an object which is reflected from that surface.
     vec3<float> albedo;
     vec3<float> Random_in_unit_sphere() const;
 };
@@ -35,6 +36,7 @@ public:
 
 
 private:
+    // The proportion of the total light striking the surface of an object which is reflected from that surface.
     vec3<float> albedo;
 };
 
