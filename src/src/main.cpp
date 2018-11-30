@@ -11,10 +11,17 @@ int RandomScene(unsigned int amount, int nx, int ny, unsigned int ns)
 {
     uchar image[ny][nx][3];
     Geometry *li[amount];
-    li[0] = new Sphere(vec3<float>(0,-105,-1),100, new Lambertian(vec3<float>(0.8,0.3,0.3)));
+    li[0] = new Sphere(vec3<float>(0,-105,-1),100, new Metal(vec3<float>(float(drand48()),0.3,0.3)));
     for(unsigned int i = 1; i < amount; i++) {
+        if (drand48() < 0.5)
+        {
+            li[i] = new Sphere(vec3<float>(20 * float(drand48()) - 5, -5 * float(drand48()), -10 * float(drand48())), 2 * float(drand48()), new Metal(vec3<float>(float(drand48()), 0.3, 0.3)));
+        }
+        else
+        {
+            li[i] = new Sphere(vec3<float>(20 * float(drand48()) - 5, -5 * float(drand48()), -10 * float(drand48())), 2 * float(drand48()), new Lambertian(vec3<float>(float(drand48()), 0.3, 0.3)));
+        }
 
-        li[i] = new Sphere(vec3<float>(20 * float(drand48())-5, -5 * float(drand48()), -10 * float(drand48())), 2 * float(drand48()), new Metal(vec3<float>(0.8,0.3,0.3)));
     }
 
     Geometry *world = new Geomlist(li, amount);
@@ -59,7 +66,7 @@ int main() {
     int nx = 800;
     int ny = 400;
     unsigned int ns = 10;//antialiasing
-    unsigned int amount = 15; // determines how many objects do we create
+    unsigned int amount = 5; // determines how many objects do we create
 
     std::cout << "P3\n" << nx << " " << ny << "\n255\n";
 
