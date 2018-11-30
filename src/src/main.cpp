@@ -2,18 +2,19 @@
 #include <vector>
 #include "vector/vec3.h"
 #include "ray/ray.h"
-#include <opencv2/highgui/highgui.hpp>
 #include "geometry/geometry.h"
+#include "material/material.h"
 #include "camera/camera.h"
+#include <opencv2/highgui/highgui.hpp>
 
 int RandomScene(unsigned int amount, int nx, int ny, unsigned int ns)
 {
     uchar image[ny][nx][3];
     Geometry *li[amount];
-    li[0] = new Sphere(vec3<float>(0,-105,-1),100);
+    li[0] = new Sphere(vec3<float>(0,-105,-1),100, new Lambertian(vec3<float>(0.8,0.3,0.3)));
     for(unsigned int i = 1; i < amount; i++) {
 
-        li[i] = new Sphere(vec3<float>(20 * float(drand48())-5, -5 * float(drand48()), -10 * float(drand48())), 2 * float(drand48()));
+        li[i] = new Sphere(vec3<float>(20 * float(drand48())-5, -5 * float(drand48()), -10 * float(drand48())), 2 * float(drand48()), new Metal(vec3<float>(0.8,0.3,0.3)));
     }
 
     Geometry *world = new Geomlist(li, amount);
@@ -27,13 +28,15 @@ int RandomScene(unsigned int amount, int nx, int ny, unsigned int ns)
                 float u = 1 - float(i + drand48()) / float(nx);
                 float v = 1 - float(j + drand48()) / float(ny);
                 ray<float> r = cam.GetRay(u, v);
-                col += Color(r, world);
+                vec3<float> p = r.Point(2.0);
+                col += Color(r, world, 0);
             }
-            //averages the colors of rays going through a pixel
+
             col /= float(ns);
-            auto ir = uchar(255.99 * col[0]);
-            auto ig = uchar(255.99 * col[1]);
-            auto ib = uchar(255.99 * col[2]);
+            col = vec3<float> (sqrt(col[0]), sqrt(col[1]), sqrt(col[2]) );
+            auto ir = uchar(255.99*col[0]);
+            auto ig = uchar(255.99*col[1]);
+            auto ib = uchar(255.99*col[2]);
 
             // BGR format
             image[j][i][0] = ib;
@@ -55,7 +58,7 @@ int main() {
 
     int nx = 800;
     int ny = 400;
-    unsigned int ns = 10;//determines how many rays are sent through a pixel for antialiasing
+    unsigned int ns = 10;//antialiasing
     unsigned int amount = 15; // determines how many objects do we create
 
     std::cout << "P3\n" << nx << " " << ny << "\n255\n";

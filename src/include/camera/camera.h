@@ -5,7 +5,7 @@
 #ifndef PATH_TRACER_CAMERA_H
 #define PATH_TRACER_CAMERA_H
 
-#include "ray/ray.h"
+#include "vector/vec3.h"
 #include "geometry/geometry.h"
 
 class Camera {
@@ -26,7 +26,7 @@ private:
     vec3<float> vertical_;
 };
 
-vec3<float> Color(const ray<float>& r, Geometry *s);
+vec3<float> Color(const ray<float>& r, Geometry *s, int depth);
 
 
 #endif //PATH_TRACER_CAMERA_H
