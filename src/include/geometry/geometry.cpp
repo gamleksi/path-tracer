@@ -3,6 +3,9 @@
 //
 #include "geometry/geometry.h"
 
+Sphere::Sphere(vec3<float> position, float radius, std::shared_ptr<Material> mat)
+    : Geometry(), radius_(radius), position_(position), material_(std::move(mat)) { }
+
 bool Sphere::RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const
 {
     vec3<float> pos = GetPosition();
@@ -31,6 +34,8 @@ bool Sphere::RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& 
     }
     return false;
 }
+
+
 
 bool Geomlist::RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const{
     Hit_record temp_rec{};

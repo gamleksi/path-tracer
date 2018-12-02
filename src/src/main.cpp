@@ -54,7 +54,7 @@ void Render(int nx, int ny, const Geomlist& geomlist, const Camera cam, unsigned
               float u = 1 - float(i + drand48()) / float(nx);
               float v = 1 - float(j + drand48()) / float(ny);
               const ray<float> r = cam.GetRay(u, v);
-              // vec3<float> p = r.Point(2.0);
+              // vec3<float> p = r.Point(2.0); TODO Why do we have this here?
               col += Color(r, world, 0);
           }
 
