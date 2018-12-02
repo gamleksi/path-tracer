@@ -12,7 +12,6 @@ int main() {
     int nx = 400;
     int ny = 200;
     int ns = 2  ;//determines how many rays are sent through a pixel for antialiasing
-    json j;
 
     uchar image[ny][nx][3];
 
@@ -24,9 +23,11 @@ int main() {
     li[2] = new Sphere(vec3<float>(0,-0.5,-1),0.5);
 
     Geomlist * world = new Geomlist(li,3);
-    std::cout<<" Saving *world with object amount: "<< world->GetObjectNum()<<std::endl;
-    j =  SaveWorld(world);
-    Geomlist * world2 = LoadWorld(j);
+
+    auto j =  SaveWorld(world);
+    Geometry * world2 = LoadWorld(j);
+    //Geometry ** world3 = world2->GetObjects();
+
     Camera cam(90, float(nx)/float(ny));
 
     for (int j = ny-1; j >= 0; j--)
@@ -39,7 +40,7 @@ int main() {
                 float u = 1 - float(i + drand48()) / float(nx);
                 float v = 1 - float(j + drand48()) / float(ny);
                 ray<float> r = cam.GetRay(u, v);
-                col += Color(r, world);
+                col += Color(r, world2);
             }
             //averages the colors of rays going through a pixel
             col /= float(ns);
