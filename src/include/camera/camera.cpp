@@ -7,7 +7,7 @@
 #include "ray/ray.h"
 #include "vector/vec3.h"
 
-Camera::Camera(vec3<float> look_from, vec3<float> look_at, vec3<float> view_up, float vfov, float aspect)
+Camera::Camera(const vec3<float>& look_from, const vec3<float>& look_at, const vec3<float>& view_up, float vfov, float aspect)
 {
     float theta = vfov * float(M_PI/180);
     float half_height = tan(theta/2);
@@ -22,13 +22,13 @@ Camera::Camera(vec3<float> look_from, vec3<float> look_at, vec3<float> view_up, 
     vertical_ = half_height * 2* v;
 }
 
-vec3<float> Color(const ray<float>& r, Geometry* geom, int depth)
+vec3<float> Color(const ray<float>& r, const std::shared_ptr<Geometry>& geom, int depth)
 {
     Hit_record rec;
 
     if(geom->RayHits(r, 0.000001, MAXFLOAT, rec)){
-        ray<float> scattered;
-        vec3<float> attenuation;
+        ray<float> scattered{};
+        vec3<float> attenuation{};
         if (depth < 50 && rec.mat_ptr->Scatter(r, rec, attenuation, scattered)) {
             return attenuation * Color(scattered, geom, depth+1);
         } else {
@@ -36,7 +36,7 @@ vec3<float> Color(const ray<float>& r, Geometry* geom, int depth)
         }
     } else {
         vec3<float> unit_direction = r.Direction().Unit();
-        float t = (float)0.5*(unit_direction[1]+1.0);
+        float t = (float)0.5*(unit_direction[1]+ (float)1.0);
         return ((float)1.0-t)*vec3<float>(1.0,1.0,1.0) + t*vec3<float>(0.5,0.7,1.0);
     }
 }
