@@ -84,13 +84,32 @@ bool Geomlist::GetBoundingBox(float t0, float t1, BoundingBox& box) const {
 }
 
 bool BBXCompare(const std::shared_ptr<Geometry>& a, const std::shared_ptr<Geometry>& b) {
-  return true;
+
+  BoundingBox left_box{}, right_box{};
+
+  if(!a->GetBoundingBox(0.0, 0.0, left_box) || !b->GetBoundingBox(0.0, 0.0, right_box)) {
+    std::cerr << "No bounding box exist" << std::endl;
+  }
+  return left_box.min()[0] - left_box.min()[0] >- 0.0;
+
 };
 bool BBYCompare(const std::shared_ptr<Geometry>& a, const std::shared_ptr<Geometry>& b) {
-  return true;
+
+  BoundingBox left_box{}, right_box{};
+
+  if(!a->GetBoundingBox(0.0, 0.0, left_box) || !b->GetBoundingBox(0.0, 0.0, right_box)) {
+    std::cerr << "No bounding box exist" << std::endl;
+  }
+  return left_box.min()[1] - left_box.min()[1] >- 0.0;
+
 };
 bool BBZCompare(const std::shared_ptr<Geometry>& a, const std::shared_ptr<Geometry>& b) {
-  return true;
+  BoundingBox left_box{}, right_box{};
+
+  if(!a->GetBoundingBox(0.0, 0.0, left_box) || !b->GetBoundingBox(0.0, 0.0, right_box)) {
+    std::cerr << "No bounding box exist" << std::endl;
+  }
+  return left_box.min()[2] - left_box.min()[2] >- 0.0;
 };
 
 void ObjectListSort(std::vector<std::shared_ptr<Geometry>>& object_list) {
