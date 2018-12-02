@@ -1,3 +1,5 @@
+#include <utility>
+
 //
 // Created by Jesse Miettinen on 14/11/2018.
 //
@@ -29,8 +31,8 @@ class Sphere : public Geometry{
   //RayHits algorithm by Peter Shirley, from Ray Tracing in One Weekend, version 1.55
  public:
 
-  Sphere(vec3<float> position, float radius, std::shared_ptr<Material> mat)
-  : Geometry(), radius_(radius), position_(position), material_(mat) { }
+  Sphere(vec3<float> position, float radius, std::shared_ptr<Material>& mat)
+  : Geometry(), radius_(radius), position_(position), material_(std::move(mat)) { }
   //get radius and ray hits Sphere
   ~Sphere() { };
   float GetRadius() const {
