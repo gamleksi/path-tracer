@@ -10,14 +10,16 @@
 
 class Camera {
 public:
+
     /*look_from is a point where we are looking from
      *look_at is a point where we are looking at
      * view_up is a vector up from the point we are looking, determines rotation of the camera on the axis from camera to the point we are looking into
      */
-    Camera(vec3<float> look_from, vec3<float> look_at, vec3<float> view_up, float vfov, float aspect);
-    ray<float> GetRay(float u, float v)
+
+    Camera(const vec3<float>& look_from, const vec3<float>& look_at, const vec3<float>& view_up, float vfov, float aspect);
+    ray<float> GetRay(float u, float v) const
     {
-        return ray<float>(origin_, lower_left_corner_ + u*horizontal_ + v*vertical_ - origin_);
+        return ray<float>(origin_, lower_left_corner_ + u * horizontal_ + v * vertical_ - origin_);
     }
 private:
     vec3<float> origin_;
@@ -26,7 +28,7 @@ private:
     vec3<float> vertical_;
 };
 
-vec3<float> Color(const ray<float>& r, Geometry *s, int depth);
+vec3<float> Color(const ray<float>& r, const std::shared_ptr<Geometry>& geom, int depth);
 
 
 #endif //PATH_TRACER_CAMERA_H
