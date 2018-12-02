@@ -2,3 +2,4 @@
 *.swp
 src/.idea
 src/cmake-build-debug
+src/CMakeFiles
