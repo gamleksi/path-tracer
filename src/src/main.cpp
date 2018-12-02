@@ -7,34 +7,33 @@
 #include "camera/camera.h"
 #include <opencv2/highgui/highgui.hpp>
 
-int main() {
-
-    int nx = 400;
-    int ny = 200;
-    int ns = 20; // antialising
-
+int RandomScene(unsigned int amount, int nx, int ny, unsigned int ns)
+{
     uchar image[ny][nx][3];
-
-    std::cout << "P3\n" << nx << " " << ny << "\n255\n";
-
-    Geometry *li[4];
-
-    li[0] = new Sphere(vec3<float>(0.5,0.5,-1), 0.3, new Lambertian(vec3<float>(0.8,0.3,0.3)));
-    li[1] = new Sphere(vec3<float>(0,-100.5,-1),100, new Lambertian(vec3<float>(0.8,0.3,0.3)));
-    li[2] = new Sphere(vec3<float>(0,-0.5,-1),0.5, new Metal(vec3<float>(0.8,0.3,0.3)));
-    li[3] = new Sphere(vec3<float>(3,2,0),0.1, new Metal(vec3<float>(0.4,0.3,0.3)));
-
-    Geometry * world = new Geomlist(li,3);
-    //Camera cam(90, float(nx)/float(ny));
-    Camera cam(vec3<float>(-2,2,1), vec3<float>(0,0,-1), vec3<float>(0,1,0), 90, float(nx)/float(ny));
-    for (int j = ny-1; j >= 0; j--)
-    {
-        for (int i = 0; i < nx; i++)
+    Geometry *li[amount];
+    li[0] = new Sphere(vec3<float>(0,-105,-1),100, new Metal(vec3<float>(float(drand48()),0.3,0.3)));
+    for(unsigned int i = 1; i < amount; i++) {
+        if (drand48() < 0.5)
         {
-            vec3<float> col(0,0,0);
-            for (int s=0; s < ns; s++) {
-                float u = 1 - float(i+ drand48()) / float(nx);
-                float v = 1 - float(j+ drand48()) / float(ny);
+            li[i] = new Sphere(vec3<float>(20 * float(drand48()) - 5, -5 * float(drand48()), -10 * float(drand48())), 2 * float(drand48()), new Metal(vec3<float>(float(drand48()), 0.3, 0.3)));
+        }
+        else
+        {
+            li[i] = new Sphere(vec3<float>(20 * float(drand48()) - 5, -5 * float(drand48()), -10 * float(drand48())), 2 * float(drand48()), new Lambertian(vec3<float>(float(drand48()), 0.3, 0.3)));
+        }
+
+    }
+
+    Geometry *world = new Geomlist(li, amount);
+    //first three camera parameters are vectors: look_from, look_at, view_up
+    Camera cam(vec3<float>(0, -3, 0), vec3<float>(7, -5, -5), vec3<float>(0, 1, 0), 90, float(nx) / float(ny));
+
+    for (int j = ny - 1; j >= 0; j--) {
+        for (int i = 0; i < nx; i++) {
+            vec3<float> col(0, 0, 0);
+            for (int s = 0; s < ns; s++) {
+                float u = 1 - float(i + drand48()) / float(nx);
+                float v = 1 - float(j + drand48()) / float(ny);
                 ray<float> r = cam.GetRay(u, v);
                 vec3<float> p = r.Point(2.0);
                 col += Color(r, world, 0);
@@ -57,6 +56,21 @@ int main() {
     cv::Mat rgb_mat(ny, nx, CV_8UC3, &image);
     cv::imshow("Image", rgb_mat);
     cv::waitKey(0);
+
+    return 0;
+}
+
+
+int main() {
+
+    int nx = 800;
+    int ny = 400;
+    unsigned int ns = 10;//antialiasing
+    unsigned int amount = 5; // determines how many objects do we create
+
+    std::cout << "P3\n" << nx << " " << ny << "\n255\n";
+
+    RandomScene(amount, nx, ny, ns);
 
     return 0;
 }
