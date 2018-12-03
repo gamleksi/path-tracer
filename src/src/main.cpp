@@ -6,6 +6,8 @@
 #include "material/material.h"
 #include "camera/camera.h"
 #include <opencv2/highgui/highgui.hpp>
+#include <chrono>
+typedef std::chrono::high_resolution_clock Clock;
 
 
 
@@ -38,12 +40,7 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
 }
 
 
-
-void Render(int nx, int ny, const Geomlist& geomlist, const Camera cam, unsigned int ns) {
-
-  std::shared_ptr<Geomlist> world = std::make_shared<Geomlist>(geomlist);
-
-  uchar image[ny][nx][3];
+void Render(int nx, int ny, uchar (*image)[3], const std::shared_ptr<Geometry>& world, const Camera cam, unsigned int ns) {
 
   std::cout << "Rendering..." << std::endl;
 
@@ -65,42 +62,76 @@ void Render(int nx, int ny, const Geomlist& geomlist, const Camera cam, unsigned
           auto ib = uchar(255.99*col[2]);
 
           // BGR format
-          image[j][i][0] = ib;
-          image[j][i][1] = ig;
-          image[j][i][2] = ir;
-
+          image[j * nx + i][0] = ib;
+          image[j * nx + i][1] = ig;
+          image[j * nx + i][2] = ir;
       }
   }
+}
 
-    cv::Mat rgb_mat(ny, nx, CV_8UC3, &image);
+void ShowImage(int nx, int ny, uchar (*image)[3]){
+    cv::Mat rgb_mat(ny, nx, CV_8UC3, image);
     cv::imshow("Image", rgb_mat);
     std::cout << "Done." << std::endl;
     cv::waitKey(0);
 }
 
-
-void RandomScene() {
-    int nx = 800;
-    int ny = 400;
-    unsigned int antialias_samples = 10;
-    unsigned int number_of_objects = 5;
-
-    std::vector<std::shared_ptr<Geometry>> object_list;
-    GetRandomObjectList(number_of_objects, object_list);
-
-    Camera camera(vec3<float>(0, -3, 0), vec3<float>(7, -5, -5), vec3<float>(0, 1, 0), 90, float(nx) / float(ny));
-
-    Geomlist world(number_of_objects, object_list);
-
-    Render(nx, ny, world, camera, antialias_samples);
+void SaveImage(int nx, int ny, uchar (*image)[3], std::string save_to){
+    cv::Mat rgb_mat(ny, nx, CV_8UC3, image);
+    cv::imwrite(save_to, rgb_mat);
 }
-
 
 int main() {
 
-  RandomScene();
-  RandomScene();
-  RandomScene();
-  RandomScene();
+  // Environment and Rendering parameters
+  int nx = 800;
+  int ny = 400;
+  unsigned int antialias_samples = 100;
+  unsigned int number_of_objects = 500;
+
+  // Do Camera
+  Camera camera(vec3<float>(0, -3, 0), vec3<float>(7, -5, -5), vec3<float>(0, 1, 0), 90, float(nx) / float(ny));
+
+  // Random Environment
+  std::vector<std::shared_ptr<Geometry>> object_list;
+  GetRandomObjectList(number_of_objects, object_list);
+
+  // Creating bounding box structure
+  const auto t0 = Clock::now();
+  auto bb_world = std::make_shared<BoundingVolumeNode>(BoundingVolumeNode(object_list, 0, 1));
+  const auto t1 = Clock::now();
+
+  auto bb_world_duration = std::chrono::duration_cast<std::chrono::seconds>(t1 - t0).count();
+
+  std::cout << "Bounding Box creation duration: "
+            << bb_world_duration
+            << " secondds" << std::endl;
+
+  // Rendering bounding box
+  uchar bb_image[ny * nx][3];
+  Render(nx, ny, bb_image, bb_world, camera, antialias_samples);
+  const auto t2 = Clock::now();
+
+  auto bb_rendering_duration = std::chrono::duration_cast<std::chrono::seconds>(t2 - t1).count();
+  std::cout << "Bounding Box Rendering Duration: "
+          << bb_rendering_duration
+          << " secondds" << std::endl;
+
+  SaveImage(nx, ny, bb_image, "bb_image.jpg");
+  // Geomlist world
+
+  uchar geom_image[ny * nx][3];
+  auto geomlist_world = std::make_shared<Geomlist>(Geomlist(number_of_objects, object_list));
+  const auto t3 = Clock::now();
+
+  Render(nx, ny, geom_image, geomlist_world, camera, antialias_samples);
+  const auto t4 = Clock::now();
+  auto geomlist_duration = std::chrono::duration_cast<std::chrono::seconds>(t4 - t3).count();
+  std::cout << "Geomlist rendering duration: "
+            << geomlist_duration
+            << " secondds" << std::endl;
+
+  SaveImage(nx, ny, bb_image, "geom_image.jpg");
+
   return 1;
 }
