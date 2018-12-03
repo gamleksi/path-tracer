@@ -28,7 +28,7 @@ public:
     vec3<float> GetLLC() const{return lower_left_corner_;}
     vec3<float> GetHorizontal() const{return horizontal_;}
     vec3<float> GetVertical() const{return vertical_;}
-    std::string ToJson(json & j);
+    void ToJson(json & j);
 private:
     vec3<float> origin_;
     vec3<float> lower_left_corner_;

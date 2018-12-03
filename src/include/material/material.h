@@ -13,6 +13,7 @@
  public:
     virtual bool Scatter(const ray<float>& r_in, const Hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const = 0;
     virtual vec3<float> GetAlbedo()const = 0;
+    virtual void ToJson(json& j, std::string& id) const = 0;
 };
 
 
@@ -22,6 +23,7 @@ public:
 
     virtual bool Scatter(const ray<float>& r_in, const Hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const;
     virtual vec3<float> GetAlbedo()const{return albedo_;}
+    virtual void ToJson(json& j, std::string& id) const;
 private:
     // The proportion of the total light striking the surface of an object which is reflected from that surface.
     vec3<float> albedo_;
@@ -35,7 +37,7 @@ public:
 
     virtual bool Scatter(const ray<float>& r_in, const Hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const;
     virtual vec3<float> GetAlbedo() const {return albedo_;}
-
+    virtual void ToJson(json& j, std::string& id) const;
 private:
     // The proportion of the total light striking the surface of an object which is reflected from that surface.
     vec3<float> albedo_;

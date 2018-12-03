@@ -40,7 +40,7 @@ vec3<float> Color(const ray<float>& r, const std::shared_ptr<Geometry>& geom, in
     }
 }
 
-std::string Camera::ToJson(json & j){
+void Camera::ToJson(json & j){
     j["camera"]["Horizontal"]["x"] = GetHorizontal()[0];
     j["camera"]["Horizontal"]["y"] = GetHorizontal()[1];
     j["camera"]["Horizontal"]["z"] = GetHorizontal()[2];
@@ -53,5 +53,4 @@ std::string Camera::ToJson(json & j){
     j["camera"]["LLC"]["x"] = GetLLC()[0];
     j["camera"]["LLC"]["y"] = GetLLC()[1];
     j["camera"]["LLC"]["z"] = GetLLC()[2];
-    return "debug_CAMERA_";
 }

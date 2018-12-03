@@ -13,14 +13,24 @@
 // for convenience
 using json = nlohmann::json;
 
-// Own functions for saving and loading for camera, geomlist and sphere.
+// Own functions for saving and loading for camera, geomlist and Sphere
 
 json ToJson(Geomlist& world, Camera& camera){
     json j;
-    std::string str = camera.ToJson(j);
-    world.ObjectsToJson(j);
 
+    std::vector<std::shared_ptr<Geometry>> list = world.GetObjects();
+    int x = world.GetObjectNum();
+    j["objnum"] = x;
+    camera.ToJson(j);
+    for (auto i = 0; i<x;i++){
 
+        std::string str = "object";
+        std::string s = std::to_string(i);
+        str.insert(6,s);
+        list[i]->ToJson(j,i+1,str);
+        auto mat = list[i]->GetMaterial();
+        mat->ToJson(j, str);
+    }
 
     return j;
 }

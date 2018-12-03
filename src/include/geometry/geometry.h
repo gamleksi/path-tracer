@@ -73,7 +73,6 @@ class Geomlist : public Geometry{
   virtual vec3<float> GetPosition()const {return vec3<float>(1,2,3);}; //Looking for a better solution.
   virtual float GetRadius() const {return 0.0;}
   virtual std::shared_ptr<Material> GetMaterial() const{return nullptr;}
-  void ObjectsToJson(json &j) const;
   virtual void ToJson(json & j, int index, std::string & id) const {std::string a = id;}
 
  private:

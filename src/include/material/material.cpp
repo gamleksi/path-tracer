@@ -36,3 +36,15 @@ bool Metal::Scatter(const ray<float>& r_in, const Hit_record& rec,
     attenuation = albedo_;
     return (Dot(scattered.Direction(), rec.normal) > 0);
 }
+
+void Lambertian::ToJson(json& j, std::string& id) const{
+    j["world"][id]["mat"]["albedo"]["0"] = GetAlbedo()[0];
+    j["world"][id]["mat"]["albedo"]["1"] = GetAlbedo()[1];
+    j["world"][id]["mat"]["albedo"]["2"] = GetAlbedo()[2];
+}
+
+void Metal::ToJson(json& j, std::string& id) const{
+    j["world"][id]["mat"]["albedo"]["0"] = GetAlbedo()[0];
+    j["world"][id]["mat"]["albedo"]["1"] = GetAlbedo()[1];
+    j["world"][id]["mat"]["albedo"]["2"] = GetAlbedo()[2];
+}
