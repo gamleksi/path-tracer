@@ -6,97 +6,89 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include "io.h"
+
+
+
 // for convenience
 using json = nlohmann::json;
-#include "geometry/geometry.h"
 
+// Own functions for saving and loading for camera, geomlist and sphere.
 
-json ToJson(Geomlist *world){
+json ToJson(Geomlist& world, Camera& camera){
     json j;
-    json j2;
-    Geometry ** objects = world->GetObjects();
+    std::string str = camera.ToJson(j);
+    world.ObjectsToJson(j);
 
-    for (auto i = 0; i<world->GetObjectNum();i++){
 
-        j["objnum"] = i+1;
-        std::string str = "object";
-        std::string s = std::to_string(i);
-        str.insert(6,s);
 
-        j["world"][str]["index"] = i+1;
-        j["world"][str]["position"]["x"] = objects[i]->GetPosition()[0];
-        j["world"][str]["position"]["y"] = objects[i]->GetPosition()[1];
-        j["world"][str]["position"]["z"] = objects[i]->GetPosition()[2];
-        j["world"][str]["radius"] = objects[i]->GetRadius();
-    }
-
-    j2 = j.dump();
     return j;
 }
-const std::string& SaveWorld(Geomlist *world){
+std::string SaveWorld(Geomlist& world, Camera& camera){
     //opens the output file stream and uses ToJson to convert Geomlist * to Json format.
 
     std::cout<<"Give string for output filename"<<std::endl;
     std::string w_filename;
     std::cin>>w_filename;
 
-    auto j2 = ToJson(world);
+    auto j = ToJson(world,camera);
 
     std::ofstream os(w_filename);
-    os << j2.dump();
+    os << j.dump();
     os.close();
-    const std::string ref = w_filename;
+    std::string ref = w_filename;
     std::cout<<"sending this ref: "<<ref<<std::endl;
     return ref;
 }
 
 
-Geomlist* FromJson(json& j) {
+Geomlist FromJson(const std::string& str) {
 
     //std::cout << j << std::endl;
     //auto j2 = nlohmann::detail::parser<std::string>();
     //std::cout<<j2<<"!!!!!!"<<std::endl;
     //std::cout << "j.dump()" << j.dump() << std::endl;
+    json j = json::parse(str);
     int x = j["objnum"];
-    Geometry *li[x];
 
-    std::string d = j.dump();
-    auto j2 = j.parse(d);
-    //std::cout << " We are here!!!" << j2 << std::endl;
+    std::vector<std::shared_ptr<Geometry>> object_list;
+
+    //std::cout << " We are here!!!" << j << std::endl;
+
     for (auto i = 0; i < x; i++) {
-        float a, b, c, radius;
+        float X, Y, Z, radius, a,b,c;
 
 
         std::string str = "object";
         std::string s = std::to_string(i);
         str.insert(6, s);
 
-        a = j["world"][str]["position"]["x"];
-        b = j["world"][str]["position"]["y"];
-        c = j["world"][str]["position"]["z"];
+        X = j["world"][str]["position"]["x"];
+        Y = j["world"][str]["position"]["y"];
+        Z = j["world"][str]["position"]["z"];
         radius = j["world"][str]["radius"];
-        li[i] = new Sphere(vec3<float>(a, b, c), radius);
+        a = j["world"][str]["mat"]["albedo"]["0"];
+        b = j["world"][str]["mat"]["albedo"]["1"];
+        c = j["world"][str]["mat"]["albedo"]["2"];
+        std::shared_ptr<Sphere> sphere =
+                std::make_shared<Sphere>(vec3<float>(X, Y, Z), radius, std::make_shared<Metal>(vec3<float>(a,b,c)));
+
+        object_list.push_back(sphere);
     }
-    Geomlist *world = new Geomlist(li, 3);
-    Geometry ** objects = world->GetObjects();
-    for (auto i = 0; i<world->GetObjectNum();i++){
-        std::cout<<objects[i]->GetRadius();
-    }
+    Geomlist world(x, object_list);
     return world;
 }
 
 
-Geomlist * LoadWorld(const std::string & filename) {
+Geomlist LoadWorld(const std::string & filename) {
     //opens the input file stream and uses FromJson to convert Json to Geomlist * -format.
     std::cout<<std::endl<<"got this ref: "<<filename<<std::endl;
     std::ifstream file(filename);
     std::stringstream ss;
     if (file){
-
         ss << file.rdbuf();
         file.close();
     }
     std::string a = ss.str();
-    auto j2 = json::parse(a);
-    return FromJson(j2);
+    return FromJson(a);
 }

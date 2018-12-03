@@ -6,6 +6,7 @@
 #include "material/material.h"
 #include "camera/camera.h"
 #include <opencv2/highgui/highgui.hpp>
+#include "io/io.h"
 
 
 
@@ -13,7 +14,7 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
 
   vec3<float> mat_vec(drand48(), drand48(), drand48());
   std::shared_ptr<Sphere> floor_sphere =
-      std::make_shared<Sphere>(vec3<float>(0, -105, -1), 100, std::make_shared<Metal>(mat_vec));
+      std::make_shared<Sphere>(vec3<float>(0, -105, -1), 100, std::make_shared<Metal>(mat_vec)); //this is pretty weird. T = Metal class but input is Vec3?
 
   li.push_back(floor_sphere);
 
@@ -93,14 +94,43 @@ void RandomScene() {
     Geomlist world(number_of_objects, object_list);
 
     Render(nx, ny, world, camera, antialias_samples);
+    std::cout<<std::endl<<"input '1' if you want to save this scene. "<<std::endl;
+    int q;
+    std::cin >>q;
+    if (q==1){
+        std::string str = SaveWorld(world, camera);
+        std::cout<<std::endl<<"The scene was saved to cmake-build-debug/ to a new file: " <<"'"<<str<<"'"<<std::endl;
+    }
+
 }
 
 
 int main() {
+    int q;
+    std::cout<<std::endl<<"Program started.";
+    std::cout<<std::endl<<"Type 0 to end program, 1 to create random scene or 2 to open scene from file.";
+    std::cin>>q;
+    while (q!=0){
 
-  RandomScene();
-  RandomScene();
-  RandomScene();
-  RandomScene();
-  return 1;
+        if (q == 1){
+          RandomScene();
+          std::cout<<std::endl<<"Type 0 to end program, 1 to create random scene or 2 to open scene from file.";
+          std::cin>>q;
+
+        }else{
+          std::string str;
+          std::cout<<std::endl<<"Give filename to load the world from."<<std::endl;
+          std::cin>>str;
+          Geomlist world = LoadWorld(str);
+          Camera camera(vec3<float>(0, -3, 0), vec3<float>(7, -5, -5), vec3<float>(0, 1, 0), 90, float(800) / float(400));
+          Render(800,400, world, camera, 10);
+          std::cout<<std::endl<<"Type 0 to end program, 1 to create random scene or 2 to open scene from file.";
+          std::cin>>q;
+        }
+    }
+
+
+  //RandomScene();
+  //RandomScene();
+  return 0;
 }

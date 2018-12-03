@@ -11,7 +11,7 @@ bool Lambertian::Scatter(
 
     vec3<float> target = rec.point + rec.normal + Random_in_unit_sphere();
     scattered = ray<float>(rec.point, target-rec.point);
-    attenuation = albedo;
+    attenuation = albedo_;
 
     return true;
 }
@@ -33,6 +33,6 @@ bool Metal::Scatter(const ray<float>& r_in, const Hit_record& rec,
     vec3<float>& attenuation, ray<float>& scattered) const {
     vec3<float> reflected = Reflect(r_in.Direction().Turn_unit(), rec.normal);
     scattered = ray<float>(rec.point, reflected);
-    attenuation = albedo;
+    attenuation = albedo_;
     return (Dot(scattered.Direction(), rec.normal) > 0);
 }

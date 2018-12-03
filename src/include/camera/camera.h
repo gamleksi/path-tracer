@@ -5,8 +5,11 @@
 #ifndef PATH_TRACER_CAMERA_H
 #define PATH_TRACER_CAMERA_H
 
+#include "material/material.h"
 #include "vector/vec3.h"
 #include "geometry/geometry.h"
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
 
 class Camera {
 public:
@@ -21,6 +24,11 @@ public:
     {
         return ray<float>(origin_, lower_left_corner_ + u * horizontal_ + v * vertical_ - origin_);
     }
+    vec3<float> GetOrigin() const{return origin_;}
+    vec3<float> GetLLC() const{return lower_left_corner_;}
+    vec3<float> GetHorizontal() const{return horizontal_;}
+    vec3<float> GetVertical() const{return vertical_;}
+    std::string ToJson(json & j);
 private:
     vec3<float> origin_;
     vec3<float> lower_left_corner_;

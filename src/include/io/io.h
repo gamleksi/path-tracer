@@ -8,16 +8,19 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include <string>
+#include "geometry/geometry.h"
+#include "camera/camera.h"
+#include "material/material.h"
 // for convenience
 using json = nlohmann::json;
-#include "geometry/geometry.h"
 
 
-std::string & SaveWorld(Geomlist *world);
-json ToJson(Geomlist *world);
 
-Geomlist * LoadWorld(const std::string & filename);
-Geomlist * FromJson(json& j);
+std::string SaveWorld(Geomlist& world, Camera& camera);
+json ToJson(Geomlist& world, Camera& camera);
+
+Geomlist LoadWorld(const std::string & filename);
+Geomlist FromJson(const std::string& j);
 
 
 //namespace ns {

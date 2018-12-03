@@ -3,7 +3,6 @@
 //
 
 #include "camera/camera.h"
-#include "material/material.h"
 #include "ray/ray.h"
 #include "vector/vec3.h"
 
@@ -39,4 +38,20 @@ vec3<float> Color(const ray<float>& r, const std::shared_ptr<Geometry>& geom, in
         float t = (float)0.5*(unit_direction[1]+ (float)1.0);
         return ((float)1.0-t)*vec3<float>(1.0,1.0,1.0) + t*vec3<float>(0.5,0.7,1.0);
     }
+}
+
+std::string Camera::ToJson(json & j){
+    j["camera"]["Horizontal"]["x"] = GetHorizontal()[0];
+    j["camera"]["Horizontal"]["y"] = GetHorizontal()[1];
+    j["camera"]["Horizontal"]["z"] = GetHorizontal()[2];
+    j["camera"]["Origin"]["x"] = GetOrigin()[0];
+    j["camera"]["Origin"]["y"] = GetOrigin()[1];
+    j["camera"]["Origin"]["z"] = GetOrigin()[2];
+    j["camera"]["Vertical"]["x"] = GetVertical()[0];
+    j["camera"]["Vertical"]["y"] = GetVertical()[1];
+    j["camera"]["Vertical"]["z"] = GetVertical()[2];
+    j["camera"]["LLC"]["x"] = GetLLC()[0];
+    j["camera"]["LLC"]["y"] = GetLLC()[1];
+    j["camera"]["LLC"]["z"] = GetLLC()[2];
+    return "debug_CAMERA_";
 }

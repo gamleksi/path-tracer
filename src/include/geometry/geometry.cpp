@@ -35,7 +35,16 @@ bool Sphere::RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& 
     return false;
 }
 
-
+void Sphere::ToJson(json & j, int index, std::string & id) const{
+    j["world"][id]["index"] = index+1;
+    j["world"][id]["position"]["x"] = GetPosition()[0];
+    j["world"][id]["position"]["y"] = GetPosition()[1];
+    j["world"][id]["position"]["z"] = GetPosition()[2];
+    j["world"][id]["radius"] = GetRadius();
+    //j["world"][id]["mat"]["albedo"]["0"] = GetMaterial()->GetAlbedo()[0];
+    //j["world"][id]["mat"]["albedo"]["1"] = GetMaterial()->GetAlbedo()[1];
+   //j["world"][id]["mat"]["albedo"]["2"] = GetMaterial()->GetAlbedo()[2];
+}
 
 bool Geomlist::RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const{
     Hit_record temp_rec{};
@@ -49,5 +58,19 @@ bool Geomlist::RayHits(const ray<float>& r, float t_min, float t_max, Hit_record
         }
     }
     return hit;
+}
+
+
+
+void Geomlist::ObjectsToJson(json &j) const{
+    for (auto i = 0; i<GetObjectNum();i++) {
+        j["objnum"] = i + 1;
+        std::string str = "object";
+        std::string s = std::to_string(i);
+        str.insert(6, s);
+        list_[i]->ToJson(j, i, str);
+
+
+    }
 }
 
