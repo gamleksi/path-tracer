@@ -146,10 +146,11 @@ BoundingVolumeNode::BoundingVolumeNode(std::vector<std::shared_ptr<Geometry>>& o
 
   BoundingBox left_box{}, right_box{};
 
-  if (!(left_-> GetBoundingBox(t0, t1, left_box)) or !(right_-> GetBoundingBox(t0, t1, right_box))) {
+  if (!(left_-> GetBoundingBox(t0, t1, left_box)) || !(right_-> GetBoundingBox(t0, t1, right_box))) {
     std::cerr << "Bounding box does not exist!" << std::endl;
   }
   bounding_box_ = CombineBoxes(left_box, right_box);
+
 }
 
 
@@ -162,7 +163,7 @@ bool BoundingVolumeNode::RayHits(const ray<float>& ray, float t_min, float t_max
     bool left_hits = left_ -> RayHits(ray, t_min, t_max, left_record);
     bool right_hits = right_ -> RayHits(ray, t_min, t_max, right_record);
 
-    if (left_hits and right_hits) {
+    if (left_hits && right_hits) {
 
       if(left_record.time < right_record.time) {
         rec = left_record;
