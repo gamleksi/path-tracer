@@ -14,9 +14,9 @@ typedef std::chrono::high_resolution_clock Clock;
 void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geometry>> &li) {
 
     //Checker colors
-    vec3<float> odd = vec3<float>(0.5, 0.3, 0.1);
+    vec3<float> odd = vec3<float>(0.2, 0.5, 0.1);
     vec3<float> even = vec3<float>(0.9, 0.9, 0.9);
-    int checker_size = 50;
+    int checker_size = 3;
 
 
     std::shared_ptr<Constant_texture> odd_texture;
@@ -106,13 +106,13 @@ void SaveImage(int nx, int ny, uchar (*image)[3], std::string save_to) {
 int main() {
 
     // Environment and Rendering parameters
-    int nx = 800;
-    int ny = 400;
-    unsigned int antialias_samples = 20;
+    int nx = 1200;
+    int ny = 700;
+    unsigned int antialias_samples = 200;
     unsigned int number_of_objects = 9;
 
     // Create Camera
-    Camera camera(vec3<float>(0, -3, 0), vec3<float>(7, -5, -5), vec3<float>(0, 1, 0), 90, float(nx) / float(ny));
+    Camera camera(vec3<float>(0, -3, 0), vec3<float>(7, -5, -5), vec3<float>(0, 1, 0), 60, float(nx) / float(ny));
 
     // Random Environment
     std::vector<std::shared_ptr<Geometry>> object_list;

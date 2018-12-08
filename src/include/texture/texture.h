@@ -8,6 +8,7 @@
 
 #include <vector/vec3.h>
 #include <camera/camera.h>
+#include "perlin.h"
 
 class Texture {
 public:
@@ -50,5 +51,18 @@ private:
     int size;
 };
 
+
+/*class Noise_texture : public Texture {
+
+public:
+
+    // Takes float between 0 and 1, creates grey colors
+    Noise_texture() {}
+    virtual vec3<float> Value(float u, float v, const vec3<float>& p) const {
+        return vec3<float>(1,1,1)*noise.Noise(p);
+    }
+private:
+    Perlin noise;
+};*/
 
 #endif //PATH_TRACER_TEXTURE_H
