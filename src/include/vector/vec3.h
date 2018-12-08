@@ -248,8 +248,9 @@ vec3<T> operator/(const T &a, const vec3<T> &v1) {
 //Cross product
 template <typename T>
 vec3<T> cross(const vec3<T> &v1, const vec3<T> &v2){
-    vec3<T> vc(v1[1]*v2[2]-v1[2]*v2[1],v1[2]*v2[0]-v1[0]*v2[2],v1[0]*v2[1]-v1[1]*v2[0]);
-    return vc;
+    return vec3<T>(v1[1] * v2[2] - v1[2] * v2[1],
+        v1[2] * v2[0] - v1[0] * v2[2],
+        v1[0]*v2[1]-v1[1]*v2[0]);
 };
 
 // Dot product
