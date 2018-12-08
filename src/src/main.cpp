@@ -18,12 +18,13 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
   li.push_back(floor_sphere);
 
   for (unsigned int i = 1; i < amount; i++) {
-
-    auto x = 20.0 * drand48() - 5;
+    srand48(i*time(nullptr));
+    auto x = 15.0 * drand48() - 5;
     auto y = -5.0 * drand48();
-    auto z = -10 * drand48();
+    auto z = -5.0 * drand48();
     vec3<float> object_coord(x, y, z);
     float radius = 2.0 * drand48();
+    std::cout << x << y << z << std::endl;
 
     vec3<float> mat_vec(drand48(), drand48(), drand48());
     std::shared_ptr<Material> material;
@@ -83,7 +84,7 @@ void RandomScene() {
     int nx = 800;
     int ny = 400;
     unsigned int antialias_samples = 10;
-    unsigned int number_of_objects = 5;
+    unsigned int number_of_objects = 10;
 
     std::vector<std::shared_ptr<Geometry>> object_list;
     GetRandomObjectList(number_of_objects, object_list);
