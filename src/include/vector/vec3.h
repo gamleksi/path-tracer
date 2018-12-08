@@ -36,7 +36,9 @@ class vec3 {
         T Norm2() const;
         vec3 Unit() const;
         vec3 Turn_unit();
-
+        float Z() const { return e[2]; }
+        float Y() const { return e[1]; }
+        float X() const { return e[0]; }
         float Squared_length() {
             return e[0]*e[0] + e[1]*e[1] + e[2]*e[2];
         };

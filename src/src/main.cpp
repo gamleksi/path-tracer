@@ -19,7 +19,9 @@ int GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geometr
   std::shared_ptr<Sphere> floor_sphere =
       std::make_shared<Sphere>(vec3<float>(0, -1000, 0), 1000, std::make_shared<Lambertian>(mat_vec));
   li.push_back(floor_sphere);
-  unsigned int i = 1;
+  std::shared_ptr<XyRect> test_rect = std::make_shared<XyRect>(3.0, 5.0, 1.0, 3.0, -1.0, std::make_shared<Lambertian>(mat_vec));
+  li.push_back(test_rect);
+  unsigned int i = 2;
   for(int a = -num; a < num; a++) {
       for (int b = -num; b < num; b++) {
           float choose_mat = drand48();
@@ -114,7 +116,7 @@ int main() {
   int nx = 1200;
   int ny = 600;
   unsigned int antialias_samples = 1;
-  unsigned int number_of_objects = 485;
+  unsigned int number_of_objects = 5;
 
   // Create Camera
   Camera camera(vec3<float>(13, 2, 3), vec3<float>(0, 0, 0), vec3<float>(0, 1, 0), 20, float(nx) / float(ny));
