@@ -174,19 +174,19 @@ int main() {
 
   SaveImage(nx, ny, bb_image, "../bb_image.jpg"); // TODO: fix path
 
-// //  Geomlist world
-//
-//  auto geomlist_world = std::make_shared<Geomlist>(Geomlist(number_of_objects, object_list));
-//  const auto t3 = Clock::now();
-//  uchar geom_image[ny * nx][3];
-//  Render(nx, ny, geom_image, geomlist_world, camera, antialias_samples);
-//  const auto t4 = Clock::now();
-//  auto geomlist_duration = std::chrono::duration_cast<std::chrono::seconds>(t4 - t3).count();
-//  std::cout << "Geomlist rendering duration: "
-//            << geomlist_duration
-//            << " secondds" << std::endl;
-// //  ShowImage(nx, ny, geom_image);
-//  SaveImage(nx, ny, geom_image, "../image.jpg"); // TODO: fix path
+ //  Geomlist world
+
+  auto geomlist_world = std::make_shared<Geomlist>(Geomlist(number_of_objects, object_list));
+  const auto t3 = Clock::now();
+  uchar geom_image[ny * nx][3];
+  Render(nx, ny, geom_image, geomlist_world, camera, antialias_samples);
+  const auto t4 = Clock::now();
+  auto geomlist_duration = std::chrono::duration_cast<std::chrono::seconds>(t4 - t3).count();
+  std::cout << "Geomlist rendering duration: "
+            << geomlist_duration
+            << " secondds" << std::endl;
+ // ShowImage(nx, ny, geom_image);
+  SaveImage(nx, ny, geom_image, "../image.jpg"); // TODO: fix path
 
   return 1;
 }
