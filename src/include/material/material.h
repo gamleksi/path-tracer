@@ -18,13 +18,13 @@ public:
 
 class Lambertian : public Material {
 public:
-    Lambertian(Texture *a) : albedo(a) {}
+    Lambertian(std::shared_ptr<Texture> a) : albedo(a) {}
 
     virtual bool Scatter(const ray<float>& r_in, const Hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const;
 
 private:
     // The proportion of the total light striking the surface of an object which is reflected from that surface.
-    Texture *albedo;
+    std::shared_ptr<Texture> albedo;
     vec3<float> Random_in_unit_sphere() const;
 };
 
@@ -32,13 +32,13 @@ private:
 class Metal : public Material {
 
 public:
-    Metal(Texture *a) : albedo(a) {}
+    Metal(std::shared_ptr<Texture> a) : albedo(a) {}
 
     virtual bool Scatter(const ray<float>& r_in, const Hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const;
 
 private:
     // The proportion of the total light striking the surface of an object which is reflected from that surface.
-    Texture *albedo;
+    std::shared_ptr<Texture> albedo;
 };
 
 vec3<float> Reflect(const vec3<float>& v, const vec3<float>& n);

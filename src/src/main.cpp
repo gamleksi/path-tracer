@@ -18,7 +18,7 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
     vec3<float> even = vec3<float>(0.9, 0.9, 0.9);
     int checker_size = 2;
 
-/*
+
     std::shared_ptr<Constant_texture> odd_texture;
     odd_texture = std::make_shared<Constant_texture>(odd);
 
@@ -26,12 +26,11 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
     even_texture = std::make_shared<Constant_texture>(even);
 
     std::shared_ptr<Checker_texture> checker;
-    checker = std::make_shared<Checker_texture>(odd_texture, even_texture);
-*/
+    checker = std::make_shared<Checker_texture>(odd_texture, even_texture, checker_size);
+
 
     std::shared_ptr<Lambertian> checker_material;
-    checker_material = std::make_shared<Lambertian>(
-            new Checker_texture(new Constant_texture(odd), new Constant_texture(even), checker_size));
+    checker_material = std::make_shared<Lambertian>(checker);
 
 
     vec3<float> mat_vec(drand48(), drand48(), drand48());
@@ -52,9 +51,9 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
         std::shared_ptr<Material> material;
 
         if (drand48() < 0.5) {
-            material = std::make_shared<Metal>(new Constant_texture(mat_vec));
+            material = std::make_shared<Metal>(std::make_shared<Constant_texture>(mat_vec));
         } else {
-            material = std::make_shared<Lambertian>(new Constant_texture(mat_vec));
+            material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(mat_vec));
         }
         li.push_back(std::make_shared<Sphere>(object_coord, radius, material));
     }
