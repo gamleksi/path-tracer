@@ -33,10 +33,10 @@ private:
 class Checker_texture : public Texture {
 public:
     Checker_texture() {}
-    Checker_texture(Texture *t0, Texture *t1): even(t0), odd(t1) {}
+    Checker_texture(Texture *t0, Texture *t1, int s): even(t0), odd(t1), size(s) {}
 
     virtual vec3<float> Value(float u, float v, const vec3<float>& p) const {
-        float sines = sin(1*p[0]) * sin(1*p[1]) * sin(1*p[2]);
+        float sines = sin(size*p[0]) * sin(size*p[1]) * sin(size*p[2]);
         if (sines < 0)
             return odd->Value(u,v,p);
         else
@@ -46,6 +46,7 @@ public:
 private:
     Texture *odd;
     Texture *even;
+    int size;
 };
 
 

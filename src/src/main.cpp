@@ -16,6 +16,7 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
     //Checker colors
     vec3<float> odd = vec3<float>(0.2, 0.3, 0.1);
     vec3<float> even = vec3<float>(0.9, 0.9, 0.9);
+    int checker_size = 2;
 
 /*
     std::shared_ptr<Constant_texture> odd_texture;
@@ -30,7 +31,7 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
 
     std::shared_ptr<Lambertian> checker_material;
     checker_material = std::make_shared<Lambertian>(
-            new Checker_texture(new Constant_texture(odd), new Constant_texture(even)));
+            new Checker_texture(new Constant_texture(odd), new Constant_texture(even), checker_size));
 
 
     vec3<float> mat_vec(drand48(), drand48(), drand48());
