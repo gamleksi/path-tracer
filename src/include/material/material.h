@@ -29,11 +29,11 @@ private:
 
 
 class Metal : public Material {
+
 public:
     Metal(const vec3<float>& a) : albedo(a) {}
 
     virtual bool Scatter(const ray<float>& r_in, const Hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const;
-
 
 private:
     // The proportion of the total light striking the surface of an object which is reflected from that surface.
