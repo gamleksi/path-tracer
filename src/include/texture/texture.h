@@ -11,6 +11,7 @@
 
 class Texture {
 public:
+    // u & v are texture mapping coordinates used with image textures
     virtual vec3<float> Value(float u, float v, const vec3<float>& p) const = 0;
 };
 
