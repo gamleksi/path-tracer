@@ -1,4 +1,6 @@
 #include <utility>
+#include <algorithm>
+#include <iostream>
 
 //
 // Created by Jesse Miettinen on 14/11/2018.
@@ -10,10 +12,11 @@
 #include <vector>
 #include "vector/vec3.h"
 #include "ray/ray.h"
+#include "intersection/bounding_box.h"
 
 class Material;
 
-struct Hit_record{
+struct Hit_record{ // TODO Fix the name
   float time;
   vec3<float> point;
   vec3<float> normal;
@@ -24,6 +27,7 @@ struct Hit_record{
 class Geometry {
  public:
  virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const = 0;
+ virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const = 0;
 };
 
 
@@ -38,10 +42,13 @@ class Sphere : public Geometry{
       return radius_;
   }
 
-  virtual vec3<float> GetPosition() const { return position_; };
+  vec3<float> GetPosition() const { return position_; };
+
 
   virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
-  //discriminant stuff
+
+  virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const;
+
  private:
   //radius here
   float radius_;
@@ -58,11 +65,40 @@ class Geomlist : public Geometry{
   : list_size_(number_of_objects), list_(object_list) {}
 
  virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
+
+ virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const;
+
  private:
   std::vector<std::shared_ptr<Geometry>> list_;
   int list_size_;
 
 };
+
+
+class BoundingVolumeNode : public Geometry {
+
+ public:
+  BoundingVolumeNode(std::vector<std::shared_ptr<Geometry>>& object_list,
+      float t0, float t1);
+
+  BoundingVolumeNode(){}
+
+  virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
+
+  virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const;
+
+ private:
+  std::shared_ptr<Geometry> left_;
+  std::shared_ptr<Geometry> right_;
+  BoundingBox bounding_box_;
+
+};
+
+bool BBXCompare(const std::shared_ptr<Geometry>& a, const std::shared_ptr<Geometry>& b);
+bool BBYCompare(const std::shared_ptr<Geometry>& a, const std::shared_ptr<Geometry>& b);
+bool BBZCompare(const std::shared_ptr<Geometry>& a, const std::shared_ptr<Geometry>& b);
+
+void ObjectListSort(std::vector<std::shared_ptr<Geometry>>& object_list);
 
 #endif //PATH_TRACER_GEOMETRY_H
 
