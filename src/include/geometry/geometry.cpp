@@ -89,7 +89,6 @@ bool BBXCompare(const std::shared_ptr<Geometry>& a, const std::shared_ptr<Geomet
     std::cerr << "No bounding box exist" << std::endl;
   }
   return left_box.min()[0] - right_box.min()[0] > 0.0;
-
 };
 bool BBYCompare(const std::shared_ptr<Geometry>& a, const std::shared_ptr<Geometry>& b) {
 
@@ -98,7 +97,7 @@ bool BBYCompare(const std::shared_ptr<Geometry>& a, const std::shared_ptr<Geomet
   if(!a->GetBoundingBox(0.0, 0.0, left_box) || !b->GetBoundingBox(0.0, 0.0, right_box)) {
     std::cerr << "No bounding box exist" << std::endl;
   }
-  return left_box.max()[1] - right_box.min()[1] > 0.0;
+  return left_box.min()[1] - right_box.min()[1] >= 0.0;
 
 };
 bool BBZCompare(const std::shared_ptr<Geometry>& a, const std::shared_ptr<Geometry>& b) {
@@ -107,18 +106,17 @@ bool BBZCompare(const std::shared_ptr<Geometry>& a, const std::shared_ptr<Geomet
   if(!a->GetBoundingBox(0.0, 0.0, left_box) || !b->GetBoundingBox(0.0, 0.0, right_box)) {
     std::cerr << "No bounding box exist" << std::endl;
   }
-  return left_box.min()[2] - right_box.min()[2] > 0.0;
+  return left_box.min()[2] - right_box.min()[2] >= 0.0;
 };
 
 void ObjectListSort(std::vector<std::shared_ptr<Geometry>>& object_list) {
-  int axis = (int)(2 * drand48());
+  int axis = 1;  //(int)(2 * drand48());
 
   switch (axis) {
-    case 1: sort(object_list.begin(), object_list.end(), BBXCompare);
-    case 2: sort(object_list.begin(), object_list.end(), BBYCompare);
-    default: sort(object_list.begin(), object_list.end(), BBZCompare);
+    case 1: std::sort(object_list.begin(), object_list.end(), BBXCompare);
+    case 2: std::sort(object_list.begin(), object_list.end(), BBYCompare);
+    default: std::sort(object_list.begin(), object_list.end(), BBZCompare);
   }
-
 }
 
 BoundingVolumeNode::BoundingVolumeNode(std::vector<std::shared_ptr<Geometry>>& object_list,
@@ -150,29 +148,29 @@ BoundingVolumeNode::BoundingVolumeNode(std::vector<std::shared_ptr<Geometry>>& o
   bounding_box_ = CombineBoxes(left_box, right_box);
 }
 
-int BoundingVolumeNode::NumberOfObjects() const {
-  return NumberOfLeftObjects() + NumberOfRightObjects();
-}
+ int BoundingVolumeNode::NumberOfObjects() const {
+   return NumberOfLeftObjects() + NumberOfRightObjects();
+ }
 
-int BoundingVolumeNode::NumberOfLeftObjects() const {
-  return left_->NumberOfObjects();
-}
+ int BoundingVolumeNode::NumberOfLeftObjects() const {
+   return left_->NumberOfObjects();
+ }
 
-int BoundingVolumeNode::NumberOfRightObjects() const {
-  return right_->NumberOfObjects();
-}
+ int BoundingVolumeNode::NumberOfRightObjects() const {
+   return right_->NumberOfObjects();
+ }
 
-int Sphere::NumberOfObjects() const {
-  return 1;
-}
+ int Sphere::NumberOfObjects() const {
+   return 1;
+ }
 
-int Geomlist::NumberOfObjects() const {
-  int i = 0;
-  for (const auto &geom : list_) {
-    i = i + geom -> NumberOfObjects();
-  }
-  return i;
-}
+ int Geomlist::NumberOfObjects() const {
+   int i = 0;
+   for (const auto &geom : list_) {
+     i = i + geom -> NumberOfObjects();
+   }
+   return i;
+ }
 
 bool BoundingVolumeNode::RayHits(const ray<float>& ray, float t_min, float t_max, Hit_record& rec) const {
 
