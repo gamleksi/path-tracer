@@ -11,17 +11,17 @@ typedef std::chrono::high_resolution_clock Clock;
 
 
 
-void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geometry>>& li) {
+int GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geometry>>& li) {
+
+  int num = int(sqrt(amount)/2);
 
   vec3<float> mat_vec(0.5, 0.5, 0.5);
   std::shared_ptr<Sphere> floor_sphere =
       std::make_shared<Sphere>(vec3<float>(0, -1000, 0), 1000, std::make_shared<Lambertian>(mat_vec));
-
   li.push_back(floor_sphere);
   unsigned int i = 1;
-  for(int a = -11; a < 11; a++) {
-      for (int b = -11; b < 11; b++) {
-          //srand48(i*time(nullptr));
+  for(int a = -num; a < num; a++) {
+      for (int b = -num; b < num; b++) {
           float choose_mat = drand48();
           vec3<float> object_coord(a + 0.9 * drand48(), 0.2, b + 0.9 * drand48());
           if ((object_coord - vec3<float>(4, 0.2, 0)).Norm2() > 0.9) {
@@ -43,7 +43,7 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
   i++;
   li.push_back(std::make_shared<Sphere>(vec3<float>(-4,1,0), 1.0, std::make_shared<Lambertian>(vec3<float>(0.4,0.2,0.1))));
   i++;
-  std::cout << i << std::endl;
+  return i;
 /*
   for (unsigned int i = 1; i < amount; i++) {
     srand48(i*time(nullptr));
@@ -77,7 +77,7 @@ void Render(int nx, int ny, uchar (*image)[3], const std::shared_ptr<Geometry>& 
               float u = 1 - float(i + drand48()) / float(nx);
               float v = 1 - float(j + drand48()) / float(ny);
               const ray<float> r = cam.GetRay(u, v);
-              // vec3<float> p = r.Point(2.0); TODO: I am quite sure that fixing this would solve the irregular sphere problem
+              // vec3<float> p = r.Point(2.0);
               col += Color(r, world, 0);
           }
 
@@ -121,7 +121,7 @@ int main() {
 
   // Random Environment
   std::vector<std::shared_ptr<Geometry>> object_list;
-  GetRandomObjectList(number_of_objects, object_list);
+  int created_objects = GetRandomObjectList(number_of_objects, object_list);
 
 // FOR the future..
 
@@ -145,7 +145,8 @@ int main() {
 //  SaveImage(nx, ny, bb_image, "../bb_image.jpg"); // TODO: fix path
 
   // Geomlist world
-  auto geomlist_world = std::make_shared<Geomlist>(Geomlist(number_of_objects, object_list));
+  auto geomlist_world = std::make_shared<Geomlist>(Geomlist(created_objects, object_list));
+  //std::cout << created_objects << std::endl;
   const auto t3 = Clock::now();
 
   uchar geom_image[ny * nx][3];
