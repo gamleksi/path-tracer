@@ -28,6 +28,7 @@ class Geometry {
  public:
  virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const = 0;
  virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const = 0;
+ virtual int NumberOfObjects() const=0;
 };
 
 
@@ -49,6 +50,8 @@ class Sphere : public Geometry{
 
   virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const;
 
+  virtual int NumberOfObjects() const;
+
  private:
   //radius here
   float radius_;
@@ -67,6 +70,7 @@ class Geomlist : public Geometry{
  virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
 
  virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const;
+ virtual int NumberOfObjects() const;
 
  private:
   std::vector<std::shared_ptr<Geometry>> list_;
@@ -86,6 +90,9 @@ class BoundingVolumeNode : public Geometry {
   virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
 
   virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const;
+  virtual int NumberOfObjects() const;
+  int NumberOfLeftObjects() const;
+  int NumberOfRightObjects() const;
 
  private:
   std::shared_ptr<Geometry> left_;
