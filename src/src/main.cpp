@@ -19,18 +19,29 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
     int checker_size = 3;
 
 
+    // PERLIN TEXTURE
+
+    std::shared_ptr<Perlin_texture> perlin_texture;
+    perlin_texture = std::make_shared<Perlin_texture>(20);
+
+    std::shared_ptr<Lambertian> perlin_material;
+    perlin_material = std::make_shared<Lambertian>(perlin_texture);
+
+
+
+
+    // CHECKER TEXTURE
     std::shared_ptr<Constant_texture> odd_texture;
     odd_texture = std::make_shared<Constant_texture>(odd);
 
     std::shared_ptr<Constant_texture> even_texture;
     even_texture = std::make_shared<Constant_texture>(even);
 
-    std::shared_ptr<Checker_texture> checker;
-    checker = std::make_shared<Checker_texture>(odd_texture, even_texture, checker_size);
-
+    std::shared_ptr<Checker_texture> checker_texture;
+    checker_texture = std::make_shared<Checker_texture>(odd_texture, even_texture, checker_size);
 
     std::shared_ptr<Lambertian> checker_material;
-    checker_material = std::make_shared<Lambertian>(checker);
+    checker_material = std::make_shared<Lambertian>(checker_texture);
 
 
     vec3<float> mat_vec(drand48(), drand48(), drand48());
@@ -52,16 +63,18 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
 
         if (drand48() < 0.5) {
             material = std::make_shared<Metal>(std::make_shared<Constant_texture>(mat_vec));
+            material = perlin_material;
         } else {
             material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(mat_vec));
+            material = perlin_material;
+
         }
         li.push_back(std::make_shared<Sphere>(object_coord, radius, material));
     }
 }
 
 
-void
-Render(int nx, int ny, uchar (*image)[3], const std::shared_ptr<Geometry> &world, const Camera cam, unsigned int ns) {
+void Render(int nx, int ny, uchar (*image)[3], const std::shared_ptr<Geometry> &world, const Camera cam, unsigned int ns) {
 
     std::cout << "Rendering..." << std::endl;
 
@@ -108,7 +121,7 @@ int main() {
     // Environment and Rendering parameters
     int nx = 1200;
     int ny = 700;
-    unsigned int antialias_samples = 200;
+    unsigned int antialias_samples = 2;
     unsigned int number_of_objects = 9;
 
     // Create Camera
@@ -117,27 +130,6 @@ int main() {
     // Random Environment
     std::vector<std::shared_ptr<Geometry>> object_list;
     GetRandomObjectList(number_of_objects, object_list);
-
-// FOR the future..
-
-//  // Creating bounding box structure
-//  auto bb_world = std::make_shared<BoundingVolumeNode>(BoundingVolumeNode(object_list, 0.0, 1.0));
-//
-//  // Rendering bounding box
-//  const auto t0 = Clock::now();
-//
-//  uchar bb_image[ny * nx][3];
-//  Render(nx, ny, bb_image, bb_world, camera, antialias_samples);
-//
-//  const auto t1 = Clock::now();
-//
-//  auto bb_rendering_duration = std::chrono::duration_cast<std::chrono::seconds>(t1 - t0).count();
-//  std::cout << "Bounding Box Rendering Duration: "
-//          << bb_rendering_duration
-//          << " secondds" << std::endl;
-//
-//  ShowImage(nx, ny, bb_image);
-//  SaveImage(nx, ny, bb_image, "../bb_image.jpg"); // TODO: fix path
 
     // Geomlist world
     auto geomlist_world = std::make_shared<Geomlist>(Geomlist(number_of_objects, object_list));
