@@ -13,6 +13,8 @@
 class Material {
 public:
     virtual bool Scatter(const ray<float>& r_in, const Hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const = 0;
+    virtual vec3<float> emitted(float u, float v, const vec3<float>& p) const
+    { return vec3<float>(0,0,0); }
 };
 
 
@@ -39,6 +41,15 @@ public:
 private:
     // The proportion of the total light striking the surface of an object which is reflected from that surface.
     std::shared_ptr<Texture> albedo;
+};
+
+class DiffuseLight : public Material {
+public:
+    DiffuseLight(std::shared_ptr<Texture> a) : emit(a) { }
+    virtual bool Scatter(const ray<float>& r_in, const Hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const;
+    virtual vec3<float> emitted(float u, float v, const vec3<float>& p) const;
+private:
+    std::shared_ptr<Texture> emit;
 };
 
 vec3<float> Reflect(const vec3<float>& v, const vec3<float>& n);
