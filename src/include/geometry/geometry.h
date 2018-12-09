@@ -64,8 +64,8 @@ class Geomlist : public Geometry{
 
   Geomlist(){}
 
-  Geomlist(const int number_of_objects, std::vector<std::shared_ptr<Geometry>>& object_list)
-  : list_size_(number_of_objects), list_(object_list) {}
+  Geomlist(std::vector<std::shared_ptr<Geometry>>& object_list)
+  : list_size_((int)object_list.size()), list_(object_list) {}
 
  virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
 
