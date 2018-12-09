@@ -57,7 +57,7 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
     }
 }
 
-void GetDebugObjectList(unsigned int amount, std::vector<std::shared_ptr<Geometry>>& li) {
+void GetDebugObjectList(unsigned int amount, std::vector<std::shared_ptr<Geometry>>& object_list) {
 
   float y_step = 9;
   float x_step = 10;
@@ -66,9 +66,20 @@ void GetDebugObjectList(unsigned int amount, std::vector<std::shared_ptr<Geometr
 
   int columns = amount / layers;
 
+  vec3<float> mat_vec(0.5, 0.5, 0.5);
+  std::shared_ptr<Material> material;
+  material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(mat_vec));
+
+  std::shared_ptr<Sphere> floor_sphere =
+      std::make_shared<Sphere>(vec3<float>(0, -1000, 0), 1000, material);
+
+  object_list.push_back(floor_sphere);
+
+  std::vector<std::shared_ptr<Geometry>> random_objects;
+
   for (unsigned int j = 0; j < layers; j++) {
 
-    auto y = -40.0 + j * y_step;
+    auto y = -100.0 + j * y_step;
 
     for (unsigned int i = 0; i < columns; i++) {
 
@@ -85,10 +96,11 @@ void GetDebugObjectList(unsigned int amount, std::vector<std::shared_ptr<Geometr
       } else {
           material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(mat_vec));
       }
-
-      li.push_back(std::make_shared<Sphere>(object_coord, radius, material));
+      random_objects.push_back(std::make_shared<Sphere>(object_coord, radius, material));
     }
   }
+  auto bb_world = std::make_shared<BoundingVolumeNode>(BoundingVolumeNode(random_objects, 0.0, 1.0));
+  object_list.push_back(bb_world);
 }
 
 void Render(const int nx, const int ny, uchar (*image)[3], const std::shared_ptr<Geometry> &world, const Camera cam, unsigned int ns) {
@@ -167,15 +179,13 @@ int main() {
   std::vector<std::shared_ptr<Geometry>> object_list;
   GetDebugObjectList(number_of_objects, object_list);
 
-  auto bb_world = std::make_shared<BoundingVolumeNode>(BoundingVolumeNode(object_list, 0.0, 100.0));
-  std::cout << "The Number of objects in total " << bb_world->NumberOfObjects() << std::endl;
-  std::cout << "The Number on left " << bb_world->NumberOfLeftObjects() << std::endl;
-  std::cout << "The Number on right " << bb_world->NumberOfRightObjects() << std::endl;
+  auto world = std::make_shared<Geomlist>(object_list);
+
   // Rendering bounding box
   const auto t0 = Clock::now();
 
   uchar bb_image[ny * nx][3];
-  Render(nx, ny, bb_image, bb_world, camera, antialias_samples);
+  Render(nx, ny, bb_image, world, camera, antialias_samples);
   const auto t1 = Clock::now();
 
   auto bb_rendering_duration = std::chrono::duration_cast<std::chrono::seconds>(t1 - t0).count();
@@ -183,6 +193,6 @@ int main() {
           << bb_rendering_duration
           << " secondds" << std::endl;
 
-  SaveImage(nx, ny, bb_image, "../bb_image.jpg"); // TODO: fix path
+  SaveImage(nx, ny, bb_image, "../awd_image.jpg"); // TODO: fix path
 
 }
