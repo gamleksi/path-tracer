@@ -30,6 +30,7 @@ class Geometry {
  public:
  virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const = 0;
  virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const = 0;
+ virtual int NumberOfObjects() const=0;
 };
 
 
@@ -50,6 +51,8 @@ class Sphere : public Geometry{
   virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
 
   virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const;
+
+  virtual int NumberOfObjects() const;
 
  private:
   //radius here
@@ -77,12 +80,13 @@ class Geomlist : public Geometry{
 
   Geomlist(){}
 
-  Geomlist(const int number_of_objects, std::vector<std::shared_ptr<Geometry>>& object_list)
-  : list_size_(number_of_objects), list_(object_list) {}
+  Geomlist(std::vector<std::shared_ptr<Geometry>>& object_list)
+  : list_size_((int)object_list.size()), list_(object_list) {}
 
  virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
 
  virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const;
+ virtual int NumberOfObjects() const;
 
  private:
   std::vector<std::shared_ptr<Geometry>> list_;
@@ -95,13 +99,16 @@ class BoundingVolumeNode : public Geometry {
 
  public:
   BoundingVolumeNode(std::vector<std::shared_ptr<Geometry>>& object_list,
-      float t0, float t1);
+      float t0, float t1, int depth=0);
 
   BoundingVolumeNode(){}
 
   virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
 
   virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const;
+  virtual int NumberOfObjects() const;
+  int NumberOfLeftObjects() const;
+  int NumberOfRightObjects() const;
 
  private:
   std::shared_ptr<Geometry> left_;
@@ -114,7 +121,7 @@ bool BBXCompare(const std::shared_ptr<Geometry>& a, const std::shared_ptr<Geomet
 bool BBYCompare(const std::shared_ptr<Geometry>& a, const std::shared_ptr<Geometry>& b);
 bool BBZCompare(const std::shared_ptr<Geometry>& a, const std::shared_ptr<Geometry>& b);
 
-void ObjectListSort(std::vector<std::shared_ptr<Geometry>>& object_list);
+void ObjectListSort(std::vector<std::shared_ptr<Geometry>>& object_list, int depth);
 
 #endif //PATH_TRACER_GEOMETRY_H
 

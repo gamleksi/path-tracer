@@ -19,7 +19,7 @@ bool BoundingBox::RayHits(const ray<float>& ray, float t_min, float t_max) const
     t_min = (t0 > t_min) ? t0 : t_min;
     t_max = (t1 < t_max) ? t1 : t_max;
 
-    if (t_max <= t_min) { return true; }
+    if (t_max <= t_min) { return false; }
 
   }
   return true;
@@ -34,7 +34,7 @@ BoundingBox CombineBoxes(const BoundingBox& box1, const BoundingBox& box2) {
       std::min(box1.min()[2], box2.min()[2])
       );
   vec3<float> t1(
-    std::max(box1.max()[0], box2.min()[0]),
+    std::max(box1.max()[0], box2.max()[0]),
     std::max(box1.max()[1], box2.max()[1]),
     std::max(box1.max()[2], box2.max()[2])
     );
