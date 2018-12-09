@@ -72,10 +72,7 @@ int GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geometr
   //li.push_back(std::make_shared<Sphere>(vec3<float>(-4,1,0), 1.0, std::make_shared<Lambertian>(vec3<float>(0.4,0.2,0.1))));
   i++;
   return i;
-
 }
-
-
 
 void Render(const int nx, const int ny, uchar (*image)[3], const std::shared_ptr<Geometry> &world, const Camera cam, unsigned int ns) {
 
@@ -127,8 +124,8 @@ int main() {
     int nx = 1200;
     int ny = 600;
 
-    unsigned int antialias_samples = 10;
-    unsigned int number_of_objects = 100;
+    unsigned int antialias_samples = 2;
+    unsigned int number_of_objects = 10;
 
     /**
      * In order to get everything out of your computer the number of threads should be dividable by 8 and nx * ny % num_threads == 0
