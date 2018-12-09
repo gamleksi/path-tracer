@@ -7,6 +7,7 @@
 #include "camera/camera.h"
 #include <opencv2/highgui/highgui.hpp>
 #include <chrono>
+#include <omp.h>
 
 typedef std::chrono::high_resolution_clock Clock;
 
@@ -60,19 +61,20 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
 }
 
 
-void
-Render(int nx, int ny, uchar (*image)[3], const std::shared_ptr<Geometry> &world, const Camera cam, unsigned int ns) {
+void Render(const int nx, const int ny, uchar (*image)[3], const std::shared_ptr<Geometry> &world, const Camera cam, unsigned int ns) {
 
-    std::cout << "Rendering..." << std::endl;
+    std::cout << "Rendering with " << omp_get_num_threads() << " threads!" << std::endl;
+    #pragma omp parallel
+    {
 
-    for (int j = ny - 1; j >= 0; j--) {
+    #pragma omp for schedule(static,1)
+    for (int j = 0; j < ny; j++) {
         for (int i = 0; i < nx; i++) {
             vec3<float> col(0, 0, 0);
             for (int s = 0; s < ns; s++) {
                 float u = 1 - float(i + drand48()) / float(nx);
                 float v = 1 - float(j + drand48()) / float(ny);
                 const ray<float> r = cam.GetRay(u, v);
-                // vec3<float> p = r.Point(2.0); TODO: I am quite sure that fixing this would solve the irregular sphere problem
                 col += Color(r, world, 0);
             }
 
@@ -88,13 +90,13 @@ Render(int nx, int ny, uchar (*image)[3], const std::shared_ptr<Geometry> &world
             image[j * nx + i][2] = ir;
         }
     }
-    std::cout << "Rendred!" << std::endl;
+    }
+    std::cout << "Done!" << std::endl;
 }
 
 void ShowImage(int nx, int ny, uchar (*image)[3]) {
     cv::Mat rgb_mat(ny, nx, CV_8UC3, image);
-    cv::imshow("Image", rgb_mat);
-    std::cout << "Done." << std::endl;
+    cv::imshow("Image is shown!", rgb_mat);
     cv::waitKey(0);
 }
 
@@ -106,16 +108,21 @@ void SaveImage(int nx, int ny, uchar (*image)[3], std::string save_to) {
 int main() {
 
     // Environment and Rendering parameters
-    int nx = 800;
-    int ny = 400;
-    unsigned int antialias_samples = 20;
+    int nx = 640;
+    int ny = 320;
+    unsigned int antialias_samples = 32;
     unsigned int number_of_objects = 9;
+    // In order to get everything out of your computer the number of threads should be dividable by 8 and nx * ny % num_threads == 0
+    // You can check how well the path tracer is utilizing your computer with htop command in your terminal. If you don't have it brew install htop.
+
+    int num_threads = 32;
+    omp_set_num_threads(num_threads);
 
     // Create Camera
     Camera camera(vec3<float>(0, -3, 0), vec3<float>(7, -5, -5), vec3<float>(0, 1, 0), 90, float(nx) / float(ny));
 
     // Random Environment
-    std::vector<std::shared_ptr<Geometry>> object_list;
+    std::vector<std::shared_ptr<Geometry> > object_list;
     GetRandomObjectList(number_of_objects, object_list);
 
 // FOR the future..
@@ -153,6 +160,4 @@ int main() {
 
     ShowImage(nx, ny, geom_image);
     // SaveImage(nx, ny, geom_image, "../image.jpg"); // TODO: fix path
-
-    return 1;
 }
