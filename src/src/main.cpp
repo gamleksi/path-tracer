@@ -29,8 +29,10 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
 
     std::shared_ptr<Material> light;
     light = std::make_shared<DiffuseLight>(std::make_shared<Constant_texture>(light_vec));
-    std::shared_ptr<XyRect> light_rect = std::make_shared<XyRect>(3.0, 5.0, 1.0, 3.0, -2.0, light);
+    std::shared_ptr<XyRect> light_rect = std::make_shared<XyRect>(-2.0, 3.0, 0.5, 6.0, 4, light);
     li.push_back(light_rect);
+    std::shared_ptr<XyRect> light_rect2 = std::make_shared<XyRect>(1.0, 6.0, 0.5, 6.0, -4.0, light);
+    li.push_back(light_rect2);
 
     unsigned int i = 1;
     for(int a = -num; a < num; a++) {
@@ -50,7 +52,7 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
                 else
                 {
                     vec3<float> mat_vec(0.5*(1 + drand48()), 0.5*(1 + drand48()), 0.5*(1 + drand48()));
-                    material = std::make_shared<Metal>(std::make_shared<Constant_texture>(mat_vec));
+                    material = std::make_shared<Metal>(std::make_shared<Constant_texture>(mat_vec), 0.5);
                     li.push_back(std::make_shared<Sphere>(object_coord, 0.2, material));
                     i++;
                 }
@@ -60,7 +62,7 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
     //Checker colors
     vec3<float> odd = vec3<float>(0.5, 0.3, 0.1);
     vec3<float> even = vec3<float>(0.9, 0.9, 0.9);
-    int checker_size = 50;
+    int checker_size = 3;
     std::shared_ptr<Constant_texture> even_texture;
     even_texture = std::make_shared<Constant_texture>(even);
     std::shared_ptr<Constant_texture> odd_texture;
@@ -72,7 +74,7 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
     checker_material = std::make_shared<Lambertian>(checker);
 
     std::shared_ptr<Material> metal_material;
-    metal_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(vec3<float>(0.7,0.6,0.5)));
+    metal_material = std::make_shared<Metal>(std::make_shared<Constant_texture>(vec3<float>(0.7,0.6,0.5)),0.5);
     li.push_back(std::make_shared<Sphere>(vec3<float>(4,1,0), 1.0, metal_material));
     i++;
     li.push_back(std::make_shared<Sphere>(vec3<float>(-4,1,0), 1.0, checker_material));
@@ -119,7 +121,7 @@ void GetDebugObjectList(unsigned int amount, std::vector<std::shared_ptr<Geometr
             std::shared_ptr<Material> material;
 
             if (drand48() < 0.5) {
-                material = std::make_shared<Metal>(std::make_shared<Constant_texture>(mat_vec));
+                material = std::make_shared<Metal>(std::make_shared<Constant_texture>(mat_vec), 0.5);
             } else {
                 material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(mat_vec));
             }
@@ -177,10 +179,10 @@ void SaveImage(int nx, int ny, uchar (*image)[3], std::string save_to) {
 int main() {
 
     // Environment and Rendering parameters
-    int nx = 1200;
-    int ny = 600;
+    int nx = 900;
+    int ny = 400;
 
-    unsigned int antialias_samples = 500;
+    unsigned int antialias_samples = 1000;
     unsigned int number_of_objects = 3;
 
 /**
@@ -198,7 +200,7 @@ int main() {
     vec3<float> look_at(0, 0, 0);
     float dist_to_focus = 1.0;//(look_from - look_at).Norm2();
     float aperture = 0.0;
-    float fov = 20;
+    float fov = 30;
     float aspect = float(nx) / float(ny);
 
     Camera camera(look_from, look_at, vec3<float>(0, 1, 0), fov, aspect, aperture, dist_to_focus);
@@ -220,6 +222,7 @@ int main() {
               << bb_rendering_duration
               << " seconds" << std::endl;
 
-    SaveImage(nx, ny, bb_image, "../awd_image.jpg"); // TODO: fix path
+    //SaveImage(nx, ny, bb_image, "../awd_image.jpg"); // TODO: fix path
+    ShowImage(nx, ny, bb_image); // TODO: fix path
 
 }
