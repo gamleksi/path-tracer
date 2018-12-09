@@ -118,9 +118,18 @@ Box::Box(const vec3<float> &p0, const vec3<float> &p1, std::shared_ptr<Material>
     rect_list[1] = std::make_shared<FlipNormals>(std::make_shared<XyRect>(p0.X(), p1.X(), p0.Y(), p1.Y(), p0.Z(), mat));
     rect_list[2] = std::make_shared<XzRect>(p0.X(), p1.X(), p0.Z(), p1.Z(), p1.Y(), mat);
     rect_list[3] = std::make_shared<FlipNormals>(std::make_shared<XzRect>(p0.X(), p1.X(), p0.Z(), p1.Z(), p0.Y(), mat));
-    rect_list[4] = std::make_shared<XzRect>(p0.Y(), p1.Y(), p0.Z(), p1.Z(), p1.X(), mat);
-    rect_list[5] = std::make_shared<FlipNormals>(std::make_shared<XzRect>(p0.Y(), p1.Y(), p0.Z(), p1.Z(), p0.X(), mat));
-    list_ptr_ = std::make_shared<Geomlist>(rect_list, 6);
+    rect_list[4] = std::make_shared<YzRect>(p0.Y(), p1.Y(), p0.Z(), p1.Z(), p1.X(), mat);
+    rect_list[5] = std::make_shared<FlipNormals>(std::make_shared<YzRect>(p0.Y(), p1.Y(), p0.Z(), p1.Z(), p0.X(), mat));
+    list_ptr_ = std::make_shared<Geomlist>(rect_list);
+}
+
+bool Box::RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &rec) const {
+    return list_ptr_->RayHits(r, t_min, t_max, rec);
+}
+
+bool Box::GetBoundingBox(float t0, float t1, BoundingBox &box) const {
+    box = BoundingBox(pmin_, pmax_);
+    return true;
 }
 
 bool Geomlist::RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const{
@@ -262,6 +271,10 @@ BoundingVolumeNode::BoundingVolumeNode(std::vector<std::shared_ptr<Geometry>>& o
      i = i + geom -> NumberOfObjects();
    }
    return i;
+ }
+
+ int Box::NumberOfObjects() const {
+    return 1;
  }
 
 bool BoundingVolumeNode::RayHits(const ray<float>& ray, float t_min, float t_max, Hit_record& rec) const {

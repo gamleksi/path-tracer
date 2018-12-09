@@ -21,7 +21,7 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
   //material = std::make_shared<DiffuseLight>(std::make_shared<Constant_texture>(light_vec));
 
   std::shared_ptr<Sphere> floor_sphere =
-      std::make_shared<Sphere>(vec3<float>(0, -1000, 0), 1000, material);
+      std::make_shared<Sphere>(vec3<float>(0, -1000, 0), 200, material); //default radius 1000
 
   object_list.push_back(floor_sphere);
 
@@ -71,13 +71,18 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
   std::shared_ptr<Lambertian> checker_material;
   checker_material = std::make_shared<Lambertian>(checker);
 
-  std::shared_ptr<Material> metal_material;
-  metal_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(vec3<float>(0.7,0.6,0.5)));
-  li.push_back(std::make_shared<Sphere>(vec3<float>(4,1,0), 1.0, metal_material));
+  //std::shared_ptr<Material> metal_material;
+  //metal_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(vec3<float>(0.7,0.6,0.5)));
+  //li.push_back(std::make_shared<Sphere>(vec3<float>(4,1,0), 1.0, metal_material));
   i++;
   li.push_back(std::make_shared<Sphere>(vec3<float>(-4,1,0), 1.0, checker_material));
   //li.push_back(std::make_shared<Sphere>(vec3<float>(-4,1,0), 1.0, std::make_shared<Lambertian>(vec3<float>(0.4,0.2,0.1))));
   i++;
+
+  //playing with boxes
+  std::shared_ptr<Box>kuutio = std::make_shared<Box>(vec3<float>(4, 1, 0), vec3<float>(5, 2, 1), light);
+  li.push_back(kuutio);
+
   auto bb_world = std::make_shared<BoundingVolumeNode>(BoundingVolumeNode(li, 0.0, 1.0));
   object_list.push_back(bb_world);
 
@@ -177,11 +182,11 @@ void SaveImage(int nx, int ny, uchar (*image)[3], std::string save_to) {
 int main() {
 
     // Environment and Rendering parameters
-    int nx = 1200;
-    int ny = 600;
+    int nx = 600;
+    int ny = 300;
 
-    unsigned int antialias_samples = 500;
-    unsigned int number_of_objects = 3;
+    unsigned int antialias_samples = 50;
+    unsigned int number_of_objects = 100;
 
 /**
  * In order to get everything out of your computer the number of threads should be dividable by 8 and nx * ny % num_threads == 0
@@ -193,7 +198,7 @@ int main() {
   int num_threads = 8;
   omp_set_num_threads(num_threads);
 
-  // Create Camera
+  // Default Camera Settings
   vec3<float> look_from(13, 2, 3);
   vec3<float> look_at(0, 0, 0);
   float dist_to_focus = 1.0;//(look_from - look_at).Norm2();
