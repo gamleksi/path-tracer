@@ -15,8 +15,10 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
   int num = int(sqrt(amount)/2);
 
   vec3<float> mat_vec(0.5, 0.5, 0.5);
+  vec3<float> light_vec(4,4,4);
   std::shared_ptr<Material> material;
   material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(mat_vec));
+  //material = std::make_shared<DiffuseLight>(std::make_shared<Constant_texture>(light_vec));
 
   std::shared_ptr<Sphere> floor_sphere =
       std::make_shared<Sphere>(vec3<float>(0, -1000, 0), 1000, material);
@@ -24,8 +26,11 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
   object_list.push_back(floor_sphere);
 
   std::vector<std::shared_ptr<Geometry>> li;
-  //std::shared_ptr<XyRect> test_rect = std::make_shared<XyRect>(3.0, 5.0, 1.0, 3.0, -1.0, material);
-  //li.push_back(test_rect);
+
+  std::shared_ptr<Material> light;
+  light = std::make_shared<DiffuseLight>(std::make_shared<Constant_texture>(light_vec));
+  std::shared_ptr<XyRect> light_rect = std::make_shared<XyRect>(3.0, 5.0, 1.0, 3.0, -2.0, light);
+  li.push_back(light_rect);
 
   unsigned int i = 1;
   for(int a = -num; a < num; a++) {
@@ -175,8 +180,8 @@ int main() {
     int nx = 1200;
     int ny = 600;
 
-    unsigned int antialias_samples = 20;
-    unsigned int number_of_objects = 500;
+    unsigned int antialias_samples = 500;
+    unsigned int number_of_objects = 3;
 
 /**
  * In order to get everything out of your computer the number of threads should be dividable by 8 and nx * ny % num_threads == 0

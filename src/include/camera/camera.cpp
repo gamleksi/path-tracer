@@ -26,6 +26,28 @@ Camera::Camera(const vec3<float>& look_from, const vec3<float>& look_at, const v
 vec3<float> Color(const ray<float>& r, const std::shared_ptr<Geometry>& geom, int depth)
 {
     Hit_record rec;
+    if (geom->RayHits(r, 0.001, MAXFLOAT, rec))
+    {
+        ray<float> scattered{};
+        vec3<float> attenuation{};
+        vec3<float> emitted = rec.mat_ptr->emitted(rec.u, rec.v, rec.point);
+        if (depth < 50 && rec.mat_ptr->Scatter(r, rec, attenuation, scattered))
+        {
+            return emitted + attenuation * Color(scattered, geom, depth+1);
+        }
+        else
+        {
+            return emitted;
+        }
+    }
+    else
+    {
+        return vec3<float>(0,0,0);
+    }
+
+
+
+    /*Hit_record rec;
 
     if(geom->RayHits(r, 0.000001, MAXFLOAT, rec)){
         ray<float> scattered{};
@@ -39,7 +61,7 @@ vec3<float> Color(const ray<float>& r, const std::shared_ptr<Geometry>& geom, in
         vec3<float> unit_direction = r.Direction().Unit();
         float t = (float)0.5*(unit_direction[1]+ (float)1.0);
         return ((float)1.0-t)*vec3<float>(1.0,1.0,1.0) + t*vec3<float>(0.5,0.7,1.0);
-    }
+    }*/
 }
 
 vec3<float> RandomUnitDiscCoord() {

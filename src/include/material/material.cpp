@@ -36,3 +36,12 @@ bool Metal::Scatter(const ray<float>& r_in, const Hit_record& rec,
     attenuation = albedo->Value(0,0, rec.point);
     return (Dot(scattered.Direction(), rec.normal) > 0);
 }
+
+bool DiffuseLight::Scatter(const ray<float> &r_in, const Hit_record &rec, vec3<float> &attenuation,
+        ray<float> &scattered) const {
+    return false;
+}
+
+vec3<float> DiffuseLight::emitted(float u, float v, const vec3<float> &p) const {
+    return emit->Value(u,v,p);
+}
