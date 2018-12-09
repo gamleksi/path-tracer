@@ -9,6 +9,10 @@
 Sphere::Sphere(vec3<float> position, float radius, std::shared_ptr<Material> mat)
     : Geometry(), radius_(radius), position_(position), material_(std::move(mat)) { }
 
+XyRect::XyRect(float x0, float x1, float y0, float y1, float k, std::shared_ptr<Material> mat)
+    : x0_(x0), x1_(x1), y0_(y0), y1_(y1), k_(k), material_(std::move(mat)) { }
+
+
 bool Sphere::RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const
 {
     vec3<float> oc = r.Origin() - position_;
@@ -37,14 +41,6 @@ bool Sphere::RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& 
     return false;
 }
 
-
-bool Sphere::GetBoundingBox(float t0, float t1, BoundingBox& box) const {
-    box = BoundingBox(position_ - radius_, position_ + radius_);
-    return true;
-}
-
-XyRect::XyRect(float x0, float x1, float y0, float y1, float k, std::shared_ptr<Material> mat) : x0_(x0), x1_(x1), y0_(y0), y1_(y1), k_(k), material_(mat) { }
-
 bool XyRect::RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &rec) const {
     float t = (k_ - r.Origin().Z()) / r.Direction().Z();
     if (t < t_min || t > t_max){ return false; }
@@ -53,19 +49,21 @@ bool XyRect::RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &
     if (x < x0_ || x > x1_ || y < y0_ || y > y1_) { return false; }
     rec.u = (x - x0_) / (x1_ - x0_);
     rec.v = (y - y0_) / (y1_ - y0_);
-    rec.time = t;
-    rec.point = r.Point(t);
+    rec.mat_ptr = material_;
+    rec.point = r.Point(rec.time);
     rec.normal = vec3<float>(0,0,1);
     return true;
+}
 
+bool Sphere::GetBoundingBox(float t0, float t1, BoundingBox& box) const {
+    box = BoundingBox(position_ - radius_, position_ + radius_);
+    return true;
 }
 
 bool XyRect::GetBoundingBox(float t0, float t1, BoundingBox &box) const {
     box = BoundingBox(vec3<float>(x0_,y0_,k_-0001), vec3<float>(x1_,y1_,k_+0001));
     return true;
 }
-
-
 
 bool Geomlist::RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const{
     Hit_record temp_rec{};
@@ -187,6 +185,10 @@ BoundingVolumeNode::BoundingVolumeNode(std::vector<std::shared_ptr<Geometry>>& o
  int Sphere::NumberOfObjects() const {
    return 1;
  }
+
+ int XyRect::NumberOfObjects() const {
+    return 1;
+}
 
  int Geomlist::NumberOfObjects() const {
    int i = 0;

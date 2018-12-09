@@ -33,7 +33,6 @@ class Geometry {
  virtual int NumberOfObjects() const=0;
 };
 
-
 class Sphere : public Geometry{
   //RayHits algorithm by Peter Shirley, from Ray Tracing in One Weekend, version 1.55
  public:
@@ -47,11 +46,8 @@ class Sphere : public Geometry{
 
   vec3<float> GetPosition() const { return position_; };
 
-
   virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
-
   virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const;
-
   virtual int NumberOfObjects() const;
 
  private:
@@ -67,9 +63,8 @@ public:
 
     ~XyRect() { };
     virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
-
     virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const;
-
+    virtual int NumberOfObjects() const;
 private:
     float x0_, x1_, y0_, y1_, k_;
     std::shared_ptr<Material> material_;
