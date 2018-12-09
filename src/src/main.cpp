@@ -63,7 +63,7 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
 
 void Render(const int nx, const int ny, uchar (*image)[3], const std::shared_ptr<Geometry> &world, const Camera cam, unsigned int ns) {
 
-    std::cout << "Rendering with " << omp_get_num_threads() << " threads!" << std::endl;
+    std::cout << "Rendering.." << std::endl;
     #pragma omp parallel
     {
 
@@ -110,12 +110,18 @@ int main() {
     // Environment and Rendering parameters
     int nx = 640;
     int ny = 320;
+
     unsigned int antialias_samples = 32;
     unsigned int number_of_objects = 9;
-    // In order to get everything out of your computer the number of threads should be dividable by 8 and nx * ny % num_threads == 0
-    // You can check how well the path tracer is utilizing your computer with htop command in your terminal. If you don't have it brew install htop.
 
-    int num_threads = 32;
+    /**
+     * In order to get everything out of your computer the number of threads should be dividable by 8 and nx * ny % num_threads == 0
+     * Based on couple of experiments the number of threads should be the number of cores in your computer.
+     * You can check how well the path tracer is utilizing your computer with htop command in terminal.
+     * If you don't have it, brew install htop.
+     */
+
+    int num_threads = 8;
     omp_set_num_threads(num_threads);
 
     // Create Camera
