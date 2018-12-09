@@ -83,7 +83,7 @@ class BoundingVolumeNode : public Geometry {
 
  public:
   BoundingVolumeNode(std::vector<std::shared_ptr<Geometry>>& object_list,
-      float t0, float t1);
+      float t0, float t1, int depth=0);
 
   BoundingVolumeNode(){}
 
@@ -105,7 +105,7 @@ bool BBXCompare(const std::shared_ptr<Geometry>& a, const std::shared_ptr<Geomet
 bool BBYCompare(const std::shared_ptr<Geometry>& a, const std::shared_ptr<Geometry>& b);
 bool BBZCompare(const std::shared_ptr<Geometry>& a, const std::shared_ptr<Geometry>& b);
 
-void ObjectListSort(std::vector<std::shared_ptr<Geometry>>& object_list);
+void ObjectListSort(std::vector<std::shared_ptr<Geometry>>& object_list, int depth);
 
 #endif //PATH_TRACER_GEOMETRY_H
 

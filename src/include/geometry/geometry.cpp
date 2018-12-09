@@ -90,6 +90,7 @@ bool BBXCompare(const std::shared_ptr<Geometry>& a, const std::shared_ptr<Geomet
   }
   return left_box.min()[0] - right_box.min()[0] > 0.0;
 };
+
 bool BBYCompare(const std::shared_ptr<Geometry>& a, const std::shared_ptr<Geometry>& b) {
 
   BoundingBox left_box{}, right_box{};
@@ -98,8 +99,8 @@ bool BBYCompare(const std::shared_ptr<Geometry>& a, const std::shared_ptr<Geomet
     std::cerr << "No bounding box exist" << std::endl;
   }
   return left_box.min()[1] - right_box.min()[1] > 0.0;
-
 };
+
 bool BBZCompare(const std::shared_ptr<Geometry>& a, const std::shared_ptr<Geometry>& b) {
   BoundingBox left_box{}, right_box{};
 
@@ -109,12 +110,12 @@ bool BBZCompare(const std::shared_ptr<Geometry>& a, const std::shared_ptr<Geomet
   return left_box.min()[2] - right_box.min()[2] > 0.0;
 };
 
-void ObjectListSort(std::vector<std::shared_ptr<Geometry>>& object_list) {
-  float axis = 0.0;
+void ObjectListSort(std::vector<std::shared_ptr<Geometry>>& object_list, int depth) {
+  int axis = depth % 3;
 
-  if (axis < 1.0) {
+  if (axis == 0) {
     std::sort(object_list.begin(), object_list.end(), BBXCompare);
-  } else if(axis < 2.0) {
+  } else if(axis == 1) {
     std::sort(object_list.begin(), object_list.end(), BBYCompare);
   } else {
     std::sort(object_list.begin(), object_list.end(), BBZCompare);
@@ -122,9 +123,10 @@ void ObjectListSort(std::vector<std::shared_ptr<Geometry>>& object_list) {
 }
 
 BoundingVolumeNode::BoundingVolumeNode(std::vector<std::shared_ptr<Geometry>>& object_list,
-      float t0, float t1) {
+      float t0, float t1, int depth) {
 
-  ObjectListSort(object_list);
+  ObjectListSort(object_list, depth);
+  depth = depth + 1;
   auto n_objects = object_list.size();
 
   if(n_objects == 1) {
@@ -133,13 +135,10 @@ BoundingVolumeNode::BoundingVolumeNode(std::vector<std::shared_ptr<Geometry>>& o
     left_ = object_list[0];
     right_ = object_list[1];
   } else {
-
     std::vector<std::shared_ptr<Geometry>> left_objects(object_list.begin(), object_list.begin() + n_objects / 2);
     std::vector<std::shared_ptr<Geometry>> right_objects(object_list.begin() + n_objects / 2, object_list.end());
-
-    left_ = std::make_shared<BoundingVolumeNode>(left_objects, t0, t1);
-    right_ = std::make_shared<BoundingVolumeNode>(right_objects, t0, t1);
-
+    left_ = std::make_shared<BoundingVolumeNode>(left_objects, t0, t1, depth);
+    right_ = std::make_shared<BoundingVolumeNode>(right_objects, t0, t1, depth);
   }
 
   BoundingBox left_box{}, right_box{};

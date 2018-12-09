@@ -151,8 +151,8 @@ int main() {
   Camera camera(look_from, look_at, vec3<float>(0, 1, 0), fov, aspect, aperture, dist_to_focus);
 
   std::vector<std::shared_ptr<Geometry>> object_list;
-  // GetDebugObjectList(number_of_objects, object_list);
-  GetRandomObjectList(number_of_objects, object_list);
+  GetDebugObjectList(number_of_objects, object_list);
+  // GetRandomObjectList(number_of_objects, object_list);
 
 //  FOR the future..
 
