@@ -18,6 +18,8 @@ class Material;
 
 struct Hit_record{ // TODO Fix the name
   float time;
+  float u;
+  float v;
   vec3<float> point;
   vec3<float> normal;
   std::shared_ptr<Material> mat_ptr;
@@ -57,6 +59,20 @@ class Sphere : public Geometry{
   float radius_;
   std::shared_ptr<Material> material_;
   vec3<float> position_;
+};
+
+class XyRect : public Geometry{
+public:
+    XyRect(float x0, float x1, float y0, float y1, float k, std::shared_ptr<Material> mat);
+
+    ~XyRect() { };
+    virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
+
+    virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const;
+
+private:
+    float x0_, x1_, y0_, y1_, k_;
+    std::shared_ptr<Material> material_;
 };
 
 class Geomlist : public Geometry{
