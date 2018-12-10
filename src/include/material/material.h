@@ -27,20 +27,21 @@ public:
 private:
     // The proportion of the total light striking the surface of an object which is reflected from that surface.
     std::shared_ptr<Texture> albedo;
-    vec3<float> Random_in_unit_sphere() const;
 };
 
 
 class Metal : public Material {
 
 public:
-    Metal(std::shared_ptr<Texture> a) : albedo(a) {}
+    Metal(std::shared_ptr<Texture> a, float f) : albedo(a) { if (f<1) fuzz = f; else fuzz = 1;}
 
     virtual bool Scatter(const ray<float>& r_in, const Hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const;
 
 private:
     // The proportion of the total light striking the surface of an object which is reflected from that surface.
     std::shared_ptr<Texture> albedo;
+    // Defines how clearly metallic objects reflect light
+    float fuzz;
 };
 
 class DiffuseLight : public Material {
