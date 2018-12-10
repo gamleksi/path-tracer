@@ -19,24 +19,21 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
     vec3<float> light_vec(4, 4, 4);
     std::shared_ptr<Material> material;
     material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(mat_vec));
-    material = std::make_shared<DiffuseLight>(std::make_shared<Constant_texture>(light_vec));
-
-    std::shared_ptr<Material> light;
-    light = std::make_shared<DiffuseLight>(std::make_shared<Constant_texture>(light_vec));
+    //material = std::make_shared<DiffuseLight>(std::make_shared<Constant_texture>(light_vec));
 
     std::shared_ptr<Sphere> floor_sphere =
-            std::make_shared<Sphere>(vec3<float>(0, -1000, 0), 1000, light); //default radius 1000
+            std::make_shared<Sphere>(vec3<float>(0, -1000, 0), 200, material); //default radius 1000
 
     object_list.push_back(floor_sphere);
 
     std::vector<std::shared_ptr<Geometry>> li;
 
-
-    std::shared_ptr<XyRect> light_rect = std::make_shared<XyRect>(-2.0, 3.0, 0.5, 6.0, 4, light);
+    std::shared_ptr<Material> light;
+    light = std::make_shared<DiffuseLight>(std::make_shared<Constant_texture>(light_vec));
+    std::shared_ptr<XyRect> light_rect = std::make_shared<XyRect>(-2.0, 3.0, 0.0, 1.0, 4, light);
     li.push_back(light_rect);
     std::shared_ptr<XyRect> light_rect2 = std::make_shared<XyRect>(1.0, 6.0, 0.5, 6.0, -4.0, light);
     li.push_back(light_rect2);
-
 
     unsigned int i = 1;
     for (int a = -num; a < num; a++) {
@@ -89,6 +86,7 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
 
 }
 
+
 //can be modified, does not work with current camera settings
 void GetDebugObjectList(unsigned int amount, std::vector<std::shared_ptr<Geometry>> &object_list) {
 
@@ -136,8 +134,57 @@ void GetDebugObjectList(unsigned int amount, std::vector<std::shared_ptr<Geometr
     object_list.push_back(bb_world);
 }
 
+
+void CornellBoxScene(unsigned int amount, std::vector<std::shared_ptr<Geometry>> &object_list) {
+
+    // Light
+    vec3<float> light_vec(15, 15, 15);
+    std::shared_ptr<Material> light;
+    light = std::make_shared<DiffuseLight>(std::make_shared<Constant_texture>(light_vec));
+
+    // Colors
+    vec3<float> grey(0.6, 0.6, 0.6);
+    vec3<float> red(0.7, 0.05, 0.05);
+    vec3<float> green(0.1, 0.5, 0.1);
+
+
+    // Materials
+    std::shared_ptr<Material> grey_material;
+    std::shared_ptr<Material> red_material;
+    std::shared_ptr<Material> green_material;
+    grey_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(grey));
+    red_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(red));
+    green_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(green));
+
+    // Green
+    std::shared_ptr<YzRect> green_rect;
+    green_rect = std::make_shared<YzRect>(0,555,0,555,555,555, green);
+
+    // Red
+    std::shared_ptr<YzRect> red_rect;
+    red_rect = std::make_shared<YzRect>(0,555,0,555,0,555, red);
+
+    // Light
+    std::shared_ptr<YzRect> light_source;
+    light_source = std::make_shared<YzRect>(0,555,0,555,0,555, green);
+
+    // Ceiling
+    std::shared_ptr<YzRect> ceiling_rect;
+    green_rect = std::make_shared<YzRect>(0,555,0,555,0,555, green);
+
+    // Floor
+    std::shared_ptr<YzRect> floor_rect;
+    green_rect = std::make_shared<YzRect>(0,555,0,555,0,555, green);
+
+    // Back wall
+    std::shared_ptr<YzRect> wall_rect;
+    green_rect = std::make_shared<YzRect>(0,555,0,555,0,555, green);
+}
+
+
 void Render(const int nx, const int ny, uchar (*image)[3], const std::shared_ptr<Geometry> &world, const Camera cam,
             unsigned int ns) {
+
 
     std::cout << "Rendering.." << std::endl;
 #pragma omp parallel
@@ -184,10 +231,10 @@ void SaveImage(int nx, int ny, uchar (*image)[3], std::string save_to) {
 int main() {
 
     // Environment and Rendering parameters
-    int nx = 1000;
-    int ny = 200;
+    int nx = 800;
+    int ny = 400;
 
-    unsigned int antialias_samples = 200;
+    unsigned int antialias_samples = 800;
     unsigned int number_of_objects = 3;
 
 /**
@@ -227,7 +274,7 @@ int main() {
               << bb_rendering_duration
               << " seconds" << std::endl;
 
-    //SaveImage(nx, ny, bb_image, "../awd_image.jpg"); // TODO: fix path
+    SaveImage(nx, ny, bb_image, "../awd_image.jpg"); // TODO: fix path
     ShowImage(nx, ny, bb_image);
 
 }
