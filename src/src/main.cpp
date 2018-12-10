@@ -7,20 +7,22 @@
 #include "camera/camera.h"
 #include <opencv2/highgui/highgui.hpp>
 #include <chrono>
+
 typedef std::chrono::high_resolution_clock Clock;
+
 #include <omp.h>
 
-void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geometry>>& object_list) {
-    int num = int(sqrt(amount)/2);
+void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geometry>> &object_list) {
+    int num = int(sqrt(amount) / 2);
 
     vec3<float> mat_vec(0.5, 0.5, 0.5);
-    vec3<float> light_vec(4,4,4);
+    vec3<float> light_vec(4, 4, 4);
     std::shared_ptr<Material> material;
     material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(mat_vec));
     //material = std::make_shared<DiffuseLight>(std::make_shared<Constant_texture>(light_vec));
 
-  std::shared_ptr<Sphere> floor_sphere =
-      std::make_shared<Sphere>(vec3<float>(0, -1000, 0), 200, material); //default radius 1000
+    std::shared_ptr<Sphere> floor_sphere =
+            std::make_shared<Sphere>(vec3<float>(0, -1000, 0), 200, material); //default radius 1000
 
     object_list.push_back(floor_sphere);
 
@@ -28,29 +30,24 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
 
     std::shared_ptr<Material> light;
     light = std::make_shared<DiffuseLight>(std::make_shared<Constant_texture>(light_vec));
-    std::shared_ptr<XyRect> light_rect = std::make_shared<XyRect>(-2.0, 3.0, 0.5, 6.0, 4, light);
+    std::shared_ptr<XyRect> light_rect = std::make_shared<XyRect>(-2.0, 3.0, 0.0, 1.0, 4, light);
     li.push_back(light_rect);
     std::shared_ptr<XyRect> light_rect2 = std::make_shared<XyRect>(1.0, 6.0, 0.5, 6.0, -4.0, light);
     li.push_back(light_rect2);
 
     unsigned int i = 1;
-    for(int a = -num; a < num; a++) {
-        for (int b = -num; b < num; b++)
-        {
+    for (int a = -num; a < num; a++) {
+        for (int b = -num; b < num; b++) {
             float choose_mat = drand48();
             vec3<float> object_coord(a + 0.9 * drand48(), 0.2, b + 0.9 * drand48());
-            if ((object_coord - vec3<float>(4, 0.2, 0)).Norm2() > 0.9)
-            {
-                if (choose_mat < 0.8)
-                {
-                    vec3<float> mat_vec(drand48()*drand48(), drand48()*drand48(), drand48()*drand48());
+            if ((object_coord - vec3<float>(4, 0.2, 0)).Norm2() > 0.9) {
+                if (choose_mat < 0.8) {
+                    vec3<float> mat_vec(drand48() * drand48(), drand48() * drand48(), drand48() * drand48());
                     material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(mat_vec));
                     li.push_back(std::make_shared<Sphere>(object_coord, 0.2, material));
                     i++;
-                }
-                else
-                {
-                    vec3<float> mat_vec(0.5*(1 + drand48()), 0.5*(1 + drand48()), 0.5*(1 + drand48()));
+                } else {
+                    vec3<float> mat_vec(0.5 * (1 + drand48()), 0.5 * (1 + drand48()), 0.5 * (1 + drand48()));
                     material = std::make_shared<Metal>(std::make_shared<Constant_texture>(mat_vec), 0.5);
                     li.push_back(std::make_shared<Sphere>(object_coord, 0.2, material));
                     i++;
@@ -76,12 +73,12 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
     //metal_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(vec3<float>(0.7,0.6,0.5)));
     //li.push_back(std::make_shared<Sphere>(vec3<float>(4,1,0), 1.0, metal_material));
     i++;
-    li.push_back(std::make_shared<Sphere>(vec3<float>(-4,1,0), 1.0, checker_material));
+    li.push_back(std::make_shared<Sphere>(vec3<float>(-4, 1, 0), 1.0, checker_material));
     //li.push_back(std::make_shared<Sphere>(vec3<float>(-4,1,0), 1.0, std::make_shared<Lambertian>(vec3<float>(0.4,0.2,0.1))));
     i++;
 
     //playing with boxes
-    std::shared_ptr<Box>kuutio = std::make_shared<Box>(vec3<float>(4, 1, 0), vec3<float>(5, 2, 1), light);
+    std::shared_ptr<Box> kuutio = std::make_shared<Box>(vec3<float>(4, 1, 0), vec3<float>(5, 2, 1), light);
     li.push_back(kuutio);
 
     auto bb_world = std::make_shared<BoundingVolumeNode>(BoundingVolumeNode(li, 0.0, 1.0));
@@ -89,8 +86,9 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
 
 }
 
+
 //can be modified, does not work with current camera settings
-void GetDebugObjectList(unsigned int amount, std::vector<std::shared_ptr<Geometry>>& object_list) {
+void GetDebugObjectList(unsigned int amount, std::vector<std::shared_ptr<Geometry>> &object_list) {
 
     float y_step = 9;
     float x_step = 10;
@@ -137,13 +135,60 @@ void GetDebugObjectList(unsigned int amount, std::vector<std::shared_ptr<Geometr
 }
 
 
+void CornellBoxScene(unsigned int amount, std::vector<std::shared_ptr<Geometry>> &object_list) {
+
+    // Light
+    vec3<float> light_vec(15, 15, 15);
+    std::shared_ptr<Material> light;
+    light = std::make_shared<DiffuseLight>(std::make_shared<Constant_texture>(light_vec));
+
+    // Colors
+    vec3<float> grey(0.6, 0.6, 0.6);
+    vec3<float> red(0.7, 0.05, 0.05);
+    vec3<float> green(0.1, 0.5, 0.1);
+
+
+    // Materials
+    std::shared_ptr<Material> grey_material;
+    std::shared_ptr<Material> red_material;
+    std::shared_ptr<Material> green_material;
+    grey_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(grey));
+    red_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(red));
+    green_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(green));
+
+    // Green
+    std::shared_ptr<YzRect> green_rect;
+    green_rect = std::make_shared<YzRect>(0,555,0,555,555, green_material);
+
+    // Red
+    std::shared_ptr<YzRect> red_rect;
+    red_rect = std::make_shared<YzRect>(0,555,0,555,0, red_material);
+
+    // Light
+    std::shared_ptr<YzRect> light_source;
+    light_source = std::make_shared<YzRect>(0,555,0,555,0, light);
+
+    // Ceiling
+    std::shared_ptr<YzRect> ceiling_rect;
+    ceiling_rect = std::make_shared<YzRect>(0,555,0,555,0, grey_material);
+
+    // Floor
+    std::shared_ptr<YzRect> floor_rect;
+    floor_rect = std::make_shared<YzRect>(0,555,0,555,0, grey_material);
+
+    // Back wall
+    std::shared_ptr<YzRect> wall_rect;
+    wall_rect = std::make_shared<YzRect>(0,555,0,555,0, grey_material);
+}
+
+
 void Render(const int nx, const int ny, uchar (*image)[3], const std::shared_ptr<Geometry> &world, const Camera cam, unsigned int ns, const bool normal) {
 
     std::cout << "Rendering.." << std::endl;
 #pragma omp parallel
     {
 
-#pragma omp for schedule(static,1)
+#pragma omp for schedule(static, 1)
         for (int j = 0; j < ny; j++) {
             for (int i = 0; i < nx; i++) {
                 vec3<float> col(0, 0, 0);
@@ -188,10 +233,10 @@ void SaveImage(int nx, int ny, uchar (*image)[3], std::string save_to) {
 int main() {
 
     // Environment and Rendering parameters
-    int nx = 1200;
-    int ny = 600;
+    int nx = 800;
+    int ny = 400;
 
-    unsigned int antialias_samples = 500;
+    unsigned int antialias_samples = 20;
     unsigned int number_of_objects = 3;
 
     bool normal_mapping = false;
@@ -206,33 +251,34 @@ int main() {
     int num_threads = 8;
     omp_set_num_threads(num_threads);
 
-  // Default Camera Settings
-  vec3<float> look_from(13, 2, 3);
-  vec3<float> look_at(0, 0, 0);
-  float dist_to_focus = 1.0;//(look_from - look_at).Norm2();
-  float aperture = 0.0;
-  float fov = 20;
-  float aspect = float(nx) / float(ny);
+    // Default Camera Settings
+    vec3<float> look_from(13, 2, 3);
+    vec3<float> look_at(0, 0, 0);
+    float dist_to_focus = 1.0;//(look_from - look_at).Norm2();
+    float aperture = 0.0;
+    float fov = 20;
+    float aspect = float(nx) / float(ny);
 
-  Camera camera(look_from, look_at, vec3<float>(0, 1, 0), fov, aspect, aperture, dist_to_focus);
+    Camera camera(look_from, look_at, vec3<float>(0, 1, 0), fov, aspect, aperture, dist_to_focus);
 
-  std::vector<std::shared_ptr<Geometry>> object_list;
-  GetRandomObjectList(number_of_objects, object_list);
+    std::vector<std::shared_ptr<Geometry>> object_list;
+    GetRandomObjectList(number_of_objects, object_list);
 
-  auto world = std::make_shared<Geomlist>(object_list);
+    auto world = std::make_shared<Geomlist>(object_list);
 
-  // Rendering bounding box
-  const auto t0 = Clock::now();
+    // Rendering bounding box
+    const auto t0 = Clock::now();
 
   uchar bb_image[ny * nx][3];
   Render(nx, ny, bb_image, world, camera, antialias_samples, normal_mapping);
   const auto t1 = Clock::now();
 
-  auto bb_rendering_duration = std::chrono::duration_cast<std::chrono::seconds>(t1 - t0).count();
-  std::cout << "Bounding Box Rendering Duration: "
-          << bb_rendering_duration
-          << " seconds" << std::endl;
+    auto bb_rendering_duration = std::chrono::duration_cast<std::chrono::seconds>(t1 - t0).count();
+    std::cout << "Bounding Box Rendering Duration: "
+              << bb_rendering_duration
+              << " seconds" << std::endl;
 
-  SaveImage(nx, ny, bb_image, "../awd_image.jpg"); // TODO: fix path
+    SaveImage(nx, ny, bb_image, "../awd_image.jpg"); // TODO: fix path
+    ShowImage(nx, ny, bb_image);
 
 }
