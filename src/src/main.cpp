@@ -11,7 +11,6 @@ typedef std::chrono::high_resolution_clock Clock;
 #include <omp.h>
 
 void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geometry>>& object_list) {
-
     int num = int(sqrt(amount)/2);
 
     vec3<float> mat_vec(0.5, 0.5, 0.5);
@@ -20,8 +19,8 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
     material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(mat_vec));
     //material = std::make_shared<DiffuseLight>(std::make_shared<Constant_texture>(light_vec));
 
-    std::shared_ptr<Sphere> floor_sphere =
-            std::make_shared<Sphere>(vec3<float>(0, -1000, 0), 1000, material);
+  std::shared_ptr<Sphere> floor_sphere =
+      std::make_shared<Sphere>(vec3<float>(0, -1000, 0), 200, material); //default radius 1000
 
     object_list.push_back(floor_sphere);
 
@@ -73,13 +72,18 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
     std::shared_ptr<Lambertian> checker_material;
     checker_material = std::make_shared<Lambertian>(checker);
 
-    std::shared_ptr<Material> metal_material;
-    metal_material = std::make_shared<Metal>(std::make_shared<Constant_texture>(vec3<float>(0.7,0.6,0.5)),0.5);
-    li.push_back(std::make_shared<Sphere>(vec3<float>(4,1,0), 1.0, metal_material));
+    //std::shared_ptr<Material> metal_material;
+    //metal_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(vec3<float>(0.7,0.6,0.5)));
+    //li.push_back(std::make_shared<Sphere>(vec3<float>(4,1,0), 1.0, metal_material));
     i++;
     li.push_back(std::make_shared<Sphere>(vec3<float>(-4,1,0), 1.0, checker_material));
     //li.push_back(std::make_shared<Sphere>(vec3<float>(-4,1,0), 1.0, std::make_shared<Lambertian>(vec3<float>(0.4,0.2,0.1))));
     i++;
+
+    //playing with boxes
+    std::shared_ptr<Box>kuutio = std::make_shared<Box>(vec3<float>(4, 1, 0), vec3<float>(5, 2, 1), light);
+    li.push_back(kuutio);
+
     auto bb_world = std::make_shared<BoundingVolumeNode>(BoundingVolumeNode(li, 0.0, 1.0));
     object_list.push_back(bb_world);
 
@@ -179,10 +183,10 @@ void SaveImage(int nx, int ny, uchar (*image)[3], std::string save_to) {
 int main() {
 
     // Environment and Rendering parameters
-    int nx = 900;
-    int ny = 400;
+    int nx = 1200;
+    int ny = 600;
 
-    unsigned int antialias_samples = 1000;
+    unsigned int antialias_samples = 500;
     unsigned int number_of_objects = 3;
 
 /**
@@ -195,34 +199,33 @@ int main() {
     int num_threads = 8;
     omp_set_num_threads(num_threads);
 
-    // Create Camera
-    vec3<float> look_from(13, 2, 3);
-    vec3<float> look_at(0, 0, 0);
-    float dist_to_focus = 1.0;//(look_from - look_at).Norm2();
-    float aperture = 0.0;
-    float fov = 30;
-    float aspect = float(nx) / float(ny);
+  // Default Camera Settings
+  vec3<float> look_from(13, 2, 3);
+  vec3<float> look_at(0, 0, 0);
+  float dist_to_focus = 1.0;//(look_from - look_at).Norm2();
+  float aperture = 0.0;
+  float fov = 20;
+  float aspect = float(nx) / float(ny);
 
-    Camera camera(look_from, look_at, vec3<float>(0, 1, 0), fov, aspect, aperture, dist_to_focus);
+  Camera camera(look_from, look_at, vec3<float>(0, 1, 0), fov, aspect, aperture, dist_to_focus);
 
-    std::vector<std::shared_ptr<Geometry>> object_list;
-    GetRandomObjectList(number_of_objects, object_list);
+  std::vector<std::shared_ptr<Geometry>> object_list;
+  GetRandomObjectList(number_of_objects, object_list);
 
-    auto world = std::make_shared<Geomlist>(object_list);
+  auto world = std::make_shared<Geomlist>(object_list);
 
-    // Rendering bounding box
-    const auto t0 = Clock::now();
+  // Rendering bounding box
+  const auto t0 = Clock::now();
 
-    uchar bb_image[ny * nx][3];
-    Render(nx, ny, bb_image, world, camera, antialias_samples);
-    const auto t1 = Clock::now();
+  uchar bb_image[ny * nx][3];
+  Render(nx, ny, bb_image, world, camera, antialias_samples);
+  const auto t1 = Clock::now();
 
-    auto bb_rendering_duration = std::chrono::duration_cast<std::chrono::seconds>(t1 - t0).count();
-    std::cout << "Bounding Box Rendering Duration: "
-              << bb_rendering_duration
-              << " seconds" << std::endl;
+  auto bb_rendering_duration = std::chrono::duration_cast<std::chrono::seconds>(t1 - t0).count();
+  std::cout << "Bounding Box Rendering Duration: "
+          << bb_rendering_duration
+          << " seconds" << std::endl;
 
-    //SaveImage(nx, ny, bb_image, "../awd_image.jpg"); // TODO: fix path
-    ShowImage(nx, ny, bb_image); // TODO: fix path
+  SaveImage(nx, ny, bb_image, "../awd_image.jpg"); // TODO: fix path
 
 }
