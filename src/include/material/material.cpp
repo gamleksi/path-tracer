@@ -4,6 +4,14 @@
 
 #include "material.h"
 
+vec3<float> Random_in_unit_sphere() {
+
+    vec3<float> p;
+    do {
+        p = (float) 2.0*vec3<float>( (float) drand48(), (float) drand48(), (float) drand48()) - vec3<float>(1,1,1);
+    } while (p.Squared_length() >= (float) 1.0);
+    return p;
+}
 
 bool Lambertian::Scatter(
     const ray<float>& r_in, const Hit_record& rec,
@@ -16,14 +24,7 @@ bool Lambertian::Scatter(
     return true;
 }
 
- vec3<float> Lambertian::Random_in_unit_sphere() const {
 
-    vec3<float> p;
-    do {
-        p = (float) 2.0*vec3<float>( (float) drand48(), (float) drand48(), (float) drand48()) - vec3<float>(1,1,1);
-    } while (p.Squared_length() >= (float) 1.0);
-    return p;
- }
 
 vec3<float> Reflect(const vec3<float>& v, const vec3<float>& n) {
     return v - 2*Dot(v,n)*n;
@@ -32,7 +33,7 @@ vec3<float> Reflect(const vec3<float>& v, const vec3<float>& n) {
 bool Metal::Scatter(const ray<float>& r_in, const Hit_record& rec,
     vec3<float>& attenuation, ray<float>& scattered) const {
     vec3<float> reflected = Reflect(r_in.Direction().Turn_unit(), rec.normal);
-    scattered = ray<float>(rec.point, reflected);
+    scattered = ray<float>(rec.point, reflected + fuzz * Random_in_unit_sphere());
     attenuation = albedo->Value(0,0, rec.point);
     return (Dot(scattered.Direction(), rec.normal) > 0);
 }
