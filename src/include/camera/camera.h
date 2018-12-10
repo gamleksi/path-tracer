@@ -33,6 +33,8 @@ private:
 
 vec3<float> Color(const ray<float>& r, const std::shared_ptr<Geometry>& geom, int depth);
 
+vec3<float> NormalMapping(const ray<float>& r, const std::shared_ptr<Geometry>& geom);
+
 vec3<float> RandomUnitDiscCoord();
 
 

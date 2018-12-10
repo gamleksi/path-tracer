@@ -136,7 +136,8 @@ void GetDebugObjectList(unsigned int amount, std::vector<std::shared_ptr<Geometr
     object_list.push_back(bb_world);
 }
 
-void Render(const int nx, const int ny, uchar (*image)[3], const std::shared_ptr<Geometry> &world, const Camera cam, unsigned int ns) {
+
+void Render(const int nx, const int ny, uchar (*image)[3], const std::shared_ptr<Geometry> &world, const Camera cam, unsigned int ns, const bool normal) {
 
     std::cout << "Rendering.." << std::endl;
 #pragma omp parallel
@@ -150,7 +151,11 @@ void Render(const int nx, const int ny, uchar (*image)[3], const std::shared_ptr
                     float u = 1 - float(i + drand48()) / float(nx);
                     float v = 1 - float(j + drand48()) / float(ny);
                     const ray<float> r = cam.GetRay(u, v);
-                    col += Color(r, world, 0);
+                    if (normal) {
+                      col += NormalMapping(r, world);
+                    } else {
+                      col += Color(r, world, 0);
+                    }
                 }
 
                 col /= float(ns);
@@ -189,6 +194,8 @@ int main() {
     unsigned int antialias_samples = 500;
     unsigned int number_of_objects = 3;
 
+    bool normal_mapping = false;
+
 /**
  * In order to get everything out of your computer the number of threads should be dividable by 8 and nx * ny % num_threads == 0
  * Based on couple of experiments the number of threads should be the number of cores in your computer.
@@ -218,7 +225,7 @@ int main() {
   const auto t0 = Clock::now();
 
   uchar bb_image[ny * nx][3];
-  Render(nx, ny, bb_image, world, camera, antialias_samples);
+  Render(nx, ny, bb_image, world, camera, antialias_samples, normal_mapping);
   const auto t1 = Clock::now();
 
   auto bb_rendering_duration = std::chrono::duration_cast<std::chrono::seconds>(t1 - t0).count();
