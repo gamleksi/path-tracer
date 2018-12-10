@@ -42,7 +42,7 @@ vec3<float> Color(const ray<float>& r, const std::shared_ptr<Geometry>& geom, in
     }
     else
     {
-        return vec3<float>(0,0,0);
+        return vec3<float>(0.1,0.1,0.1);
     }
 
 

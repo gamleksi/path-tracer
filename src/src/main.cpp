@@ -19,21 +19,24 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
     vec3<float> light_vec(4, 4, 4);
     std::shared_ptr<Material> material;
     material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(mat_vec));
-    //material = std::make_shared<DiffuseLight>(std::make_shared<Constant_texture>(light_vec));
+    material = std::make_shared<DiffuseLight>(std::make_shared<Constant_texture>(light_vec));
+
+    std::shared_ptr<Material> light;
+    light = std::make_shared<DiffuseLight>(std::make_shared<Constant_texture>(light_vec));
 
     std::shared_ptr<Sphere> floor_sphere =
-            std::make_shared<Sphere>(vec3<float>(0, -1000, 0), 200, material); //default radius 1000
+            std::make_shared<Sphere>(vec3<float>(0, -1000, 0), 1000, light); //default radius 1000
 
     object_list.push_back(floor_sphere);
 
     std::vector<std::shared_ptr<Geometry>> li;
 
-    std::shared_ptr<Material> light;
-    light = std::make_shared<DiffuseLight>(std::make_shared<Constant_texture>(light_vec));
+
     std::shared_ptr<XyRect> light_rect = std::make_shared<XyRect>(-2.0, 3.0, 0.5, 6.0, 4, light);
     li.push_back(light_rect);
     std::shared_ptr<XyRect> light_rect2 = std::make_shared<XyRect>(1.0, 6.0, 0.5, 6.0, -4.0, light);
     li.push_back(light_rect2);
+
 
     unsigned int i = 1;
     for (int a = -num; a < num; a++) {
@@ -181,10 +184,10 @@ void SaveImage(int nx, int ny, uchar (*image)[3], std::string save_to) {
 int main() {
 
     // Environment and Rendering parameters
-    int nx = 1200;
-    int ny = 600;
+    int nx = 1000;
+    int ny = 200;
 
-    unsigned int antialias_samples = 400;
+    unsigned int antialias_samples = 200;
     unsigned int number_of_objects = 3;
 
 /**
@@ -224,6 +227,7 @@ int main() {
               << bb_rendering_duration
               << " seconds" << std::endl;
 
-    SaveImage(nx, ny, bb_image, "../awd_image.jpg"); // TODO: fix path
+    //SaveImage(nx, ny, bb_image, "../awd_image.jpg"); // TODO: fix path
+    ShowImage(nx, ny, bb_image);
 
 }
