@@ -15,7 +15,7 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
   int num = int(sqrt(amount)/2);
 
   vec3<float> mat_vec(0.5, 0.5, 0.5);
-  vec3<float> light_vec(4,4,4);
+  vec3<float> light_vec(6,6,6);
   std::shared_ptr<Material> material;
   material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(mat_vec));
   //material = std::make_shared<DiffuseLight>(std::make_shared<Constant_texture>(light_vec));
@@ -182,11 +182,11 @@ void SaveImage(int nx, int ny, uchar (*image)[3], std::string save_to) {
 int main() {
 
     // Environment and Rendering parameters
-    int nx = 600;
-    int ny = 300;
+    int nx = 1200;
+    int ny = 600;
 
-    unsigned int antialias_samples = 50;
-    unsigned int number_of_objects = 100;
+    unsigned int antialias_samples = 700;
+    unsigned int number_of_objects = 500;
 
 /**
  * In order to get everything out of your computer the number of threads should be dividable by 8 and nx * ny % num_threads == 0
