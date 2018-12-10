@@ -15,10 +15,13 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
   int num = int(sqrt(amount)/2);
 
   vec3<float> mat_vec(0.5, 0.5, 0.5);
-  vec3<float> light_vec(4,4,4);
+  vec3<float> light_vec(10,7,5);
   std::shared_ptr<Material> material;
+  std::shared_ptr<Material> glass_material;
   material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(mat_vec));
-  //material = std::make_shared<DiffuseLight>(std::make_shared<Constant_texture>(light_vec));
+  glass_material = std::make_shared<Dielectric>((float)0.3);
+
+    //material = std::make_shared<DiffuseLight>(std::make_shared<Constant_texture>(light_vec));
 
   std::shared_ptr<Sphere> floor_sphere =
       std::make_shared<Sphere>(vec3<float>(0, -1000, 0), 1000, material);
@@ -58,9 +61,9 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
       }
   }
   //Checker colors
-  vec3<float> odd = vec3<float>(0.5, 0.3, 0.1);
-  vec3<float> even = vec3<float>(0.9, 0.9, 0.9);
-  int checker_size = 50;
+  vec3<float> odd = vec3<float>(0.1, 0.1, 0.1);
+  vec3<float> even = vec3<float>(0.1, 0.5, 0.9);
+  int checker_size = 5;
   std::shared_ptr<Constant_texture> even_texture;
   even_texture = std::make_shared<Constant_texture>(even);
   std::shared_ptr<Constant_texture> odd_texture;
@@ -73,7 +76,7 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
 
   std::shared_ptr<Material> metal_material;
   metal_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(vec3<float>(0.7,0.6,0.5)));
-  li.push_back(std::make_shared<Sphere>(vec3<float>(4,1,0), 1.0, metal_material));
+  li.push_back(std::make_shared<Sphere>(vec3<float>(4,1,0), 2.0, glass_material));
   i++;
   li.push_back(std::make_shared<Sphere>(vec3<float>(-4,1,0), 1.0, checker_material));
   //li.push_back(std::make_shared<Sphere>(vec3<float>(-4,1,0), 1.0, std::make_shared<Lambertian>(vec3<float>(0.4,0.2,0.1))));
@@ -180,7 +183,7 @@ int main() {
     int nx = 1200;
     int ny = 600;
 
-    unsigned int antialias_samples = 500;
+    unsigned int antialias_samples = 400;
     unsigned int number_of_objects = 3;
 
 /**
