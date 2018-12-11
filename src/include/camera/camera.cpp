@@ -28,8 +28,8 @@ vec3<float> Color(const ray<float>& r, const std::shared_ptr<Geometry>& geom, in
     Hit_record rec;
     if (geom->RayHits(r, 0.001, MAXFLOAT, rec))
     {
-        ray<float> scattered{};
-        vec3<float> attenuation{};
+        ray<float> scattered;
+        vec3<float> attenuation;
         vec3<float> emitted = rec.mat_ptr->Emitted(rec.u, rec.v, rec.point);
         if (depth < 50 && rec.mat_ptr->Scatter(r, rec, attenuation, scattered))
         {

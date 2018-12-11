@@ -55,7 +55,7 @@ bool XyRect::RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &
     rec.u = (x - x0_) / (x1_ - x0_);
     rec.v = (y - y0_) / (y1_ - y0_);
     rec.mat_ptr = material_;
-    rec.point = r.Point(rec.time);
+    rec.point = r.Point(t);
     rec.normal = vec3<float>(0,0,1);
     return true;
 }
@@ -69,7 +69,7 @@ bool XzRect::RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &
     rec.u = (x - x0_) / (x1_ - x0_);
     rec.v = (z - z0_) / (z1_ - z0_);
     rec.mat_ptr = material_;
-    rec.point = r.Point(rec.time);
+    rec.point = r.Point(t);
     rec.normal = vec3<float>(0, 1, 0);
     return true;
 }
@@ -83,7 +83,7 @@ bool YzRect::RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &
     rec.u = (y - y0_) / (y1_ - y0_);
     rec.v = (z - z0_) / (z1_ - z0_);
     rec.mat_ptr = material_;
-    rec.point = r.Point(rec.time);
+    rec.point = r.Point(t);
     rec.normal = vec3<float>(1, 0, 0);
     return true;
 }
