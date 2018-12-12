@@ -35,7 +35,7 @@ class vec3 {
 
         T Norm2() const;
         vec3 Unit() const;
-        vec3 Turn_unit();
+        vec3 Turn_unit() const;
         float Z() const { return e[2]; }
         float Y() const { return e[1]; }
         float X() const { return e[0]; }
@@ -249,7 +249,7 @@ vec3<T> operator/(const T &a, const vec3<T> &v1) {
 
 //Cross product
 template <typename T>
-vec3<T> cross(const vec3<T> &v1, const vec3<T> &v2){
+vec3<T> Cross(const vec3<T> &v1, const vec3<T> &v2){
     return vec3<T>(v1[1] * v2[2] - v1[2] * v2[1],
         v1[2] * v2[0] - v1[0] * v2[2],
         v1[0]*v2[1]-v1[1]*v2[0]);
@@ -275,8 +275,8 @@ vec3<T> vec3<T>::Unit() const {
 
 // make unit
 template <typename T>
-vec3<T> vec3<T>::Turn_unit() {
-    return *this /= this->Norm2();
+vec3<T> vec3<T>::Turn_unit() const {
+    return *this / this->Norm2();
 };
 
 #endif //PATH_TRACER_VEC3_H

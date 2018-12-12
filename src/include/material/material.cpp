@@ -18,38 +18,38 @@ vec3<float> Reflect(const vec3<float> &v, const vec3<float> &n) {
     return v - 2 * Dot(v, n) * n;
 }
 
-bool Lambertian::Scatter(
-        const ray<float> &r_in, const Hit_record &rec,
-        vec3<float> &attenuation, ray<float> &scattered, float& pdf) const {
-    Onb uvw;
-    uvw.Build_from_w(rec.normal);
-    vec3<float> direction = uvw.Local( Random_cosine_direction() );
-    scattered = ray<float>(rec.point, direction.Turn_unit());
-    alb =albedo->Value(rec.u, rec.v, rec.point);
-    pdf
-
-    vec3<float> target = rec.point + rec.normal + RandomInUnitSphere();
-    scattered = ray<float>(rec.point, target - rec.point);
-    attenuation = albedo->Value(0, 0, rec.point);
-
+bool Lambertian::Scatter(const ray<float> &r_in, const HitRecord& rec, ScatterInfo& srec, float& pdf) const {
+    srec.isSpecular = false;
+    srec.attenuation = albedo->Value(rec.u, rec.v, rec.point);
+    srec.pdf_ptr = std::make_shared<CosinePdf>(rec.normal);
     return true;
 }
 
-bool Metal::Scatter(const ray<float> &r_in, const Hit_record &rec,
-                    vec3<float> &attenuation, ray<float> &scattered) const {
-    vec3<float> reflected = Reflect(r_in.Direction().Turn_unit(), rec.normal);
-    scattered = ray<float>(rec.point, reflected + fuzz * RandomInUnitSphere());
-    attenuation = albedo->Value(0, 0, rec.point);
-    return (Dot(scattered.Direction(), rec.normal) > 0);
+float Lambertian::ScatteringPdf(const ray<float> &r_in, const HitRecord &rec, const ray<float> &scattered) const {
+    float cosine = Dot(rec.normal, (scattered.Direction()).Turn_unit());
+    if (cosine < 0)
+        return 0;
+    return cosine / M_PI;
 }
 
-bool DiffuseLight::Scatter(const ray<float> &r_in, const Hit_record &rec, vec3<float> &attenuation,
+bool Metal::Scatter(const ray<float>& r_in, const HitRecord& hrec, ScatterInfo& srec) const {
+    vec3<float> reflected = Reflect((r_in.Direction().Turn_unit()), hrec.normal);
+    srec.specularRay = ray<float>(hrec.point, reflected + fuzz*RandomInUnitSphere());
+    srec.attenuation = albedo;
+    srec.isSpecular = true;
+    srec.pdf_ptr = 0;
+    return true;
+}
+bool DiffuseLight::Scatter(const ray<float> &r_in, const HitRecord &rec, vec3<float> &attenuation,
                            ray<float> &scattered) const {
     return false;
 }
 
-vec3<float> DiffuseLight::Emitted(float u, float v, const vec3<float> &p) const {
-    return emit->Value(u, v, p);
+vec3<float>DiffuseLight::Emitted(const ray<float>& r_in, const HitRecord& rec, float u, float v, const vec3<float>& p) const {
+    if (Dot(rec.normal, r_in.Direction()) < 0.0)
+        return emit->Value(u, v, p);
+    else
+        return vec3<float>(0,0,0);
 }
 
 bool Dielectric::Refract(const vec3<float> &v, const vec3<float> &n, float ni_over_nt, vec3<float> refracted) const {
@@ -71,36 +71,39 @@ float Dielectric::Schkick(float cosine, float ref_idx) const {
 }
 
 
-bool Dielectric::Scatter(const ray<float> &r_in, const Hit_record &rec, vec3<float> &attenuation,
-                         ray<float> &scattered) const {
+bool Dielectric::Scatter(const ray<float>& r_in, const HitRecord& hrec, ScatterInfo& srec) const {
+    srec.isSpecular = true;
+    srec.pdf_ptr = 0;
+    srec.attenuation = vec3<float>(1.0, 1.0, 1.0);
     vec3<float> outward_normal;
-    vec3<float> reflected = Reflect(r_in.Direction(), rec.normal);
-    float ni_over_nt;
-    attenuation = vec3<float>(1.0, 1.0, 1.0);
+    vec3<float> reflected = Reflect(r_in.Direction(), hrec.normal);
     vec3<float> refracted;
+    float ni_over_nt;
     float reflect_prob;
     float cosine;
-    if (Dot(r_in.Direction(), rec.normal) > 0) {
-        outward_normal = -rec.normal;
-        ni_over_nt = this->ref_idx;
-        cosine = ref_idx * Dot(r_in.Direction(), rec.normal) / sqrt(r_in.Direction().Squared_length());
-    } else {
-        outward_normal = rec.normal;
-        ni_over_nt = 1.0 / this->ref_idx;
-        cosine = -Dot(r_in.Direction(), rec.normal) / sqrt(r_in.Direction().Squared_length());
+    if (Dot(r_in.Direction(), hrec.normal) > 0) {
+        outward_normal = -hrec.normal;
+        ni_over_nt = ref_idx;
+        cosine = ref_idx * Dot(r_in.Direction(), hrec.normal) / r_in.Direction().Squared_length();
+    }
+    else {
+        outward_normal = hrec.normal;
+        ni_over_nt = 1.0 / ref_idx;
+        cosine = -Dot(r_in.Direction(), hrec.normal) / r_in.Direction().Squared_length();
     }
     if (Refract(r_in.Direction(), outward_normal, ni_over_nt, refracted)) {
         reflect_prob = Schkick(cosine, ref_idx);
-    } else {
+    }
+    else {
         reflect_prob = 1.0;
     }
     if (drand48() < reflect_prob) {
-        scattered = ray<float>(rec.point, reflected);
-    } else {
-        scattered = ray<float>(rec.point, refracted);
+        srec.specularRay = ray<float>(hrec.point, reflected);
+    }
+    else {
+        srec.specularRay = ray<float>(hrec.point, refracted);
     }
     return true;
-
 }
 
 

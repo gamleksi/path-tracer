@@ -3,11 +3,9 @@
 //
 
 
+#include <cfloat>
 #include "geometry/geometry.h"
 
-
-Sphere::Sphere(vec3<float> position, float radius, std::shared_ptr<Material> mat)
-    : Geometry(), radius_(radius), position_(position), material_(std::move(mat)) { }
 
 XyRect::XyRect(float x0, float x1, float y0, float y1, float k, std::shared_ptr<Material> mat)
     : x0_(x0), x1_(x1), y0_(y0), y1_(y1), k_(k), material_(std::move(mat)) { }
@@ -18,35 +16,8 @@ XzRect::XzRect(float x0, float x1, float z0, float z1, float k, std::shared_ptr<
 YzRect::YzRect(float y0, float y1, float z0, float z1, float k, std::shared_ptr<Material> mat)
     : y0_(y0), y1_(y1), z0_(z0), z1_(z1), k_(k), material_(std::move(mat)) { }
 
-bool Sphere::RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const
-{
-    vec3<float> oc = r.Origin() - position_;
-    float a = Dot(r.Direction(), r.Direction());
-    float b = Dot(oc, r.Direction());
-    float c = Dot(oc,oc) - radius_*radius_;
-    float discriminant = b*b - a*c;
-    if (discriminant > 0){
-        float temp = (-b - sqrtf(discriminant))/(a);
-        if (temp < t_max && temp > t_min){
-            rec.time = temp;
-            rec.point = r.Point(rec.time);
-            rec.normal = (rec.point - position_) / radius_;
-            rec.mat_ptr = material_;
-            return true;
-        }
-        temp = (-b + sqrtf(discriminant))/(a);
-        if (temp < t_max && temp > t_min){
-            rec.time = temp;
-            rec.point = r.Point(rec.time);
-            rec.normal = (rec.point - position_) / radius_;
-            rec.mat_ptr = material_;
-            return true;
-        }
-    }
-    return false;
-}
 
-bool XyRect::RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &rec) const {
+bool XyRect::RayHits(const ray<float> &r, float t_min, float t_max, HitRecord &rec) const {
     float t = (k_ - r.Origin().Z()) / r.Direction().Z();
     if (t < t_min || t > t_max){ return false; }
     float x = r.Origin().X() + t * r.Direction().X();
@@ -60,7 +31,7 @@ bool XyRect::RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &
     return true;
 }
 
-bool XzRect::RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &rec) const {
+bool XzRect::RayHits(const ray<float> &r, float t_min, float t_max, HitRecord &rec) const {
     float t = (k_ - r.Origin().Y()) / r.Direction().Y();
     if (t < t_min || t > t_max) { return false; }
     float x = r.Origin().X() + t * r.Direction().X();
@@ -74,7 +45,7 @@ bool XzRect::RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &
     return true;
 }
 
-bool YzRect::RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &rec) const {
+bool YzRect::RayHits(const ray<float> &r, float t_min, float t_max, HitRecord &rec) const {
     float t = (k_ - r.Origin().X()) / r.Direction().X();
     if (t < t_min || t > t_max) { return false; }
     float y = r.Origin().Y() + t * r.Direction().Y();
@@ -85,11 +56,6 @@ bool YzRect::RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &
     rec.mat_ptr = material_;
     rec.point = r.Point(t);
     rec.normal = vec3<float>(1, 0, 0);
-    return true;
-}
-
-bool Sphere::GetBoundingBox(float t0, float t1, BoundingBox& box) const {
-    box = BoundingBox(position_ - radius_, position_ + radius_);
     return true;
 }
 
@@ -123,50 +89,13 @@ Box::Box(const vec3<float> &p0, const vec3<float> &p1, std::shared_ptr<Material>
     list_ptr_ = std::make_shared<Geomlist>(rect_list);
 }
 
-bool Box::RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &rec) const {
+bool Box::RayHits(const ray<float> &r, float t_min, float t_max, HitRecord &rec) const {
     return list_ptr_->RayHits(r, t_min, t_max, rec);
 }
 
 bool Box::GetBoundingBox(float t0, float t1, BoundingBox &box) const {
     box = BoundingBox(pmin_, pmax_);
     return true;
-}
-
-bool Geomlist::RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const{
-    Hit_record temp_rec{};
-    bool hit = false;
-    float closest_distance = t_max;
-    for (int i = 0; i < list_size_; i++){
-        if(list_[i]->RayHits(r, t_min, closest_distance, temp_rec)){
-            hit = true;
-            closest_distance = temp_rec.time;
-            rec = temp_rec;
-        }
-    }
-    return hit;
-}
-
-bool Geomlist::GetBoundingBox(float t0, float t1, BoundingBox& box) const {
-  if ( list_size_ < 1) { return false; }
-
-  BoundingBox temporary_box;
-  bool first_bounding_exist = list_[0]->GetBoundingBox(t0, t1, temporary_box);
-
-  if (first_bounding_exist) {
-      box = temporary_box;
-  } else {
-      return false;
-  }
-
-  for (unsigned int i = 1; i < list_size_; i++) {
-
-      if(list_[i]->GetBoundingBox(t0, t1, temporary_box)) {
-          box = CombineBoxes(box, temporary_box);
-      } else {
-          return false;
-      }
-  }
-  return true;
 }
 
 bool BBXCompare(const std::shared_ptr<Geometry>& a, const std::shared_ptr<Geometry>& b) {
@@ -249,10 +178,6 @@ BoundingVolumeNode::BoundingVolumeNode(std::vector<std::shared_ptr<Geometry>>& o
    return right_->NumberOfObjects();
  }
 
- int Sphere::NumberOfObjects() const {
-   return 1;
- }
-
  int XyRect::NumberOfObjects() const {
     return 1;
  }
@@ -267,7 +192,7 @@ BoundingVolumeNode::BoundingVolumeNode(std::vector<std::shared_ptr<Geometry>>& o
 
  int Geomlist::NumberOfObjects() const {
    int i = 0;
-   for (const auto &geom : list_) {
+   for (const auto &geom : list) {
      i = i + geom -> NumberOfObjects();
    }
    return i;
@@ -277,11 +202,11 @@ BoundingVolumeNode::BoundingVolumeNode(std::vector<std::shared_ptr<Geometry>>& o
     return 1;
  }
 
-bool BoundingVolumeNode::RayHits(const ray<float>& ray, float t_min, float t_max, Hit_record& rec) const {
+bool BoundingVolumeNode::RayHits(const ray<float>& ray, float t_min, float t_max, HitRecord& rec) const {
 
   if (bounding_box_.RayHits(ray, t_min, t_max)) {
-    Hit_record left_record{};
-    Hit_record right_record{};
+      HitRecord left_record{};
+      HitRecord right_record{};
 
     bool left_hits = left_ -> RayHits(ray, t_min, t_max, left_record);
     bool right_hits = right_ -> RayHits(ray, t_min, t_max, right_record);
@@ -307,4 +232,3 @@ bool BoundingVolumeNode::GetBoundingBox(float t0, float t1, BoundingBox& box) co
   box = bounding_box_;
   return true;
 }
-

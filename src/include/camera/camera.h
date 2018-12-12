@@ -31,7 +31,7 @@ private:
     float lens_radius_;
 };
 
-vec3<float> Color(const ray<float>& r, const std::shared_ptr<Geometry>& geom, int depth);
+vec3<float> Color(const ray<float>& r, std::shared_ptr<Geometry> world, std::shared_ptr<Geometry> lights, int depth);
 
 vec3<float> NormalMapping(const ray<float>& r, const std::shared_ptr<Geometry>& geom);
 

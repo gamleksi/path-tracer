@@ -48,7 +48,7 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
                     i++;
                 } else {
                     vec3<float> mat_vec(0.5 * (1 + drand48()), 0.5 * (1 + drand48()), 0.5 * (1 + drand48()));
-                    material = std::make_shared<Metal>(std::make_shared<Constant_texture>(mat_vec), 0.5);
+                    material = std::make_shared<Metal>(mat_vec, 0.5);
                     li.push_back(std::make_shared<Sphere>(object_coord, 0.2, material));
                     i++;
                 }
@@ -135,7 +135,8 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
 //}
 
 
-void CornellBoxScene(std::vector<std::shared_ptr<Geometry>> &object_list) {
+void CornellBoxScene(std::vector<std::shared_ptr<Geometry>> &object_list,
+                     std::vector<std::shared_ptr<Geometry>> &light_list) {
 
     // Light
     vec3<float> light_vec(7, 7, 7);
@@ -147,8 +148,8 @@ void CornellBoxScene(std::vector<std::shared_ptr<Geometry>> &object_list) {
     vec3<float> grey(0.3, 0.3, 0.3);
     vec3<float> red(0.7, 0.05, 0.05);
     vec3<float> green(0.1, 0.5, 0.1);
-    vec3<float> copper(0.72,0.45,0.2);
-    vec3<float> white(0.9,0.9,0.9);
+    vec3<float> copper(0.72, 0.45, 0.2);
+    vec3<float> white(0.9, 0.9, 0.9);
 
 
     // Materials
@@ -162,7 +163,7 @@ void CornellBoxScene(std::vector<std::shared_ptr<Geometry>> &object_list) {
     red_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(red));
     green_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(green));
     glass_material = std::make_shared<Dielectric>(1.5);
-    metal_material = std::make_shared<Metal>(std::make_shared<Constant_texture>(copper), 0.5);
+    metal_material = std::make_shared<Metal>(copper, 0.5);
     white_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(white));
 
     // Green
@@ -176,7 +177,7 @@ void CornellBoxScene(std::vector<std::shared_ptr<Geometry>> &object_list) {
 
     // Light
     std::shared_ptr<XzRect> light_source;
-    light_source = std::make_shared<XzRect>(200, 555-200, 200, 555-200, 553, light);
+    light_source = std::make_shared<XzRect>(200, 555 - 200, 200, 555 - 200, 553, light);
 
     // Ceiling
     std::shared_ptr<XzRect> ceiling_rect;
@@ -195,20 +196,11 @@ void CornellBoxScene(std::vector<std::shared_ptr<Geometry>> &object_list) {
 
     // Sphere 1
     std::shared_ptr<Sphere> sphere;
-    sphere = std::make_shared<Sphere>(vec3<float>(70,60,400), 60, white_material);
+    sphere = std::make_shared<Sphere>(vec3<float>(70, 60, 400), 60, light);
 
     // Sphere 2
     std::shared_ptr<Sphere> sphere2;
-    sphere2 = std::make_shared<Sphere>(vec3<float>(400,100, 350), 100, metal_material);
-
-
-    // Sphere 3 kupu ulko
-    std::shared_ptr<Sphere> sphere3;
-    sphere3 = std::make_shared<Sphere>(vec3<float>(200,110, 200), 110, glass_material);
-
-    // Sphere 4 kupu sisä
-    std::shared_ptr<Sphere> sphere4;
-    sphere4 = std::make_shared<Sphere>(vec3<float>(200,110, 200), -100, glass_material);
+    sphere2 = std::make_shared<Sphere>(vec3<float>(400, 100, 350), 100, light);
 
 
     // World
@@ -217,14 +209,16 @@ void CornellBoxScene(std::vector<std::shared_ptr<Geometry>> &object_list) {
 
     object_list.push_back(sphere);
     object_list.push_back(sphere2);
-//    object_list.push_back(sphere3);
-//    object_list.push_back(sphere4);
     object_list.push_back(flipped_red);
     object_list.push_back(green_rect);
     object_list.push_back(light_source);
     object_list.push_back(floor_rect);
     object_list.push_back(flipped_ceiling);
     object_list.push_back(flipped_wall);
+
+    light_list.push_back(sphere);
+    light_list.push_back(sphere2);
+    light_list.push_back(light_source);
 
 
 
@@ -244,7 +238,8 @@ void CornellBoxScene(std::vector<std::shared_ptr<Geometry>> &object_list) {
 }
 
 
-void Render(const int nx, const int ny, uchar (*image)[3], const std::shared_ptr<Geometry> &world, const Camera cam,
+void Render(const int nx, const int ny, uchar (*image)[3], std::shared_ptr<Geometry> world,
+            std::shared_ptr<Geometry> lights, const Camera cam,
             unsigned int ns, const bool normal) {
 
     std::cout << "Rendering.." << std::endl;
@@ -262,7 +257,7 @@ void Render(const int nx, const int ny, uchar (*image)[3], const std::shared_ptr
                     if (normal) {
                         col += NormalMapping(r, world);
                     } else {
-                        col += Color(r, world, 0);
+                        col += Color(r, world, lights, 0);
                     }
                 }
 
@@ -299,7 +294,7 @@ int main() {
     int nx = 500;
     int ny = 500;
 
-    unsigned int antialias_samples = 100;
+    unsigned int antialias_samples = 1;
     unsigned int number_of_objects = 100;
 
     bool normal_mapping = false;
@@ -325,16 +320,18 @@ int main() {
     Camera camera(look_from, look_at, vec3<float>(0, 1, 0), fov, aspect, aperture, dist_to_focus);
 
     std::vector<std::shared_ptr<Geometry>> object_list;
-    CornellBoxScene(object_list);
+    std::vector<std::shared_ptr<Geometry>> light_list;
+    CornellBoxScene(object_list, light_list);
     //GetRandomObjectList(number_of_objects, object_list);
 
     auto world = std::make_shared<Geomlist>(object_list);
+    auto lights = std::make_shared<Geomlist>(light_list);
 
     // Rendering bounding box
     const auto t0 = Clock::now();
 
     uchar bb_image[ny * nx][3];
-    Render(nx, ny, bb_image, world, camera, antialias_samples, normal_mapping);
+    Render(nx, ny, bb_image, world, lights, camera, antialias_samples, normal_mapping);
     const auto t1 = Clock::now();
 
     auto bb_rendering_duration = std::chrono::duration_cast<std::chrono::seconds>(t1 - t0).count();

@@ -6,11 +6,10 @@
 #define PATH_TRACER_PDF_H
 
 #include <vector/vec3.h>
-#include <geometry/geometry.h>
 #include <pdf/onb.h>
 
 
-inline vec3<float> Random_cosine_direction() {
+inline vec3<float> RandomCosineDirection() {
     float r1 = drand48();
     float r2 = drand48();
     float z = sqrt(1 - r2);
@@ -20,7 +19,7 @@ inline vec3<float> Random_cosine_direction() {
     return vec3<float>(x, y, z);
 }
 
-inline vec3<float> Random_to_sphere(float radius, float distance_squared) {
+inline vec3<float> RandomToSphere(float radius, float distance_squared) {
     float r1 = drand48();
     float r2 = drand48();
     float z = 1 + r2 * (sqrt(1 - radius * radius / distance_squared) - 1);
@@ -31,28 +30,19 @@ inline vec3<float> Random_to_sphere(float radius, float distance_squared) {
 }
 
 
-vec3<float> Random_in_unit_sphere() {
-    vec3<float> p;
-    do {
-        p = (float) 2.0 * vec3<float>(drand48(), drand48(), drand48()) - vec3<float>(1, 1, 1);
-    } while (Dot(p, p) >= 1.0);
-    return p;
-}
-
-
-class pdf {
+class Pdf {
 public:
-    virtual float value(const vec3<float> &direction) const = 0;
+    virtual float Value(const vec3<float> &direction) const = 0;
 
-    virtual vec3<float> generate() const = 0;
+    virtual vec3<float> Generate() const = 0;
 
-    ~pdf() {}
+    ~Pdf() {}
 };
 
 
-class Cosine_pdf : public pdf {
+class CosinePdf : public Pdf {
 public:
-    Cosine_pdf(const vec3<float> &w) { uvw.Build_from_w(w); }
+    CosinePdf(const vec3<float> &w) { uvw.Build_from_w(w); }
 
     virtual float Value(const vec3<float> &direction) const {
         float cosine = Dot((direction), uvw.w().Turn_unit());
@@ -65,21 +55,21 @@ public:
     virtual vec3<float>
 
     Generate() const {
-        return uvw.Local(Random_cosine_direction());
+        return uvw.Local(RandomCosineDirection());
     }
 
     Onb uvw;
 };
 
-class Hitable_pdf : public pdf {
+class HitablePdf : public Pdf {
 public:
-    Hitable_pdf(std::shared_ptr<Geometry> p, const vec3<float> &origin) : ptr(p), o(origin) {}
+    HitablePdf(std::shared_ptr<Geometry> p, const vec3<float> &origin) : ptr(p), o(origin) {}
 
     virtual float Value(const vec3<float> &direction) const {
-        return ptr->Pdf_value(o, direction);
+        return ptr->PdfValue(o, direction);
     }
 
-    virtual vec3<float> generate() const {
+    virtual vec3<float> Generate() const {
         return ptr->Random(o);
     }
 
@@ -87,25 +77,25 @@ public:
     std::shared_ptr<Geometry> ptr;
 };
 
-class Mixture_pdf : public pdf {
+class MixturePdf : public Pdf {
 public:
-    Mixture_pdf(std::shared_ptr<pdf> p0, std::shared_ptr<pdf> p1) {
+    MixturePdf(std::shared_ptr<Pdf> p0, std::shared_ptr<Pdf> p1) {
         p[0] = p0;
         p[1] = p1;
     }
 
     virtual float Value(const vec3<float> &direction) const {
-        return 0.5 * p[0]->value(direction) + 0.5 * p[1]->value(direction);
+        return 0.5 * p[0]->Value(direction) + 0.5 * p[1]->Value(direction);
     }
 
-    virtual vec3<float> generate() const {
+    virtual vec3<float> Generate() const {
         if (drand48() < 0.5)
-            return p[0]->generate();
+            return p[0]->Generate();
         else
-            return p[1]->generate();
+            return p[1]->Generate();
     }
 
-    std::shared_ptr<pdf> p[2];
+    std::shared_ptr<Pdf> p[2];
 };
 
 

@@ -13,10 +13,12 @@
 #include "vector/vec3.h"
 #include "ray/ray.h"
 #include "intersection/bounding_box.h"
+#include "pdf/pdf.h"
+#include "geomlist.h"
 
 class Material;
 
-struct Hit_record { // TODO Fix the name
+struct HitRecord { // TODO Fix the name
     float time;
     float u;
     float v;
@@ -28,43 +30,17 @@ struct Hit_record { // TODO Fix the name
 
 class Geometry {
 public:
-    virtual bool RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &rec) const = 0;
+    virtual bool RayHits(const ray<float> &r, float t_min, float t_max, HitRecord &rec) const = 0;
 
     virtual bool GetBoundingBox(float t0, float t1, BoundingBox &box) const = 0;
 
     virtual int NumberOfObjects() const = 0;
 
-    virtual float pdf_value(const vec3<float> &o, const vec3<float> &v) const { return 0.0; }
+    virtual float PdfValue(const vec3<float> &o, const vec3<float> &v) const;
 
-    virtual vec3<float> random(const vec3<float> &o) const { return vec3<float>(1, 0, 0); }
+    virtual vec3<float> Random(const vec3<float> &o) const;
 };
 
-class Sphere : public Geometry {
-    //RayHits algorithm by Peter Shirley, from Ray Tracing in One Weekend, version 1.55
-public:
-
-    Sphere(vec3<float> position, float radius, std::shared_ptr<Material> mat);
-
-    ~Sphere() {};
-
-    float GetRadius() const {
-        return radius_;
-    }
-
-    vec3<float> GetPosition() const { return position_; };
-
-    virtual bool RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &rec) const;
-
-    virtual bool GetBoundingBox(float t0, float t1, BoundingBox &box) const;
-
-    virtual int NumberOfObjects() const;
-
-private:
-    //radius here
-    float radius_;
-    std::shared_ptr<Material> material_;
-    vec3<float> position_;
-};
 
 class XyRect : public Geometry {
 public:
@@ -72,7 +48,7 @@ public:
 
     ~XyRect() {};
 
-    virtual bool RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &rec) const;
+    virtual bool RayHits(const ray<float> &r, float t_min, float t_max, HitRecord &rec) const;
 
     virtual bool GetBoundingBox(float t0, float t1, BoundingBox &box) const;
 
@@ -89,7 +65,7 @@ public:
 
     ~XzRect() {};
 
-    virtual bool RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &rec) const;
+    virtual bool RayHits(const ray<float> &r, float t_min, float t_max, HitRecord &rec) const;
 
     virtual bool GetBoundingBox(float t0, float t1, BoundingBox &box) const;
 
@@ -106,7 +82,7 @@ public:
 
     ~YzRect() {};
 
-    virtual bool RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &rec) const;
+    virtual bool RayHits(const ray<float> &r, float t_min, float t_max, HitRecord &rec) const;
 
     virtual bool GetBoundingBox(float t0, float t1, BoundingBox &box) const;
 
@@ -123,7 +99,7 @@ public:
 
     ~FlipNormals() {}
 
-    virtual bool RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &rec) const {
+    virtual bool RayHits(const ray<float> &r, float t_min, float t_max, HitRecord &rec) const {
         if (ptr_->RayHits(r, t_min, t_max, rec)) {
             rec.normal = -rec.normal;
             return true;
@@ -142,26 +118,6 @@ private:
     std::shared_ptr<Geometry> ptr_;
 };
 
-class Geomlist : public Geometry {
-public:
-
-    Geomlist() {}
-
-    Geomlist(std::vector<std::shared_ptr<Geometry>> &object_list)
-            : list_size_((int) object_list.size()), list_(object_list) {}
-
-    virtual bool RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &rec) const;
-
-    virtual bool GetBoundingBox(float t0, float t1, BoundingBox &box) const;
-
-    virtual int NumberOfObjects() const;
-
-private:
-    std::vector<std::shared_ptr<Geometry>> list_;
-    int list_size_;
-
-};
-
 class Box : public Geometry {
 public:
     Box() {}
@@ -170,7 +126,7 @@ public:
 
     ~Box() {};
 
-    virtual bool RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &rec) const;
+    virtual bool RayHits(const ray<float> &r, float t_min, float t_max, HitRecord &rec) const;
 
     virtual bool GetBoundingBox(float t0, float t1, BoundingBox &box) const;
 
@@ -189,7 +145,7 @@ public:
 
     BoundingVolumeNode() {}
 
-    virtual bool RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &rec) const;
+    virtual bool RayHits(const ray<float> &r, float t_min, float t_max, HitRecord &rec) const;
 
     virtual bool GetBoundingBox(float t0, float t1, BoundingBox &box) const;
 
