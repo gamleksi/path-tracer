@@ -7,6 +7,7 @@
 #include "ray/ray.h"
 #include "vector/vec3.h"
 
+
 Camera::Camera(const vec3<float>& look_from, const vec3<float>& look_at, const vec3<float>& view_up,
     float vfov, float aspect, float aperture, float dist_to_focus)
 {
@@ -90,4 +91,26 @@ ray<float> Camera::GetRay(float s, float t) const {
     auto coord = RandomUnitDiscCoord() * lens_radius_;
     auto offset = u * coord[0] + v * coord[1];
     return {origin_+ offset, lower_left_corner_ + s * horizontal_ + t * vertical_ - origin_ - offset};
+}
+
+void Camera::ToJson(json & j){
+    j["camera"]["Horizontal"]["x"] = GetHorizontal()[0];
+    j["camera"]["Horizontal"]["y"] = GetHorizontal()[1];
+    j["camera"]["Horizontal"]["z"] = GetHorizontal()[2];
+    j["camera"]["Origin"]["x"] = GetOrigin()[0];
+    j["camera"]["Origin"]["y"] = GetOrigin()[1];
+    j["camera"]["Origin"]["z"] = GetOrigin()[2];
+    j["camera"]["Vertical"]["x"] = GetVertical()[0];
+    j["camera"]["Vertical"]["y"] = GetVertical()[1];
+    j["camera"]["Vertical"]["z"] = GetVertical()[2];
+    j["camera"]["LLC"]["x"] = GetLLC()[0];
+    j["camera"]["LLC"]["y"] = GetLLC()[1];
+    j["camera"]["LLC"]["z"] = GetLLC()[2];
+    j["camera"]["U"]["x"] = GetU()[0];
+    j["camera"]["U"]["y"] = GetU()[1];
+    j["camera"]["U"]["z"] = GetU()[2];
+    j["camera"]["V"]["x"] = GetV()[0];
+    j["camera"]["V"]["y"] = GetV()[1];
+    j["camera"]["V"]["z"] = GetV()[2];
+    j["camera"]["LensRadius"] = GetLensRadius();
 }

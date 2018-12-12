@@ -9,6 +9,9 @@
 #include "geometry/geometry.h"
 #include "material/material.h"
 #include "ray/ray.h"
+#include <nlohmann/json.hpp>
+// for convenience
+using json = nlohmann::json;
 
 class Camera {
 public:
@@ -20,6 +23,17 @@ public:
     Camera(const vec3<float>& look_from, const vec3<float>& look_at, const vec3<float>& view_up,
     float vfov, float aspect, float aperture, float dist_to_focus);
     ray<float> GetRay(float u, float v) const;
+
+    //getter functions for saving camera
+    vec3<float> GetU()const{return u;}
+    vec3<float> GetV()const{return v;}
+    vec3<float> GetOrigin()const{return origin_;}
+    vec3<float> GetLLC()const{return lower_left_corner_;}
+    vec3<float> GetHorizontal()const{return horizontal_;}
+    vec3<float> GetVertical()const{return vertical_;}
+    float GetLensRadius()const{return lens_radius_;}
+
+    void ToJson(json & j);
 
 private:
     vec3<float> u;
