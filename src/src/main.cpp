@@ -292,14 +292,21 @@ void SaveImage(int nx, int ny, uchar (*image)[3], std::string save_to) {
     cv::imwrite(save_to, rgb_mat);
 }
 
-int main() {
-
+int main(int argc, char* argv[ ]) {
+    if(argc == 1){
+        std::cout<<"Empty commands"<<std::endl;
+    }
+    else{
+        for(int i = 1; i<argc; i++){
+            std::cout<< argv[i] << std::endl;
+        }
+    }
     // Environment and Rendering parameters
     int nx = 500;
     int ny = 500;
 
-    unsigned int antialias_samples = 10000;
-    unsigned int number_of_objects = 100;
+    unsigned int antialias_samples = 10;
+    unsigned int number_of_objects = 10;
 
     bool normal_mapping = false;
 
