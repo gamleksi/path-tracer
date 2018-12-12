@@ -16,11 +16,11 @@ using json = nlohmann::json;
 
 
 
-std::string SaveWorld(Geomlist& world, Camera& camera);
-json ToJson(Geomlist& world, Camera& camera);
+void SaveWorld(std::shared_ptr<Geomlist> &world, Camera& camera);
+json ToJson(std::shared_ptr<Geomlist> &world, Camera& camera);
 
-Geomlist LoadWorld(const std::string & filename);
-Geomlist FromJson(const std::string& j);
+//Geomlist LoadWorld(const std::string & filename);
+//Geomlist FromJson(const std::string& j);
 
 
 //namespace ns {
@@ -35,4 +35,4 @@ Geomlist FromJson(const std::string& j);
 //    }
 //};
 
-#endif PATH_TRACER_IO_H
+#endif //PATH_TRACER_IO_H

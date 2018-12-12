@@ -39,10 +39,11 @@ class Sphere : public Geometry{
 
   Sphere(vec3<float> position, float radius, std::shared_ptr<Material> mat);
 
-  ~Sphere() { };
+  ~Sphere() =default;
   float GetRadius() const {
       return radius_;
   }
+
 
   vec3<float> GetPosition() const { return position_; };
 
@@ -124,6 +125,7 @@ class Geomlist : public Geometry{
     Geomlist(std::vector<std::shared_ptr<Geometry>>& object_list)
     : list_size_((int)object_list.size()), list_(object_list) {}
 
+    int GetListSize()const{return list_size_;}
     virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
 
     virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const;

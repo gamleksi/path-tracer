@@ -5,8 +5,10 @@
 #include "geometry/geometry.h"
 #include "material/material.h"
 #include "camera/camera.h"
+#include <exception>
 #include <opencv2/highgui/highgui.hpp>
 #include <chrono>
+#include "io/io.h"
 
 typedef std::chrono::high_resolution_clock Clock;
 
@@ -293,20 +295,39 @@ void SaveImage(int nx, int ny, uchar (*image)[3], std::string save_to) {
 }
 
 int main(int argc, char* argv[ ]) {
+    std::string key_app = "-app";
+    std::string key_from_json = "-from-json";
+    std::string key_to_json = "-to-json";
     if(argc == 1){
         std::cout<<"Empty commands"<<std::endl;
     }
     else{
-        for(int i = 1; i<argc; i++){
-            std::cout<< argv[i] << std::endl;
+        int i = 1;
+        std::cout<< argv[i] << std::endl;
+        try {
+            if (argv[i] == key_app){
+                std::cout<< "Opened application.."<<std::endl;
+                if (argv[i+1] == key_from_json){ //i+1 heittä segmentation faultin, korjaa indeksit case: -app pelkästään
+                    std::cout<<"Loading world from json-file"<<std::endl;
+
+                }
+                else if(argv[i+1] == key_to_json){
+                    std::cout<<"Saving world to json-file"<<std::endl;
+                }else{
+                    throw "Invalid command";
+                }
+
+            }
+        }catch(std::exception & e){
+            std::cout<<"error"<<std::endl;
         }
     }
     // Environment and Rendering parameters
     int nx = 500;
     int ny = 500;
 
-    unsigned int antialias_samples = 10;
-    unsigned int number_of_objects = 10;
+    unsigned int antialias_samples = 2;
+    //unsigned int number_of_objects = 10;
 
     bool normal_mapping = false;
 
@@ -347,7 +368,7 @@ int main(int argc, char* argv[ ]) {
     std::cout << "Bounding Box Rendering Duration: "
               << bb_rendering_duration
               << " seconds" << std::endl;
-
+    SaveWorld(world, camera);
     SaveImage(nx, ny, bb_image, "../image_10000.jpg"); // TODO: fix path
     ShowImage(nx, ny, bb_image);
 
