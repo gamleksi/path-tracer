@@ -31,7 +31,8 @@ vec3<float> Color(const ray<float>& r, const std::shared_ptr<Geometry>& geom, in
         ray<float> scattered;
         vec3<float> attenuation;
         vec3<float> emitted = rec.mat_ptr->Emitted(rec.u, rec.v, rec.point);
-        if (depth < 50 && rec.mat_ptr->Scatter(r, rec, attenuation, scattered))
+        float pdf_value;
+        if (depth < 50 && rec.mat_ptr->Scatter(r, rec, attenuation, scattered, pdf_value))
         {
             return emitted + attenuation * Color(scattered, geom, depth+1);
         }

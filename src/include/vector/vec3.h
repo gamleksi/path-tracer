@@ -63,7 +63,7 @@ class vec3 {
  **/
 
 template <typename T>
-vec3<T> cross(const vec3<T> &v1, const vec3<T> &v2);
+vec3<T> Cross(const vec3<T> &v1, const vec3<T> &v2);
 
 // Dot product of two vectors:
 template <typename T>

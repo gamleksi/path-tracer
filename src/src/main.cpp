@@ -142,6 +142,7 @@ void CornellBoxScene(std::vector<std::shared_ptr<Geometry>> &object_list) {
     std::shared_ptr<Material> light;
     light = std::make_shared<DiffuseLight>(std::make_shared<Constant_texture>(light_vec));
 
+
     // Colors
     vec3<float> grey(0.3, 0.3, 0.3);
     vec3<float> red(0.7, 0.05, 0.05);
@@ -298,7 +299,7 @@ int main() {
     int nx = 500;
     int ny = 500;
 
-    unsigned int antialias_samples = 10000;
+    unsigned int antialias_samples = 100;
     unsigned int number_of_objects = 100;
 
     bool normal_mapping = false;

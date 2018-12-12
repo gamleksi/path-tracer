@@ -4,6 +4,7 @@
 
 #include "material.h"
 
+
 vec3<float> RandomInUnitSphere() {
 
     vec3<float> p;
@@ -19,7 +20,13 @@ vec3<float> Reflect(const vec3<float> &v, const vec3<float> &n) {
 
 bool Lambertian::Scatter(
         const ray<float> &r_in, const Hit_record &rec,
-        vec3<float> &attenuation, ray<float> &scattered) const {
+        vec3<float> &attenuation, ray<float> &scattered, float& pdf) const {
+    Onb uvw;
+    uvw.Build_from_w(rec.normal);
+    vec3<float> direction = uvw.Local( Random_cosine_direction() );
+    scattered = ray<float>(rec.point, direction.Turn_unit());
+    alb =albedo->Value(rec.u, rec.v, rec.point);
+    pdf
 
     vec3<float> target = rec.point + rec.normal + RandomInUnitSphere();
     scattered = ray<float>(rec.point, target - rec.point);

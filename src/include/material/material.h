@@ -9,6 +9,7 @@
 #include <vector/vec3.h>
 #include <ray/ray.h>
 #include <texture/texture.h>
+#include <pdf/pdf.h>
 
 class Material {
 public:
@@ -22,7 +23,7 @@ class Lambertian : public Material {
 public:
     Lambertian(std::shared_ptr<Texture> a) : albedo(a) {}
 
-    virtual bool Scatter(const ray<float>& r_in, const Hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const;
+    virtual bool Scatter(const ray<float>& r_in, const Hit_record& rec, vec3<float>& attenuation, ray<float>& scattered, float& pdf) const;
 
 private:
     // The proportion of the total light striking the surface of an object which is reflected from that surface.
