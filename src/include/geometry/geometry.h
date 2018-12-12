@@ -56,51 +56,55 @@ class Sphere : public Geometry{
   float radius_;
   std::shared_ptr<Material> material_;
   vec3<float> position_;
+  std::string type_ = "Sphere";
 };
 
 class XyRect : public Geometry{
 public:
     XyRect(float x0, float x1, float y0, float y1, float k, std::shared_ptr<Material> mat);
 
-    ~XyRect() { };
+    ~XyRect() =default;
     virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
     virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const;
     virtual int NumberOfObjects() const;
 private:
     float x0_, x1_, y0_, y1_, k_;
     std::shared_ptr<Material> material_;
+    std::string type_ = "XyRect";
 };
 
 class XzRect : public Geometry{
 public:
     XzRect(float x0, float x1, float z0, float z1, float k, std::shared_ptr<Material> mat);
 
-    ~XzRect() { };
+    ~XzRect() = default;
     virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
     virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const;
     virtual int NumberOfObjects() const;
 private:
     float x0_, x1_, z0_, z1_, k_;
     std::shared_ptr<Material> material_;
+    std::string type_ = "XzRect";
 };
 
 class YzRect : public Geometry{
 public:
     YzRect(float y0, float y1, float z0, float z1, float k, std::shared_ptr<Material> mat);
 
-    ~YzRect() { };
+    ~YzRect() = default;
     virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
     virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const;
     virtual int NumberOfObjects() const;
 private:
     float y0_, y1_, z0_, z1_, k_;
     std::shared_ptr<Material> material_;
+    std::string type_ = "YzRect";
 };
 
 class FlipNormals : public Geometry{
 public:
     FlipNormals(std::shared_ptr<Geometry> p) : ptr_(p) { }
-    ~FlipNormals() { }
+    ~FlipNormals() = default;
     virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const {
         if (ptr_->RayHits(r, t_min, t_max, rec)) {
             rec.normal = -rec.normal;
@@ -115,6 +119,7 @@ public:
     virtual int NumberOfObjects() const { return 1; }
 private:
     std::shared_ptr<Geometry> ptr_;
+    std::string type_ = "FlipNormals";
 };
 
 class Geomlist : public Geometry{
@@ -126,6 +131,7 @@ class Geomlist : public Geometry{
     : list_size_((int)object_list.size()), list_(object_list) {}
 
     int GetListSize()const{return list_size_;}
+    std::vector<std::shared_ptr<Geometry>> GetObjects() const{return list_;}
     virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
 
     virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const;
@@ -141,13 +147,14 @@ class Box : public Geometry {
 public:
     Box() { }
     Box(const vec3<float>& p0, const vec3<float>& p1, std::shared_ptr<Material> mat);
-    ~Box() { };
+    ~Box() = default;
     virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
     virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const;
     virtual int NumberOfObjects() const;
 private:
     vec3<float> pmin_, pmax_;
     std::shared_ptr<Geomlist> list_ptr_;
+    std::string type_ = "Box";
 };
 
 class BoundingVolumeNode : public Geometry {
@@ -169,6 +176,7 @@ class BoundingVolumeNode : public Geometry {
   std::shared_ptr<Geometry> left_;
   std::shared_ptr<Geometry> right_;
   BoundingBox bounding_box_;
+  std::string type_ = "BoundingVolumeNode";
 
 };
 

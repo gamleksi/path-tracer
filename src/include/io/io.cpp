@@ -20,9 +20,9 @@ json ToJson(std::shared_ptr<Geomlist> &world, Camera& camera){
     json j;
     std::cout<<world->GetListSize()<<std::endl;
     std::cout<<world->NumberOfObjects()<<std::endl;
-//    std::vector<std::shared_ptr<Geometry>> list = world.GetObjects();
-//    int x = world.GetObjectNum();
-//    j["objnum"] = x;
+    std::vector<std::shared_ptr<Geometry>> list = world->GetObjects();
+    int x = world->GetListSize();
+    j["objnum"] = x;
 //    camera.ToJson(j);
 //    for (auto i = 0; i<x;i++){
 
