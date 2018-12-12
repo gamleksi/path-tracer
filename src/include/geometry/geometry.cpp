@@ -2,9 +2,10 @@
 // Created by Jesse Miettinen on 14/11/2018.
 //
 
-
-#include <cfloat>
 #include "geometry/geometry.h"
+#include <pdf/onb.h>
+#include <pdf/pdf.h>
+
 
 
 XyRect::XyRect(float x0, float x1, float y0, float y1, float k, std::shared_ptr<Material> mat)
@@ -74,29 +75,6 @@ bool YzRect::GetBoundingBox(float t0, float t1, BoundingBox &box) const {
     return true;
 }
 
-Box::Box(const vec3<float> &p0, const vec3<float> &p1, std::shared_ptr<Material> mat) {
-    pmin_ = p0;
-    pmax_ = p1;
-
-    std::vector<std::shared_ptr<Geometry>> rect_list(6);
-
-    rect_list[0] = std::make_shared<XyRect>(p0.X(), p1.X(), p0.Y(), p1.Y(), p1.Z(), mat);
-    rect_list[1] = std::make_shared<FlipNormals>(std::make_shared<XyRect>(p0.X(), p1.X(), p0.Y(), p1.Y(), p0.Z(), mat));
-    rect_list[2] = std::make_shared<XzRect>(p0.X(), p1.X(), p0.Z(), p1.Z(), p1.Y(), mat);
-    rect_list[3] = std::make_shared<FlipNormals>(std::make_shared<XzRect>(p0.X(), p1.X(), p0.Z(), p1.Z(), p0.Y(), mat));
-    rect_list[4] = std::make_shared<YzRect>(p0.Y(), p1.Y(), p0.Z(), p1.Z(), p1.X(), mat);
-    rect_list[5] = std::make_shared<FlipNormals>(std::make_shared<YzRect>(p0.Y(), p1.Y(), p0.Z(), p1.Z(), p0.X(), mat));
-    list_ptr_ = std::make_shared<Geomlist>(rect_list);
-}
-
-bool Box::RayHits(const ray<float> &r, float t_min, float t_max, HitRecord &rec) const {
-    return list_ptr_->RayHits(r, t_min, t_max, rec);
-}
-
-bool Box::GetBoundingBox(float t0, float t1, BoundingBox &box) const {
-    box = BoundingBox(pmin_, pmax_);
-    return true;
-}
 
 bool BBXCompare(const std::shared_ptr<Geometry>& a, const std::shared_ptr<Geometry>& b) {
 
@@ -190,18 +168,6 @@ BoundingVolumeNode::BoundingVolumeNode(std::vector<std::shared_ptr<Geometry>>& o
     return 1;
  }
 
- int Geomlist::NumberOfObjects() const {
-   int i = 0;
-   for (const auto &geom : list) {
-     i = i + geom -> NumberOfObjects();
-   }
-   return i;
- }
-
- int Box::NumberOfObjects() const {
-    return 1;
- }
-
 bool BoundingVolumeNode::RayHits(const ray<float>& ray, float t_min, float t_max, HitRecord& rec) const {
 
   if (bounding_box_.RayHits(ray, t_min, t_max)) {
@@ -232,3 +198,183 @@ bool BoundingVolumeNode::GetBoundingBox(float t0, float t1, BoundingBox& box) co
   box = bounding_box_;
   return true;
 }
+
+
+
+
+bool Sphere::RayHits(const ray<float>& r, float t_min, float t_max, HitRecord& rec) const
+{
+    vec3<float> oc = r.Origin() - position_;
+    float a = Dot(r.Direction(), r.Direction());
+    float b = Dot(oc, r.Direction());
+    float c = Dot(oc,oc) - radius_*radius_;
+    float discriminant = b*b - a*c;
+    if (discriminant > 0){
+        float temp = (-b - sqrtf(discriminant))/(a);
+        if (temp < t_max && temp > t_min){
+            rec.time = temp;
+            rec.point = r.Point(rec.time);
+            rec.normal = (rec.point - position_) / radius_;
+            rec.mat_ptr = material_;
+            return true;
+        }
+        temp = (-b + sqrtf(discriminant))/(a);
+        if (temp < t_max && temp > t_min){
+            rec.time = temp;
+            rec.point = r.Point(rec.time);
+            rec.normal = (rec.point - position_) / radius_;
+            rec.mat_ptr = material_;
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Sphere::GetBoundingBox(float t0, float t1, BoundingBox& box) const {
+    box = BoundingBox(position_ - radius_, position_ + radius_);
+    return true;
+}
+
+
+float Sphere::PdfValue(const vec3<float>& o, const vec3<float>& v) const {
+    HitRecord rec;
+    if (this->RayHits(ray<float>(o, v), 0.001, MAXFLOAT, rec)) {
+        float cos_theta_max = sqrt(1 - radius_*radius_/(position_-o).Squared_length());
+        float solid_angle = 2*M_PI*(1-cos_theta_max);
+        return  1 / solid_angle;
+    }
+    else
+        return 0;
+}
+
+
+vec3<float> Sphere::Random(const vec3<float> &o) const {
+    vec3<float> direction = position_ - o;
+    float distance_squared = direction.Squared_length();
+    Onb uvw;
+    uvw.Build_from_w(direction);
+    return uvw.Local(RandomToSphere(radius_, distance_squared));
+}
+
+
+int Sphere::NumberOfObjects() const {
+    return 1;
+}
+
+
+bool Geomlist::RayHits(const ray<float>& r, float t_min, float t_max, HitRecord& rec) const{
+    HitRecord temp_rec{};
+    bool hit = false;
+    float closest_distance = t_max;
+    for (int i = 0; i < list_size; i++){
+        if(list[i]->RayHits(r, t_min, closest_distance, temp_rec)){
+            hit = true;
+            closest_distance = temp_rec.time;
+            rec = temp_rec;
+        }
+    }
+    return hit;
+}
+
+bool Geomlist::GetBoundingBox(float t0, float t1, BoundingBox& box) const {
+    if ( list_size < 1) { return false; }
+
+    BoundingBox temporary_box;
+    bool first_bounding_exist = list[0]->GetBoundingBox(t0, t1, temporary_box);
+
+    if (first_bounding_exist) {
+        box = temporary_box;
+    } else {
+        return false;
+    }
+
+    for (unsigned int i = 1; i < list_size; i++) {
+
+        if(list[i]->GetBoundingBox(t0, t1, temporary_box)) {
+            box = CombineBoxes(box, temporary_box);
+        } else {
+            return false;
+        }
+    }
+    return true;
+}
+
+
+
+
+
+float Geomlist::PdfValue(const vec3<float> &o, const vec3<float> &v) const {
+    float weight = 1.0/list_size;
+    float sum = 0;
+    for (int i = 0; i < list_size; i++)
+        sum += weight*list[i]->PdfValue(o, v);
+    return sum;
+}
+
+vec3<float> Geomlist::Random(const vec3<float>& o) const {
+    int index = int(drand48() * list_size);
+    return list[ index ]->Random(o);
+}
+
+int Geomlist::NumberOfObjects() const {
+    int i = 0;
+    for (const auto &geom : list) {
+        i = i + geom -> NumberOfObjects();
+    }
+    return i;
+}
+
+
+
+
+
+
+float  XyRect::PdfValue(const vec3<float>& o, const vec3<float>& v) const {
+    HitRecord rec;
+    if (this->RayHits(ray<float>(o, v), 0.001, MAXFLOAT, rec)) {
+        float area = (x1_-x0_)*(y1_-y0_);
+        float distance_squared = rec.time * rec.time * v.Squared_length();
+        float cosine = fabs(Dot(v, rec.normal) / v.Squared_length());
+        return  distance_squared / (cosine * area);
+    }
+    else
+        return 0;
+}
+vec3<float> XyRect::Random(const vec3<float>& o) const {
+    vec3<float> random_point = vec3<float>(x0_ + drand48()*(x1_-x0_), k_, y0_ + drand48()*(y1_-y0_));
+    return random_point - o;
+}
+
+float  XzRect::PdfValue(const vec3<float>& o, const vec3<float>& v) const {
+    HitRecord rec;
+    if (this->RayHits(ray<float>(o, v), 0.001, MAXFLOAT, rec)) {
+        float area = (x1_-x0_)*(z1_-z0_);
+        float distance_squared = rec.time * rec.time * v.Squared_length();
+        float cosine = fabs(Dot(v, rec.normal) / v.Squared_length());
+        return  distance_squared / (cosine * area);
+    }
+    else
+        return 0;
+}
+vec3<float> XzRect::Random(const vec3<float>& o) const {
+    vec3<float> random_point = vec3<float>(x0_ + drand48()*(x1_-x0_), k_, z0_ + drand48()*(z1_-z0_));
+    return random_point - o;
+}
+
+
+float  YzRect::PdfValue(const vec3<float>& o, const vec3<float>& v) const {
+    HitRecord rec;
+    if (this->RayHits(ray<float>(o, v), 0.001, MAXFLOAT, rec)) {
+        float area = (y1_-y0_)*(y1_-y0_);
+        float distance_squared = rec.time * rec.time * v.Squared_length();
+        float cosine = fabs(Dot(v, rec.normal) / v.Squared_length());
+        return  distance_squared / (cosine * area);
+    }
+    else
+        return 0;
+}
+vec3<float> YzRect::Random(const vec3<float>& o) const {
+    vec3<float> random_point = vec3<float>(y0_ + drand48()*(y1_-y0_), k_, y0_ + drand48()*(y1_-y0_));
+    return random_point - o;
+}
+

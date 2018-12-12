@@ -39,7 +39,7 @@ class vec3 {
         float Z() const { return e[2]; }
         float Y() const { return e[1]; }
         float X() const { return e[0]; }
-        float Squared_length() {
+        float Squared_length() const {
             return e[0]*e[0] + e[1]*e[1] + e[2]*e[2];
         };
 

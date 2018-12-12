@@ -2,6 +2,9 @@
 #include <vector>
 #include "vector/vec3.h"
 #include "ray/ray.h"
+#include "geometry/sphere.h"
+#include "geometry/geomlist.h"
+#include "geometry/box.h"
 #include "geometry/geometry.h"
 #include "material/material.h"
 #include "camera/camera.h"
@@ -12,79 +15,79 @@ typedef std::chrono::high_resolution_clock Clock;
 
 #include <omp.h>
 
-void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geometry>> &object_list) {
-    int num = int(sqrt(amount) / 2);
-
-    vec3<float> mat_vec(0.5, 0.5, 0.5);
-    vec3<float> light_vec(4, 4, 4);
-    std::shared_ptr<Material> material;
-    material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(mat_vec));
-    //material = std::make_shared<DiffuseLight>(std::make_shared<Constant_texture>(light_vec));
-
-    std::shared_ptr<Sphere> floor_sphere =
-            std::make_shared<Sphere>(vec3<float>(0, -1000, 0), 200, material); //default radius 1000
-
-    object_list.push_back(floor_sphere);
-
-    std::vector<std::shared_ptr<Geometry>> li;
-
-    std::shared_ptr<Material> light;
-    light = std::make_shared<DiffuseLight>(std::make_shared<Constant_texture>(light_vec));
-    std::shared_ptr<XyRect> light_rect = std::make_shared<XyRect>(-2.0, 3.0, 0.0, 1.0, 4, light);
-    li.push_back(light_rect);
-    std::shared_ptr<XyRect> light_rect2 = std::make_shared<XyRect>(1.0, 6.0, 0.5, 6.0, -4.0, light);
-    li.push_back(light_rect2);
-
-    unsigned int i = 1;
-    for (int a = -num; a < num; a++) {
-        for (int b = -num; b < num; b++) {
-            float choose_mat = drand48();
-            vec3<float> object_coord(a + 0.9 * drand48(), 0.2, b + 0.9 * drand48());
-            if ((object_coord - vec3<float>(4, 0.2, 0)).Norm2() > 0.9) {
-                if (choose_mat < 0.8) {
-                    vec3<float> mat_vec(drand48() * drand48(), drand48() * drand48(), drand48() * drand48());
-                    material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(mat_vec));
-                    li.push_back(std::make_shared<Sphere>(object_coord, 0.2, material));
-                    i++;
-                } else {
-                    vec3<float> mat_vec(0.5 * (1 + drand48()), 0.5 * (1 + drand48()), 0.5 * (1 + drand48()));
-                    material = std::make_shared<Metal>(mat_vec, 0.5);
-                    li.push_back(std::make_shared<Sphere>(object_coord, 0.2, material));
-                    i++;
-                }
-            }
-        }
-    }
-    //Checker colors
-    vec3<float> odd = vec3<float>(0.5, 0.3, 0.1);
-    vec3<float> even = vec3<float>(0.9, 0.9, 0.9);
-    int checker_size = 3;
-    std::shared_ptr<Constant_texture> even_texture;
-    even_texture = std::make_shared<Constant_texture>(even);
-    std::shared_ptr<Constant_texture> odd_texture;
-    odd_texture = std::make_shared<Constant_texture>(odd);
-
-    std::shared_ptr<Checker_texture> checker;
-    checker = std::make_shared<Checker_texture>(odd_texture, even_texture, checker_size);
-    std::shared_ptr<Lambertian> checker_material;
-    checker_material = std::make_shared<Lambertian>(checker);
-
-    //std::shared_ptr<Material> metal_material;
-    //metal_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(vec3<float>(0.7,0.6,0.5)));
-    //li.push_back(std::make_shared<Sphere>(vec3<float>(4,1,0), 1.0, metal_material));
-    i++;
-    li.push_back(std::make_shared<Sphere>(vec3<float>(-4, 1, 0), 1.0, checker_material));
-    //li.push_back(std::make_shared<Sphere>(vec3<float>(-4,1,0), 1.0, std::make_shared<Lambertian>(vec3<float>(0.4,0.2,0.1))));
-    i++;
-
-    //playing with boxes
-    std::shared_ptr<Box> kuutio = std::make_shared<Box>(vec3<float>(4, 1, 0), vec3<float>(5, 2, 1), light);
-    li.push_back(kuutio);
-
-    auto bb_world = std::make_shared<BoundingVolumeNode>(BoundingVolumeNode(li, 0.0, 1.0));
-    object_list.push_back(bb_world);
-
-}
+//void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geometry>> &object_list) {
+//    int num = int(sqrt(amount) / 2);
+//
+//    vec3<float> mat_vec(0.5, 0.5, 0.5);
+//    vec3<float> light_vec(4, 4, 4);
+//    std::shared_ptr<Material> material;
+//    material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(mat_vec));
+//    //material = std::make_shared<DiffuseLight>(std::make_shared<Constant_texture>(light_vec));
+//
+//    std::shared_ptr<Sphere> floor_sphere =
+//            std::make_shared<Sphere>(vec3<float>(0, -1000, 0), 200, material); //default radius 1000
+//
+//    object_list.push_back(floor_sphere);
+//
+//    std::vector<std::shared_ptr<Geometry>> li;
+//
+//    std::shared_ptr<Material> light;
+//    light = std::make_shared<DiffuseLight>(std::make_shared<Constant_texture>(light_vec));
+//    std::shared_ptr<XyRect> light_rect = std::make_shared<XyRect>(-2.0, 3.0, 0.0, 1.0, 4, light);
+//    li.push_back(light_rect);
+//    std::shared_ptr<XyRect> light_rect2 = std::make_shared<XyRect>(1.0, 6.0, 0.5, 6.0, -4.0, light);
+//    li.push_back(light_rect2);
+//
+//    unsigned int i = 1;
+//    for (int a = -num; a < num; a++) {
+//        for (int b = -num; b < num; b++) {
+//            float choose_mat = drand48();
+//            vec3<float> object_coord(a + 0.9 * drand48(), 0.2, b + 0.9 * drand48());
+//            if ((object_coord - vec3<float>(4, 0.2, 0)).Norm2() > 0.9) {
+//                if (choose_mat < 0.8) {
+//                    vec3<float> mat_vec(drand48() * drand48(), drand48() * drand48(), drand48() * drand48());
+//                    material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(mat_vec));
+//                    li.push_back(std::make_shared<Sphere>(object_coord, 0.2, material));
+//                    i++;
+//                } else {
+//                    vec3<float> mat_vec(0.5 * (1 + drand48()), 0.5 * (1 + drand48()), 0.5 * (1 + drand48()));
+//                    material = std::make_shared<Metal>(mat_vec, 0.5);
+//                    li.push_back(std::make_shared<Sphere>(object_coord, 0.2, material));
+//                    i++;
+//                }
+//            }
+//        }
+//    }
+//    //Checker colors
+//    vec3<float> odd = vec3<float>(0.5, 0.3, 0.1);
+//    vec3<float> even = vec3<float>(0.9, 0.9, 0.9);
+//    int checker_size = 3;
+//    std::shared_ptr<Constant_texture> even_texture;
+//    even_texture = std::make_shared<Constant_texture>(even);
+//    std::shared_ptr<Constant_texture> odd_texture;
+//    odd_texture = std::make_shared<Constant_texture>(odd);
+//
+//    std::shared_ptr<Checker_texture> checker;
+//    checker = std::make_shared<Checker_texture>(odd_texture, even_texture, checker_size);
+//    std::shared_ptr<Lambertian> checker_material;
+//    checker_material = std::make_shared<Lambertian>(checker);
+//
+//    //std::shared_ptr<Material> metal_material;
+//    //metal_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(vec3<float>(0.7,0.6,0.5)));
+//    //li.push_back(std::make_shared<Sphere>(vec3<float>(4,1,0), 1.0, metal_material));
+//    i++;
+//    li.push_back(std::make_shared<Sphere>(vec3<float>(-4, 1, 0), 1.0, checker_material));
+//    //li.push_back(std::make_shared<Sphere>(vec3<float>(-4,1,0), 1.0, std::make_shared<Lambertian>(vec3<float>(0.4,0.2,0.1))));
+//    i++;
+//
+//    //playing with boxes
+//    std::shared_ptr<Box> kuutio = std::make_shared<Box>(vec3<float>(4, 1, 0), vec3<float>(5, 2, 1), light);
+//    li.push_back(kuutio);
+//
+//    auto bb_world = std::make_shared<BoundingVolumeNode>(BoundingVolumeNode(li, 0.0, 1.0));
+//    object_list.push_back(bb_world);
+//
+//}
 //
 //
 ////can be modified, does not work with current camera settings
@@ -172,7 +175,7 @@ void CornellBoxScene(std::vector<std::shared_ptr<Geometry>> &object_list,
 
     // Red
     std::shared_ptr<YzRect> red_rect;
-    red_rect = std::make_shared<YzRect>(0, 555, 0, 555, 555, red_material);
+    red_rect = std::make_shared<YzRect>(0, 555, 0, 555, 555, light);
     std::shared_ptr<FlipNormals> flipped_red = std::make_shared<FlipNormals>(red_rect);
 
     // Light
@@ -257,6 +260,7 @@ void Render(const int nx, const int ny, uchar (*image)[3], std::shared_ptr<Geome
                     if (normal) {
                         col += NormalMapping(r, world);
                     } else {
+                        //std::cout << col << std::endl;
                         col += Color(r, world, lights, 0);
                     }
                 }
@@ -291,10 +295,10 @@ void SaveImage(int nx, int ny, uchar (*image)[3], std::string save_to) {
 int main() {
 
     // Environment and Rendering parameters
-    int nx = 500;
-    int ny = 500;
+    int nx = 256;
+    int ny = 256;
 
-    unsigned int antialias_samples = 1;
+    unsigned int antialias_samples = 10;
     unsigned int number_of_objects = 100;
 
     bool normal_mapping = false;

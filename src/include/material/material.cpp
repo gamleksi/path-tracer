@@ -19,10 +19,10 @@ vec3<float> Reflect(const vec3<float> &v, const vec3<float> &n) {
 }
 
 bool Lambertian::Scatter(const ray<float> &r_in, const HitRecord& rec, ScatterInfo& srec, float& pdf) const {
-    srec.isSpecular = false;
-    srec.attenuation = albedo->Value(rec.u, rec.v, rec.point);
-    srec.pdf_ptr = std::make_shared<CosinePdf>(rec.normal);
-    return true;
+        srec.isSpecular = false;
+        srec.attenuation = albedo->Value(rec.u, rec.v, rec.point);
+        srec.pdf_ptr = std::make_shared<CosinePdf>(rec.normal);
+        return true;
 }
 
 float Lambertian::ScatteringPdf(const ray<float> &r_in, const HitRecord &rec, const ray<float> &scattered) const {
@@ -39,10 +39,6 @@ bool Metal::Scatter(const ray<float>& r_in, const HitRecord& hrec, ScatterInfo& 
     srec.isSpecular = true;
     srec.pdf_ptr = 0;
     return true;
-}
-bool DiffuseLight::Scatter(const ray<float> &r_in, const HitRecord &rec, vec3<float> &attenuation,
-                           ray<float> &scattered) const {
-    return false;
 }
 
 vec3<float>DiffuseLight::Emitted(const ray<float>& r_in, const HitRecord& rec, float u, float v, const vec3<float>& p) const {

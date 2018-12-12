@@ -68,9 +68,6 @@ class DiffuseLight : public Material {
 public:
     DiffuseLight(std::shared_ptr<Texture> a) : emit(a) {}
 
-    virtual bool
-    Scatter(const ray<float> &r_in, const HitRecord &rec, vec3<float> &attenuation, ray<float> &scattered) const;
-
     virtual vec3<float>
     Emitted(const ray<float> &r_in, const HitRecord &rec, float u, float v, const vec3<float> &p) const;
 

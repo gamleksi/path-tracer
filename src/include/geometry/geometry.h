@@ -13,8 +13,6 @@
 #include "vector/vec3.h"
 #include "ray/ray.h"
 #include "intersection/bounding_box.h"
-#include "pdf/pdf.h"
-#include "geomlist.h"
 
 class Material;
 
@@ -36,9 +34,9 @@ public:
 
     virtual int NumberOfObjects() const = 0;
 
-    virtual float PdfValue(const vec3<float> &o, const vec3<float> &v) const;
+    virtual float PdfValue(const vec3<float> &o, const vec3<float> &v) const {return 0.0;}
 
-    virtual vec3<float> Random(const vec3<float> &o) const;
+    virtual vec3<float> Random(const vec3<float> &o) const {return vec3<float>(1, 0, 0);}
 };
 
 
@@ -53,6 +51,10 @@ public:
     virtual bool GetBoundingBox(float t0, float t1, BoundingBox &box) const;
 
     virtual int NumberOfObjects() const;
+
+    virtual vec3<float> Random(const vec3<float> &o) const;
+
+    virtual float  PdfValue(const vec3<float>& o, const vec3<float>& v) const;
 
 private:
     float x0_, x1_, y0_, y1_, k_;
@@ -71,6 +73,10 @@ public:
 
     virtual int NumberOfObjects() const;
 
+    virtual vec3<float> Random(const vec3<float> &o) const;
+
+    virtual float  PdfValue(const vec3<float>& o, const vec3<float>& v) const;
+
 private:
     float x0_, x1_, z0_, z1_, k_;
     std::shared_ptr<Material> material_;
@@ -87,6 +93,10 @@ public:
     virtual bool GetBoundingBox(float t0, float t1, BoundingBox &box) const;
 
     virtual int NumberOfObjects() const;
+
+    virtual vec3<float> Random(const vec3<float> &o) const;
+
+    virtual float  PdfValue(const vec3<float>& o, const vec3<float>& v) const;
 
 private:
     float y0_, y1_, z0_, z1_, k_;
@@ -118,25 +128,6 @@ private:
     std::shared_ptr<Geometry> ptr_;
 };
 
-class Box : public Geometry {
-public:
-    Box() {}
-
-    Box(const vec3<float> &p0, const vec3<float> &p1, std::shared_ptr<Material> mat);
-
-    ~Box() {};
-
-    virtual bool RayHits(const ray<float> &r, float t_min, float t_max, HitRecord &rec) const;
-
-    virtual bool GetBoundingBox(float t0, float t1, BoundingBox &box) const;
-
-    virtual int NumberOfObjects() const;
-
-private:
-    vec3<float> pmin_, pmax_;
-    std::shared_ptr<Geomlist> list_ptr_;
-};
-
 class BoundingVolumeNode : public Geometry {
 
 public:
@@ -159,6 +150,55 @@ private:
     std::shared_ptr<Geometry> left_;
     std::shared_ptr<Geometry> right_;
     BoundingBox bounding_box_;
+
+};
+
+class Sphere : public Geometry {
+public:
+
+    Sphere(vec3<float> position, float radius, std::shared_ptr<Material> mat)
+            : Geometry(), radius_(radius), position_(position), material_(std::move(mat)) { }
+
+    ~Sphere() {};
+
+    virtual bool RayHits(const ray<float> &r, float t_min, float t_max, HitRecord &rec) const;
+
+    virtual bool GetBoundingBox(float t0, float t1, BoundingBox &box) const;
+
+    virtual int NumberOfObjects() const;
+
+    virtual float PdfValue(const vec3<float> &o, const vec3<float> &v) const;
+
+    virtual vec3<float> Random(const vec3<float> &o) const;
+
+private:
+    //radius here
+    float radius_;
+    std::shared_ptr<Material> material_;
+    vec3<float> position_;
+};
+
+class Geomlist : public Geometry {
+public:
+
+    Geomlist() {}
+
+    Geomlist(std::vector<std::shared_ptr<Geometry>> &object_list_)
+            : list_size((int) object_list_.size()), list(object_list_) {}
+
+    virtual bool RayHits(const ray<float> &r, float t_min, float t_max, HitRecord &rec) const;
+
+    virtual bool GetBoundingBox(float t0, float t1, BoundingBox &box) const;
+
+    virtual int NumberOfObjects() const;
+
+    float PdfValue(const vec3<float>& o, const vec3<float>& v) const;
+
+    vec3<float> Random(const vec3<float>& o) const;
+
+private:
+    std::vector<std::shared_ptr<Geometry>> list;
+    int list_size;
 
 };
 
