@@ -308,3 +308,68 @@ bool BoundingVolumeNode::GetBoundingBox(float t0, float t1, BoundingBox& box) co
   return true;
 }
 
+//void Sphere::ToJson(json & j, int index, std::string & id) const{
+void Sphere::ToJson(json& j,std::string& id) const{
+    //j["world"][id]["id"] = index+1;
+    j["world"][id]["position"]["x"] = GetPosition()[0];
+    j["world"][id]["position"]["y"] = GetPosition()[1];
+    j["world"][id]["position"]["z"] = GetPosition()[2];
+    j["world"][id]["radius"] = GetRadius();
+    j["world"][id]["type"] = GetType();
+    //j["world"][id]["material"]["0"]= GetMaterial()->
+    std::cout<<GetType()<<std::endl;
+}
+void Geomlist::ToJson(json& j,std::string& id)const{
+    //generates id which is tells to which Geomlist object belongs, try if json.has("Key") to change Geomlist name
+    std::cout<<id<<std::endl;
+    for (auto i = 0; i<GetObjects().size();i++){
+        std::string str = "object";
+        std::string s = std::to_string(i);
+        str.insert(6,s);
+        list_[i]->ToJson(j,str);
+//        auto mat = list[i]->GetMaterial();
+//        mat->ToJson(j, str);
+    }
+}
+
+void XyRect::ToJson(json& j,std::string& id)const{
+    j["world"][id]["x0_"] = GetX0();
+    j["world"][id]["x1_"] = GetX1();
+    j["world"][id]["y0_"] = GetY0();
+    j["world"][id]["y1_"] = GetY1();
+    j["world"][id]["k_"] = GetK();
+    j["world"][id]["type"] = GetType();
+    std::cout<<GetType()<<std::endl;
+}
+void XzRect::ToJson(json& j,std::string& id)const {
+    j["world"][id]["x0_"] = GetX0();
+    j["world"][id]["x1_"] = GetX1();
+    j["world"][id]["z0_"] = GetZ0();
+    j["world"][id]["z1_"] = GetZ1();
+    j["world"][id]["k_"] = GetK();
+    j["world"][id]["type"] = GetType();
+    std::cout<<GetType()<<std::endl;
+}
+void YzRect::ToJson(json& j,std::string& id) const {
+    j["world"][id]["y0_"] = GetY0();
+    j["world"][id]["y1_"] = GetY1();
+    j["world"][id]["z0_"] = GetZ0();
+    j["world"][id]["z1_"] = GetZ1();
+    j["world"][id]["k_"] = GetK();
+    j["world"][id]["type"] = GetType();
+
+    std::cout<<GetType()<<std::endl;
+}
+void FlipNormals::ToJson(json& j,std::string& id) const {
+    j["world"][id]["type"] = GetType();
+    std::cout<<GetType()<<std::endl;
+}
+void Box::ToJson(json& j,std::string& id) const {
+    std::cout<<GetType()<<std::endl;
+}
+void BoundingVolumeNode::ToJson(json& j,std::string& id) const {
+
+    std::cout<<GetType()<<std::endl;
+    left_->ToJson(j,id);
+    right_->ToJson(j,id);
+}

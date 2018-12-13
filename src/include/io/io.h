@@ -19,8 +19,10 @@ using json = nlohmann::json;
 void SaveWorld(std::shared_ptr<Geomlist> &world, Camera& camera);
 json ToJson(std::shared_ptr<Geomlist> &world, Camera& camera);
 
-//Geomlist LoadWorld(const std::string & filename);
-//Geomlist FromJson(const std::string& j);
+void LoadObjectList(const std::string & filename, std::vector<std::shared_ptr<Geometry>>& object_list);
+void FromJson(const std::string& j, std::vector<std::shared_ptr<Geometry>>& object_list);
+Camera LoadCamera(const std::string & filename);
+std::shared_ptr<Sphere> LoadSphere(json& j,std::string& id);
 
 
 //namespace ns {

@@ -307,7 +307,7 @@ int main(int argc, char* argv[ ]) {
         try {
             if (argv[i] == key_app){
                 std::cout<< "Opened application.."<<std::endl;
-                if (argv[i+1] == key_from_json){ //i+1 heittä segmentation faultin, korjaa indeksit case: -app pelkästään
+                if (argv[i+1] == key_from_json){ // TODO: i+1 heittä segmentation faultin, korjaa indeksit case: -app pelkästään
                     std::cout<<"Loading world from json-file"<<std::endl;
 
                 }
@@ -326,10 +326,10 @@ int main(int argc, char* argv[ ]) {
     int nx = 500;
     int ny = 500;
 
-    unsigned int antialias_samples = 2;
-    //unsigned int number_of_objects = 10;
+    unsigned int antialias_samples = 10;
+    unsigned int number_of_objects = 100;
 
-    bool normal_mapping = false;
+    bool normal_mapping = true;
 
 /**
  * In order to get everything out of your computer the number of threads should be dividable by 8 and nx * ny % num_threads == 0
@@ -349,13 +349,15 @@ int main(int argc, char* argv[ ]) {
     float fov = 40;
     float aspect = float(nx) / float(ny);
 
-    Camera camera(look_from, look_at, vec3<float>(0, 1, 0), fov, aspect, aperture, dist_to_focus);
-
+    //Camera camera(look_from, look_at, vec3<float>(0, 1, 0), fov, aspect, aperture, dist_to_focus);
+    Camera camera = LoadCamera("xxx.json");
     std::vector<std::shared_ptr<Geometry>> object_list;
-    CornellBoxScene(object_list);
+    //CornellBoxScene(object_list);
     //GetRandomObjectList(number_of_objects, object_list);
-
+    LoadObjectList("xxx.json",object_list);
     auto world = std::make_shared<Geomlist>(object_list);
+
+
 
     // Rendering bounding box
     const auto t0 = Clock::now();

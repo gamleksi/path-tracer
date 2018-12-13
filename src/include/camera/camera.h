@@ -22,6 +22,11 @@ public:
      */
     Camera(const vec3<float>& look_from, const vec3<float>& look_at, const vec3<float>& view_up,
     float vfov, float aspect, float aperture, float dist_to_focus);
+
+    //loader constructor
+    Camera(vec3<float>& u, vec3<float>& v,vec3<float>& origin_,vec3<float>& llc, vec3<float>& hor, vec3<float>& ver,float lens_radius)
+    : u(u), v(v), origin_(origin_), lower_left_corner_(llc), horizontal_(hor), vertical_(ver), lens_radius_(lens_radius){}
+
     ray<float> GetRay(float u, float v) const;
 
     //getter functions for saving camera
