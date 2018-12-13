@@ -27,7 +27,7 @@ vec3<float> Color(const ray<float> &r, std::shared_ptr<Geometry> world, std::sha
     if (world->RayHits(r, 0.001, MAXFLOAT, hrec)) {
         ScatterInfo srec;
         vec3<float> emitted = hrec.mat_ptr->Emitted(r, hrec, hrec.u, hrec.v, hrec.point);
-        if (depth < 50 && hrec.mat_ptr->Scatter(r, hrec, srec)) {
+        if (depth < 100 && hrec.mat_ptr->Scatter(r, hrec, srec)) {
             if (srec.isSpecular) {
                 return srec.attenuation * Color(srec.specularRay, world, lights, depth + 1);
             } else {

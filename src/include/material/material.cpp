@@ -18,11 +18,11 @@ vec3<float> Reflect(const vec3<float> &v, const vec3<float> &n) {
     return v - 2 * Dot(v, n) * n;
 }
 
-bool Lambertian::Scatter(const ray<float> &r_in, const HitRecord& rec, ScatterInfo& srec, float& pdf) const {
-        srec.isSpecular = false;
-        srec.attenuation = albedo->Value(rec.u, rec.v, rec.point);
-        srec.pdf_ptr = std::make_shared<CosinePdf>(rec.normal);
-        return true;
+bool Lambertian::Scatter(const ray<float> &r_in, const HitRecord &rec, ScatterInfo &srec) const {
+    srec.isSpecular = false;
+    srec.attenuation = albedo->Value(rec.u, rec.v, rec.point);
+    srec.pdf_ptr = std::make_shared<CosinePdf>(rec.normal);
+    return true;
 }
 
 float Lambertian::ScatteringPdf(const ray<float> &r_in, const HitRecord &rec, const ray<float> &scattered) const {
@@ -32,20 +32,21 @@ float Lambertian::ScatteringPdf(const ray<float> &r_in, const HitRecord &rec, co
     return cosine / M_PI;
 }
 
-bool Metal::Scatter(const ray<float>& r_in, const HitRecord& hrec, ScatterInfo& srec) const {
+bool Metal::Scatter(const ray<float> &r_in, const HitRecord &hrec, ScatterInfo &srec) const {
     vec3<float> reflected = Reflect((r_in.Direction().Turn_unit()), hrec.normal);
-    srec.specularRay = ray<float>(hrec.point, reflected + fuzz*RandomInUnitSphere());
+    srec.specularRay = ray<float>(hrec.point, reflected + fuzz * RandomInUnitSphere());
     srec.attenuation = albedo;
     srec.isSpecular = true;
     srec.pdf_ptr = 0;
     return true;
 }
 
-vec3<float>DiffuseLight::Emitted(const ray<float>& r_in, const HitRecord& rec, float u, float v, const vec3<float>& p) const {
+vec3<float>
+DiffuseLight::Emitted(const ray<float> &r_in, const HitRecord &rec, float u, float v, const vec3<float> &p) const {
     if (Dot(rec.normal, r_in.Direction()) < 0.0)
         return emit->Value(u, v, p);
     else
-        return vec3<float>(0,0,0);
+        return vec3<float>(0, 0, 0);
 }
 
 bool Dielectric::Refract(const vec3<float> &v, const vec3<float> &n, float ni_over_nt, vec3<float> refracted) const {
@@ -67,7 +68,7 @@ float Dielectric::Schkick(float cosine, float ref_idx) const {
 }
 
 
-bool Dielectric::Scatter(const ray<float>& r_in, const HitRecord& hrec, ScatterInfo& srec) const {
+bool Dielectric::Scatter(const ray<float> &r_in, const HitRecord &hrec, ScatterInfo &srec) const {
     srec.isSpecular = true;
     srec.pdf_ptr = 0;
     srec.attenuation = vec3<float>(1.0, 1.0, 1.0);
@@ -80,23 +81,20 @@ bool Dielectric::Scatter(const ray<float>& r_in, const HitRecord& hrec, ScatterI
     if (Dot(r_in.Direction(), hrec.normal) > 0) {
         outward_normal = -hrec.normal;
         ni_over_nt = ref_idx;
-        cosine = ref_idx * Dot(r_in.Direction(), hrec.normal) / r_in.Direction().Squared_length();
-    }
-    else {
+        cosine = ref_idx * Dot(r_in.Direction(), hrec.normal) / sqrt(r_in.Direction().Squared_length());
+    } else {
         outward_normal = hrec.normal;
         ni_over_nt = 1.0 / ref_idx;
-        cosine = -Dot(r_in.Direction(), hrec.normal) / r_in.Direction().Squared_length();
+        cosine = -Dot(r_in.Direction(), hrec.normal) / sqrt(r_in.Direction().Squared_length());
     }
     if (Refract(r_in.Direction(), outward_normal, ni_over_nt, refracted)) {
         reflect_prob = Schkick(cosine, ref_idx);
-    }
-    else {
+    } else {
         reflect_prob = 1.0;
     }
     if (drand48() < reflect_prob) {
         srec.specularRay = ray<float>(hrec.point, reflected);
-    }
-    else {
+    } else {
         srec.specularRay = ray<float>(hrec.point, refracted);
     }
     return true;

@@ -41,7 +41,7 @@ public:
 
     virtual float ScatteringPdf(const ray<float>& r_in, const HitRecord& rec, const ray<float>& scattered) const;
 
-    virtual bool Scatter(const ray<float> &r_in, const HitRecord& rec, ScatterInfo& srec, float& pdf) const;
+    virtual bool Scatter(const ray<float> &r_in, const HitRecord& rec, ScatterInfo& srec) const;
 
 private:
     // The proportion of the total light striking the surface of an object which is reflected from that surface.

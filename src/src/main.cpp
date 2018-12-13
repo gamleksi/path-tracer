@@ -142,17 +142,17 @@ void CornellBoxScene(std::vector<std::shared_ptr<Geometry>> &object_list,
                      std::vector<std::shared_ptr<Geometry>> &light_list) {
 
     // Light
-    vec3<float> light_vec(7, 7, 7);
+    vec3<float> light_vec(4, 4, 4);
     std::shared_ptr<Material> light;
     light = std::make_shared<DiffuseLight>(std::make_shared<Constant_texture>(light_vec));
 
 
     // Colors
     vec3<float> grey(0.3, 0.3, 0.3);
-    vec3<float> red(0.7, 0.05, 0.05);
-    vec3<float> green(0.1, 0.5, 0.1);
+    vec3<float> red(05., 0.05, 0.05);
+    vec3<float> green(0.0, 0.5, 0.1);
     vec3<float> copper(0.72, 0.45, 0.2);
-    vec3<float> white(0.9, 0.9, 0.9);
+    vec3<float> white(1, 1, 1);
 
 
     // Materials
@@ -175,12 +175,13 @@ void CornellBoxScene(std::vector<std::shared_ptr<Geometry>> &object_list,
 
     // Red
     std::shared_ptr<YzRect> red_rect;
-    red_rect = std::make_shared<YzRect>(0, 555, 0, 555, 555, light);
+    red_rect = std::make_shared<YzRect>(0, 555, 0, 555, 555, red_material);
     std::shared_ptr<FlipNormals> flipped_red = std::make_shared<FlipNormals>(red_rect);
 
     // Light
     std::shared_ptr<XzRect> light_source;
     light_source = std::make_shared<XzRect>(200, 555 - 200, 200, 555 - 200, 553, light);
+    std::shared_ptr<FlipNormals> flipped_light = std::make_shared<FlipNormals>(light_source);
 
     // Ceiling
     std::shared_ptr<XzRect> ceiling_rect;
@@ -199,11 +200,11 @@ void CornellBoxScene(std::vector<std::shared_ptr<Geometry>> &object_list,
 
     // Sphere 1
     std::shared_ptr<Sphere> sphere;
-    sphere = std::make_shared<Sphere>(vec3<float>(70, 60, 400), 60, light);
+    sphere = std::make_shared<Sphere>(vec3<float>(70, 60, 400), 60, white_material);
 
     // Sphere 2
     std::shared_ptr<Sphere> sphere2;
-    sphere2 = std::make_shared<Sphere>(vec3<float>(400, 100, 350), 100, light);
+    sphere2 = std::make_shared<Sphere>(vec3<float>(400, 100, 350), 100, glass_material);
 
 
     // World
@@ -214,30 +215,26 @@ void CornellBoxScene(std::vector<std::shared_ptr<Geometry>> &object_list,
     object_list.push_back(sphere2);
     object_list.push_back(flipped_red);
     object_list.push_back(green_rect);
-    object_list.push_back(light_source);
+    object_list.push_back(flipped_light);
     object_list.push_back(floor_rect);
     object_list.push_back(flipped_ceiling);
     object_list.push_back(flipped_wall);
 
-    light_list.push_back(sphere);
-    light_list.push_back(sphere2);
     light_list.push_back(light_source);
 
 
 
-
-
-
+//    li.push_back(sphere);
+//    li.push_back(sphere2);
 //    li.push_back(flipped_red);
 //    li.push_back(green_rect);
-//    li.push_back(light_source);
-//    li.push_back(ceiling_rect);
+//    li.push_back(flipped_light);
 //    li.push_back(floor_rect);
-//    li.push_back(wall_rect);
-//    li.push_back(sphere);
+//    li.push_back(flipped_ceiling);
+//    li.push_back(flipped_wall);
 
-    //auto bb_world = std::make_shared<BoundingVolumeNode>(BoundingVolumeNode(li, 0.0, 1.0));
-    //object_list.push_back(bb_world);
+//    auto bb_world = std::make_shared<BoundingVolumeNode>(BoundingVolumeNode(li, 0.0, 1.0));
+//    object_list.push_back(bb_world);
 }
 
 
@@ -295,10 +292,10 @@ void SaveImage(int nx, int ny, uchar (*image)[3], std::string save_to) {
 int main() {
 
     // Environment and Rendering parameters
-    int nx = 256;
-    int ny = 256;
+    int nx = 250;
+    int ny = 250;
 
-    unsigned int antialias_samples = 10;
+    unsigned int antialias_samples = 3000;
     unsigned int number_of_objects = 100;
 
     bool normal_mapping = false;
