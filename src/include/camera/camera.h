@@ -5,6 +5,7 @@
 #ifndef PATH_TRACER_CAMERA_H
 #define PATH_TRACER_CAMERA_H
 
+#include <memory>
 #include "vector/vec3.h"
 #include "geometry/geometry.h"
 #include "material/material.h"
@@ -12,6 +13,7 @@
 #include <nlohmann/json.hpp>
 // for convenience
 using json = nlohmann::json;
+
 
 class Camera {
 public:

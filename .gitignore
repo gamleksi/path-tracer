@@ -4,6 +4,8 @@ src/.idea
 src/cmake-build-debug
 src/CMakeFiles
 *.jpg
+*.png
+*.jpeg
 
 src/CMakeCache.txt
 src/Makefile

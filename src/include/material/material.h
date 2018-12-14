@@ -5,6 +5,7 @@
 #ifndef PATH_TRACER_MATERIAL_H // TODO: Fix this unterminated conditional behaviour. it comes probably from the texture stuff.
 #define PATH_TRACER_MATERIAL_H
 
+#include <memory>
 #include "geometry/geometry.h"
 #include <vector/vec3.h>
 #include <ray/ray.h>
