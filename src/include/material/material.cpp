@@ -18,7 +18,7 @@ vec3<float> Reflect(const vec3<float> &v, const vec3<float> &n) {
 }
 
 bool Lambertian::Scatter(
-        const ray<float> &r_in, const Hit_record &rec,
+        const ray<float> &r_in, const HitRecord &rec,
         vec3<float> &attenuation, ray<float> &scattered) const {
 
     vec3<float> target = rec.point + rec.normal + RandomInUnitSphere();
@@ -28,7 +28,7 @@ bool Lambertian::Scatter(
     return true;
 }
 
-bool Metal::Scatter(const ray<float> &r_in, const Hit_record &rec,
+bool Metal::Scatter(const ray<float> &r_in, const HitRecord &rec,
                     vec3<float> &attenuation, ray<float> &scattered) const {
     vec3<float> reflected = Reflect(r_in.Direction().Turn_unit(), rec.normal);
     scattered = ray<float>(rec.point, reflected + fuzz * RandomInUnitSphere());
@@ -36,7 +36,7 @@ bool Metal::Scatter(const ray<float> &r_in, const Hit_record &rec,
     return (Dot(scattered.Direction(), rec.normal) > 0);
 }
 
-bool DiffuseLight::Scatter(const ray<float> &r_in, const Hit_record &rec, vec3<float> &attenuation,
+bool DiffuseLight::Scatter(const ray<float> &r_in, const HitRecord &rec, vec3<float> &attenuation,
                            ray<float> &scattered) const {
     return false;
 }
@@ -64,7 +64,7 @@ float Dielectric::Schkick(float cosine, float ref_idx) const {
 }
 
 
-bool Dielectric::Scatter(const ray<float> &r_in, const Hit_record &rec, vec3<float> &attenuation,
+bool Dielectric::Scatter(const ray<float> &r_in, const HitRecord &rec, vec3<float> &attenuation,
                          ray<float> &scattered) const {
     vec3<float> outward_normal;
     vec3<float> reflected = Reflect(r_in.Direction(), rec.normal);

@@ -2,7 +2,7 @@
 // Created by Aleksi Hämäläinen on 02/12/2018.
 //
 
-#include "bounding_box.h"
+#include "intersection/bounding_box.h"
 
 bool BoundingBox::RayHits(const ray<float>& ray, float t_min, float t_max) const {
 

@@ -33,10 +33,20 @@ private:
     float lens_radius_;
 };
 
+/*
+ * Color functions takes care of analyzing what is the rbg value of the ray. In our implementation we decided that ray
+ * can bounce max 40 times.
+ */
 vec3<float> Color(const ray<float>& r, const std::shared_ptr<Geometry>& geom, int depth);
 
+/*
+ * Makes scene appear as "daylight". So that no light sources are needed.
+ */
 vec3<float> DayLight(const ray<float>& r, const std::shared_ptr<Geometry>& geom, int depth);
 
+/*
+ * Normal maps all the geometries in the scene. Makes it easy to debug and view scene "skeleton"
+ */
 vec3<float> NormalMapping(const ray<float>& r, const std::shared_ptr<Geometry>& geom);
 
 vec3<float> RandomUnitDiscCoord();

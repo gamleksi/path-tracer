@@ -11,6 +11,9 @@
 #include <camera/camera.h>
 #include "perlin.h"
 
+/*
+ * Textures bring scene to life. Constant texture works as "solid color" and returns chosen color when hit by Ray.
+ */
 class Texture {
 public:
     // u & v are texture mapping coordinates used with image textures
@@ -18,11 +21,13 @@ public:
 };
 
 
-
-class Constant_texture : public Texture {
+/*
+ * Constant solid color texture
+ */
+class ConstantTexture : public Texture {
 public:
-    Constant_texture() {}
-    Constant_texture(vec3<float> c) : color(c) {};
+    ConstantTexture() {}
+    ConstantTexture(vec3<float> c) : color(c) {};
 
     virtual vec3<float> Value(float u, float v, const vec3<float>& p) const {
         return color;
@@ -33,10 +38,13 @@ private:
 };
 
 
-class Checker_texture : public Texture {
+/*
+ * CheckerTexture creates chess board style pattern
+ */
+class CheckerTexture : public Texture {
 public:
-    Checker_texture() {}
-    Checker_texture(std::shared_ptr<Texture> t0, std::shared_ptr<Texture> t1, int s): even(t0), odd(t1), size(s) {}
+    CheckerTexture() {}
+    CheckerTexture(std::shared_ptr<Texture> t0, std::shared_ptr<Texture> t1, int s): even(t0), odd(t1), size(s) {}
 
     virtual vec3<float> Value(float u, float v, const vec3<float>& p) const {
         float sines = sin(size*p[0]) * sin(size*p[1]) * sin(size*p[2]);
@@ -52,14 +60,16 @@ private:
     int size;
 };
 
-
-class Perlin_texture : public Texture {
+/*
+ * PerlinTexture creates white to black noise.
+ */
+class PerlinTexture : public Texture {
 
 public:
 
     // Gives float between 0 and 1, creates grey colors
-    Perlin_texture() {}
-    Perlin_texture(float sc) : scale(sc) {}
+    PerlinTexture() {}
+    PerlinTexture(float sc) : scale(sc) {}
     virtual vec3<float> Value(float u, float v, const vec3<float>& p) const {
         return vec3<float>(1,1,1)*noise.Noise(p);
     }
