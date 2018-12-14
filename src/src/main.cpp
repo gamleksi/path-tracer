@@ -311,8 +311,8 @@ int main(int argc, const char *argv[]) {
 
      bool load = false;
      bool save = false;
-     std::string load_scene = "x.json";
-     std::string save_scene = "y.json";
+     std::string load_scene;
+     std::string save_scene;
 
       try
       {
@@ -327,8 +327,8 @@ int main(int argc, const char *argv[]) {
               ("save-to,f", boost::program_options::value<std::string>()->default_value(image_path), "File is saved to.")
               ("random,r", boost::program_options::value<bool>()->default_value(random_scene), "Introduce the random scene. If false the cornell box scene is used.")
               ("num-objects,o", boost::program_options::value<unsigned int>()->default_value(number_of_objects), "The number of objects in the random scene. This parameter only applies for the random scene.")
-              ("load-file, l", boost::program_options::value<std::string>()->default_value(load_scene), "Scene loaded from Json file.")
-              ("save-file, a", boost::program_options::value<std::string>()->default_value(save_scene), "Scene saved as Json to.");
+              ("load-file, l", boost::program_options::value<std::string>(), "Scene loaded from Json file.")
+              ("save-file, a", boost::program_options::value<std::string>(), "Scene saved as Json to.");
 
           boost::program_options::variables_map vm;
           store(parse_command_line(argc, argv, desc), vm);
