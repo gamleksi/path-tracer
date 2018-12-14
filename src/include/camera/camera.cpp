@@ -28,9 +28,9 @@ vec3<float> Color(const ray<float>& r, const std::shared_ptr<Geometry>& geom, in
     Hit_record rec;
     if (geom->RayHits(r, 0.001, MAXFLOAT, rec))
     {
-        ray<float> scattered{};
-        vec3<float> attenuation{};
-        vec3<float> emitted = rec.mat_ptr->emitted(rec.u, rec.v, rec.point);
+        ray<float> scattered;
+        vec3<float> attenuation;
+        vec3<float> emitted = rec.mat_ptr->Emitted(rec.u, rec.v, rec.point);
         if (depth < 50 && rec.mat_ptr->Scatter(r, rec, attenuation, scattered))
         {
             return emitted + attenuation * Color(scattered, geom, depth+1);
@@ -63,6 +63,20 @@ vec3<float> Color(const ray<float>& r, const std::shared_ptr<Geometry>& geom, in
         return ((float)1.0-t)*vec3<float>(1.0,1.0,1.0) + t*vec3<float>(0.5,0.7,1.0);
     }*/
 }
+
+vec3<float> NormalMapping(const ray<float>& r, const std::shared_ptr<Geometry>& geom)
+{
+  Hit_record rec{};
+  if(geom->RayHits(r, 0.0, MAXFLOAT, rec)){
+    return (float)0.5*vec3<float>(rec.normal[0]+1,rec.normal[1]+1,rec.normal[2]+1);
+  }else{
+    vec3<float> unit_direction = r.Direction().Unit();
+    float t = 0.5*(unit_direction[1]+1.0);
+    return ((float)1.0-t)*vec3<float>(1.0,1.0,1.0) + t*vec3<float>(0.5,0.7,1.0);
+  }
+
+}
+
 
 vec3<float> RandomUnitDiscCoord() {
     vec3<float> coord{}; // = (float)2.0 * vec3<float>((float)drand48(), (float)drand48(), 0) - vec3<float>(1.0, 1.0, 0.0);

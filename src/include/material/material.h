@@ -13,7 +13,7 @@
 class Material {
 public:
     virtual bool Scatter(const ray<float>& r_in, const Hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const = 0;
-    virtual vec3<float> emitted(float u, float v, const vec3<float>& p) const
+    virtual vec3<float> Emitted(float u, float v, const vec3<float>& p) const
     { return vec3<float>(0,0,0); }
 };
 
@@ -46,14 +46,30 @@ private:
 
 class DiffuseLight : public Material {
 public:
-    DiffuseLight(std::shared_ptr<Texture> a) : emit(a) { }
+    DiffuseLight(std::shared_ptr<Texture> a) : emit(a) {}
     virtual bool Scatter(const ray<float>& r_in, const Hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const;
-    virtual vec3<float> emitted(float u, float v, const vec3<float>& p) const;
+    virtual vec3<float> Emitted(float u, float v, const vec3<float>& p) const;
 private:
     std::shared_ptr<Texture> emit;
 };
 
 vec3<float> Reflect(const vec3<float>& v, const vec3<float>& n);
 
+class Dielectric : public Material {
+public:
+    Dielectric(float ri) : ref_idx(ri) {}
+    virtual bool Scatter(const ray<float>& r_in, const Hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const;
+
+private:
+    bool Refract(const vec3<float>& v, const vec3<float>& n, float ni_over_nt, vec3<float> refracted) const;
+
+    // Christophe Schlick polynimial approx
+    float Schkick(float cosine, float ref_idx) const ;
+
+    float ref_idx;
+};
+
+
 
 #endif //PATH_TRACER_MATERIAL_H
+
