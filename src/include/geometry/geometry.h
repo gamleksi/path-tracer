@@ -9,7 +9,7 @@
 #ifndef PATH_TRACER_GEOMETRY_H
 #define PATH_TRACER_GEOMETRY_H
 
-#include <memory.h>
+#include <memory>
 #include <vector>
 #include "vector/vec3.h"
 #include "ray/ray.h"

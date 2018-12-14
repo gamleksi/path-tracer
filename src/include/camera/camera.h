@@ -5,7 +5,7 @@
 #ifndef PATH_TRACER_CAMERA_H
 #define PATH_TRACER_CAMERA_H
 
-#include <memory.h>
+#include <memory>
 #include "vector/vec3.h"
 #include "geometry/geometry.h"
 #include "material/material.h"

@@ -5,7 +5,7 @@
 #ifndef PATH_TRACER_MATERIAL_H
 #define PATH_TRACER_MATERIAL_H
 
-#include <memory.h>
+#include <memory>
 #include "geometry/geometry.h"
 #include <vector/vec3.h>
 #include <ray/ray.h>
