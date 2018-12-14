@@ -2,7 +2,7 @@
 // Created by Jan Lundström on 20/11/2018.
 //
 
-#ifndef PATH_TRACER_MATERIAL_H
+#ifndef PATH_TRACER_MATERIAL_H // TODO: Fix this unterminated conditional behaviour. it comes probably from the texture stuff.
 #define PATH_TRACER_MATERIAL_H
 
 #include "geometry/geometry.h"

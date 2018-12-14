@@ -329,7 +329,7 @@ int main(int argc, char* argv[ ]) {
     unsigned int antialias_samples = 10;
     unsigned int number_of_objects = 100;
 
-    bool normal_mapping = true;
+    bool normal_mapping = false;
 
 /**
  * In order to get everything out of your computer the number of threads should be dividable by 8 and nx * ny % num_threads == 0
