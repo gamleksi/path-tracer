@@ -5,7 +5,7 @@
 
 #include "geometry/geometry.h"
 bool BoxOwnsThis(std::string& id){
-    if(&id[(id.size()-1)] == "b"){
+    if(id.substr(id.length() - 1) == "b"){
         return true;
     }else{
         return false;}

@@ -5,11 +5,12 @@
 #include "geometry/geometry.h"
 #include "material/material.h"
 #include "camera/camera.h"
+#include "io/io.h"
 #include <exception>
-#include <opencv2/highgui/highgui.hpp>
 #include <chrono>
 #include <SFML/Graphics/Image.hpp>
 #include <omp.h>
+
 
 #include <boost/program_options.hpp>
 #include <iostream>
@@ -308,6 +309,11 @@ int main(int argc, const char *argv[]) {
 
      bool random_scene = false;
 
+     bool load = false;
+     bool save = false;
+     std::string load_scene = "x.json";
+     std::string save_scene = "y.json";
+
       try
       {
           boost::program_options::options_description desc{"Options"};
@@ -319,8 +325,10 @@ int main(int argc, const char *argv[]) {
               ("threads", boost::program_options::value<int>(), "The number of threads used. If not defined, the path tracer utilizes fully the capicity of your computer cpu capacity.")
               ("samples,s", boost::program_options::value<unsigned int>()->default_value(antialias_samples), "The number of samples for each pixel.")
               ("save-to,f", boost::program_options::value<std::string>()->default_value(image_path), "File is saved to.")
-              ("random,r", boost::program_options::value<bool>()->default_value(random_scene), "Intoduce the random scene. If false the cornell box scene is used.")
-              ("num-objects,o", boost::program_options::value<unsigned int>()->default_value(number_of_objects), "The number of objects in the random scene. This parameter only applies for the random scene.");
+              ("random,r", boost::program_options::value<bool>()->default_value(random_scene), "Introduce the random scene. If false the cornell box scene is used.")
+              ("num-objects,o", boost::program_options::value<unsigned int>()->default_value(number_of_objects), "The number of objects in the random scene. This parameter only applies for the random scene.")
+              ("load-file, l", boost::program_options::value<std::string>()->default_value(load_scene), "Scene loaded from Json file.")
+              ("save-file, a", boost::program_options::value<std::string>()->default_value(save_scene), "Scene saved as Json to.");
 
           boost::program_options::variables_map vm;
           store(parse_command_line(argc, argv, desc), vm);
@@ -360,50 +368,66 @@ int main(int argc, const char *argv[]) {
             if (vm.count("num-objects")) {
               number_of_objects = vm["num-objects"].as<unsigned int>();
             }
+            if(vm.count("load-file")){
+                load_scene = vm["load-file"].as<std::string>();
+                load = true;
+            }
+            if(vm.count("save-file")){
+                  save_scene = vm["save-file"].as<std::string>();
+                  save = true;
+            }
           }
       }
       catch (const boost::program_options::error &ex)
       {
           std::cerr << ex.what() << std::endl;
       }
-
-      vec3<float> look_from{};
-      vec3<float> look_at{};
-      float dist_to_focus = 5.0; //(look_from - look_at).Norm2();
-      float aperture = 0.0;
-      float fov;
-      float aspect = float(nx) / float(ny);;
-
-      if (random_scene) {
-        look_from = vec3<float>(13, 2, 3);
-        look_at = vec3<float>(0, 0, 0);
-        fov = 20;
-        aspect = float(nx) / float(ny);
-      } else {
-         look_from = vec3<float>(278, 278, -800);
-         look_at = vec3<float>(278, 278, 0);
-         fov = 40;
+      Camera camera;
+      if (load){
+          camera = LoadCamera(load_scene);
+      }else{
+          vec3<float> look_from{};
+          vec3<float> look_at{};
+          float dist_to_focus = 5.0; //(look_from - look_at).Norm2();
+          float aperture = 0.0;
+          float fov;
+          float aspect = float(nx) / float(ny);
+          if (random_scene) {
+              look_from = vec3<float>(13, 2, 3);
+              look_at = vec3<float>(0, 0, 0);
+              fov = 20;
+              aspect = float(nx) / float(ny);
+          }else{
+              look_from = vec3<float>(278, 278, -800);
+              look_at = vec3<float>(278, 278, 0);
+              fov = 40;
+          }
+          camera = Camera(look_from, look_at, vec3<float>(0, 1, 0), fov, aspect, aperture, dist_to_focus);
       }
-     Camera camera(look_from, look_at, vec3<float>(0, 1, 0), fov, aspect, aperture, dist_to_focus);
 
-     std::vector<std::shared_ptr<Geometry>> object_list;
-     if (random_scene) {
-       GetRandomObjectList(number_of_objects, object_list);
-     } else {
-       CornellBoxScene(object_list);
-     }
+      std::vector<std::shared_ptr<Geometry>> object_list;
+      if (random_scene) {
+          GetRandomObjectList(number_of_objects, object_list);
+      }else if(load){
+          LoadObjectList(load_scene, object_list);
+      }else{
+          CornellBoxScene(object_list);
+      }
 
-     auto world = std::make_shared<Geomlist>(object_list);
+      auto world = std::make_shared<Geomlist>(object_list);
 
-     const auto t0 = Clock::now();
-     sf::Uint8 pixels[ny * nx][3];
-     Render(nx, ny, pixels, world, camera, antialias_samples, normal_mapping);
-     const auto t1 = Clock::now();
+      const auto t0 = Clock::now();
+      sf::Uint8 pixels[ny * nx][3];
+      Render(nx, ny, pixels, world, camera, antialias_samples, normal_mapping);
+      const auto t1 = Clock::now();
 
-     auto rendering_duration = std::chrono::duration_cast<std::chrono::seconds>(t1 - t0).count();
-     std::cout << "Rendering Duration: "
-               << rendering_duration
-               << " seconds" << std::endl;
-     sf::Image image =  CreateImage(nx, ny, pixels);
-     SaveImage(image, image_path);
+      auto rendering_duration = std::chrono::duration_cast<std::chrono::seconds>(t1 - t0).count();
+      std::cout << "Rendering Duration: "
+                << rendering_duration
+                << " seconds" << std::endl;
+      sf::Image image =  CreateImage(nx, ny, pixels);
+      SaveImage(image, image_path);
+      if(save){
+          SaveWorld(world,camera);
+      }
 }

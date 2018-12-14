@@ -22,8 +22,11 @@ public:
      *look_at is a point where we are looking at
      * view_up is a vector up from the point we are looking, determines rotation of the camera on the axis from camera to the point we are looking into
      */
+    Camera(){}
     Camera(const vec3<float>& look_from, const vec3<float>& look_at, const vec3<float>& view_up,
     float vfov, float aspect, float aperture, float dist_to_focus);
+
+    Camera& operator = (const Camera& c);
 
     //loader constructor
     Camera(vec3<float>& u, vec3<float>& v,vec3<float>& origin_,vec3<float>& llc, vec3<float>& hor, vec3<float>& ver,float lens_radius)

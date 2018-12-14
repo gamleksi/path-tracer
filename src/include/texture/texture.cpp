@@ -3,7 +3,7 @@
 //
 #include "texture.h"
 void Constant_texture::ToJson(json& j, std::string& id)const{
-    if(&id[(id.size()-1)] == "b") {
+    if(id.substr(id.length() - 1) == "b") {
         std::string id2 = id;
         id2.pop_back();
         size_t end = id2.length();
@@ -22,7 +22,7 @@ void Constant_texture::ToJson(json& j, std::string& id)const{
 }
 
 void Checker_texture::ToJson(json& j, std::string& id)const{
-    if(&id[(id.size()-1)] == "b"){
+    if(id.substr(id.length() - 1) == "b"){
         std::string id2 = id;
         id2.pop_back();
         size_t end = id2.length();
@@ -42,7 +42,7 @@ void Checker_texture::ToJson(json& j, std::string& id)const{
 }
 
 void Perlin_texture::ToJson(json& j, std::string& id)const{
-    if(&id[(id.size()-1)] == "b"){
+    if(id.substr(id.length() - 1) == "b"){
         std::string id2 = id;
         id2.pop_back();
         size_t end = id2.length();

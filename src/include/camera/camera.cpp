@@ -8,7 +8,16 @@
 #include "vector/vec3.h"
 #include <limits>
 
-
+Camera& Camera::operator = (const Camera& c) {
+    u = c.u;
+    v = c.v;
+    origin_ = c.origin_;
+    lower_left_corner_ = c.lower_left_corner_;
+    horizontal_ = c.horizontal_;
+    vertical_ = c.vertical_;
+    lens_radius_ = c.lens_radius_;
+    return *this;
+};
 
 Camera::Camera(const vec3<float>& look_from, const vec3<float>& look_at, const vec3<float>& view_up,
     float vfov, float aspect, float aperture, float dist_to_focus)
