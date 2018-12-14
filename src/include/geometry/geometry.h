@@ -35,6 +35,7 @@ class Geometry {
  virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const = 0;
  virtual int NumberOfObjects() const=0;
  virtual void ToJson(json& j,std::string& id)const = 0;
+ virtual std::vector<std::shared_ptr<Material>> GetMaterials()const = 0;
 };
 
 class Sphere : public Geometry{
@@ -49,10 +50,11 @@ class Sphere : public Geometry{
   virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const;
   virtual int NumberOfObjects() const;
   virtual void ToJson(json& j,std::string& id)const;
+  virtual std::vector<std::shared_ptr<Material>> GetMaterials()const;
 
   std::string GetType()const {return type_;}
   vec3<float> GetPosition()const{return position_;}
-  std::shared_ptr<Material> GetMaterial()const{return material_;}
+  //std::shared_ptr<Material> GetMaterial()const{return material_;}
   float GetRadius()const {return radius_;}
 
  private:
@@ -73,13 +75,14 @@ public:
     virtual int NumberOfObjects() const;
     virtual void ToJson(json& j,std::string& id)const;
 
+    virtual std::vector<std::shared_ptr<Material>> GetMaterials()const;
     std::string GetType()const {return type_;}
     float GetX0()const{return x0_;}
     float GetX1()const{return x1_;}
     float GetY0()const{return y0_;}
     float GetY1()const{return y1_;}
     float GetK()const{return k_;}
-    std::shared_ptr<Material> GetMaterial() const{return material_;}
+    //std::shared_ptr<Material> GetMaterial() const{return material_;}
 private:
     float x0_, x1_, y0_, y1_, k_;
     std::shared_ptr<Material> material_;
@@ -96,13 +99,14 @@ public:
     virtual int NumberOfObjects() const;
     virtual void ToJson(json& j,std::string& id)const;
 
+    virtual std::vector<std::shared_ptr<Material>> GetMaterials()const;
     std::string GetType()const {return type_;}
     float GetX0()const{return x0_;}
     float GetX1()const{return x1_;}
     float GetZ0()const{return z0_;}
     float GetZ1()const{return z1_;}
     float GetK()const{return k_;}
-    std::shared_ptr<Material> GetMaterial() const{return material_;}
+    //std::shared_ptr<Material> GetMaterial() const{return material_;}
 private:
     float x0_, x1_, z0_, z1_, k_;
     std::shared_ptr<Material> material_;
@@ -119,13 +123,14 @@ public:
     virtual int NumberOfObjects() const;
     virtual void ToJson(json& j,std::string& id)const;
 
+    virtual std::vector<std::shared_ptr<Material>> GetMaterials()const;
     std::string GetType()const {return type_;}
     float GetY0()const{return y0_;}
     float GetY1()const{return y1_;}
     float GetZ0()const{return z0_;}
     float GetZ1()const{return z1_;}
     float GetK()const{return k_;}
-    std::shared_ptr<Material> GetMaterial() const{return material_;}
+    //std::shared_ptr<Material> GetMaterial() const{return material_;}
 private:
     float y0_, y1_, z0_, z1_, k_;
     std::shared_ptr<Material> material_;
@@ -150,11 +155,12 @@ public:
     virtual int NumberOfObjects() const { return 1; }
     virtual void ToJson(json& j,std::string& id)const;
 
+    virtual std::vector<std::shared_ptr<Material>> GetMaterials()const;
     std::string GetType()const {return type_;}
     std::shared_ptr<Geometry> GetPtr() const{return ptr_;}
 private:
     std::shared_ptr<Geometry> ptr_;
-    std::string type_ = "FlipNormal";
+    std::string type_ = "FlipNormals";
 };
 
 class Geomlist : public Geometry{
@@ -168,11 +174,11 @@ class Geomlist : public Geometry{
     int GetListSize()const{return list_size_;}
     std::vector<std::shared_ptr<Geometry>> GetObjects() const{return list_;}
     virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
-
+    virtual std::vector<std::shared_ptr<Material>> GetMaterials()const;
     virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const;
     virtual int NumberOfObjects() const;
     virtual void ToJson(json& j,std::string& id)const;
-
+    void BoxToJson(json&j, std::string& id)const;
     std::string GetType()const {return type_;}
 
  private:
@@ -192,6 +198,7 @@ public:
     virtual int NumberOfObjects() const;
     virtual void ToJson(json& j,std::string& id)const;
 
+    virtual std::vector<std::shared_ptr<Material>> GetMaterials()const;
     std::string GetType()const {return type_;}
     vec3<float> GetPMin()const {return pmin_;}
     vec3<float> GetPMax()const{return pmax_;}
@@ -218,6 +225,7 @@ class BoundingVolumeNode : public Geometry {
   int NumberOfLeftObjects() const;
   int NumberOfRightObjects() const;
   virtual void ToJson(json& j,std::string& id)const;
+  virtual std::vector<std::shared_ptr<Material>> GetMaterials()const;
   std::string GetType()const {return type_;}
 
  private:
@@ -233,6 +241,6 @@ bool BBYCompare(const std::shared_ptr<Geometry>& a, const std::shared_ptr<Geomet
 bool BBZCompare(const std::shared_ptr<Geometry>& a, const std::shared_ptr<Geometry>& b);
 
 void ObjectListSort(std::vector<std::shared_ptr<Geometry>>& object_list, int depth);
-
+bool BoxOwnsThis(std::string& id);
 #endif //PATH_TRACER_GEOMETRY_H
 

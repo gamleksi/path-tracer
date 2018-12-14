@@ -97,21 +97,61 @@ bool Dielectric::Scatter(const ray<float> &r_in, const Hit_record &rec, vec3<flo
 }
 
 void Lambertian::ToJson(json& j,std::string& id)const{
-    j["world"][id]["material"]["type"] = type;
+    if(!BoxOwnsThis(id)){
+        j["world"][id]["material"]["type"] = type;
+    }else{
+        std::string id2 = id;
+        id2.pop_back();
+        size_t end = id2.length();
+        std::string number = std::to_string(id2[end]);
+        id2.pop_back();
+        j["world"][id2]["content"][number]["material"]["type"] = type;
+    }
+
     //albedo->ToJson(j, id);
 }
 void Metal::ToJson(json& j,std::string& id)const{
-    j["world"][id]["material"]["type"] = type;
-    j["world"][id]["material"]["fuzz"] = fuzz;
+    if(!BoxOwnsThis(id)){
+        j["world"][id]["material"]["type"] = type;
+        j["world"][id]["material"]["fuzz"] = fuzz;
+    }else{
+        std::string id2 = id;
+        id2.pop_back();
+        size_t end = id2.length();
+        std::string number = std::to_string(id2[end]);
+        id2.pop_back();
+        j["world"][id2]["content"][number]["material"]["type"] = type;
+        j["world"][id2]["content"][number]["material"]["fuzz"] = fuzz;
+    }
+
     //albedo->ToJson(j, id);
 }
 void DiffuseLight::ToJson(json& j,std::string& id)const{
-    j["world"][id]["material"]["type"] = type;
+    if(!BoxOwnsThis(id)){
+        j["world"][id]["material"]["type"] = type;
+    }else{
+        std::string id2 = id;
+        id2.pop_back();
+        size_t end = id2.length();
+        std::string number = std::to_string(id2[end]);
+        id2.pop_back();
+        j["world"][id2]["content"][number]["material"]["type"] = type;
+    }
     //emit->ToJson(j, id);
 }
 void Dielectric::ToJson(json& j,std::string& id)const{
-    j["world"][id]["material"]["type"] = type;
-    j["world"][id]["material"]["ref_idx"] =ref_idx;
+    if(!BoxOwnsThis(id)) {
+        j["world"][id]["material"]["type"] = type;
+        j["world"][id]["material"]["ref_idx"] = ref_idx;
+    }else{
+        std::string id2 = id;
+        id2.pop_back();
+        size_t end = id2.length();
+        std::string number = std::to_string(id2[end]);
+        id2.pop_back();
+        j["world"][id2]["content"][number]["material"]["type"] = type;
+        j["world"][id2]["content"][number]["material"]["ref_idx"] = ref_idx;
+    }
 }
 
 

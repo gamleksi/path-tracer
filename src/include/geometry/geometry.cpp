@@ -4,8 +4,12 @@
 
 
 #include "geometry/geometry.h"
-
-
+bool BoxOwnsThis(std::string& id){
+    if(&id[(id.size()-1)] == "b"){
+        return true;
+    }else{
+        return false;}
+}
 Sphere::Sphere(vec3<float> position, float radius, std::shared_ptr<Material> mat)
     : Geometry(), radius_(radius), position_(position), material_(std::move(mat)) { }
 
@@ -316,48 +320,110 @@ void Sphere::ToJson(json& j,std::string& id) const{
     j["world"][id]["position"]["z"] = GetPosition()[2];
     j["world"][id]["radius"] = GetRadius();
     j["world"][id]["type"] = GetType();
-//    material_->ToJson(j,id);
+
     //j["world"][id]["material"]["0"]= GetMaterial()->
     std::cout<<GetType()<<std::endl;
 }
-void Geomlist::ToJson(json& j,std::string& id)const{
-    //generates id which is tells to which Geomlist object belongs, try if json.has("Key") to change Geomlist name
-    std::cout<<id<<std::endl;
-    for (auto i = 0; i<GetObjects().size();i++){
-        std::string str = "object";
-        std::string s = std::to_string(i);
-        str.insert(6,s);
-        list_[i]->ToJson(j,str);
-//        auto mat = list[i]->GetMaterial();
-//        mat->ToJson(j, str);
+void Box::ToJson(json& j,std::string& id)const {
+    j["world"][id]["type"] = type_;
+    j["world"][id]["pmin"]["x"] = pmin_[0];
+    j["world"][id]["pmin"]["y"] = pmin_[1];
+    j["world"][id]["pmin"]["z"] = pmin_[2];
+    j["world"][id]["pmax"]["x"] = pmax_[0];
+    j["world"][id]["pmax"]["y"] = pmax_[1];
+    j["world"][id]["pmax"]["z"] = pmax_[2];
+    list_ptr_->BoxToJson(j,id);
+
+}
+
+void Geomlist::BoxToJson (json& j, std::string& id)const{
+    auto list = GetObjects();
+    for(int i = 0; i<GetObjects().size(); i++){
+        std::string id2 = id;
+        std::string k = std::to_string(i);
+        id2+=k;
+        id2+="b";
+        list[i]->ToJson(j,id2);
     }
 }
 
+void Geomlist::ToJson(json& j,std::string& id)const{
+    //generates id which is tells to which Geomlist object belongs, try if json.has("Key") to change Geomlist name
+    std::cout<<id<<std::endl;
+//    for (auto i = 0; i<GetObjects().size();i++){
+//        std::string str = "object";
+//        std::string s = std::to_string(i);
+//        str.insert(6,s);
+//        list_[i]->ToJson(j,str);
+//        auto mat = list_[i];
+//        mat->ToJson(j, str);
+//    }
+}
+
 void XyRect::ToJson(json& j,std::string& id)const{
-    j["world"][id]["x0_"] = GetX0();
-    j["world"][id]["x1_"] = GetX1();
-    j["world"][id]["y0_"] = GetY0();
-    j["world"][id]["y1_"] = GetY1();
-    j["world"][id]["k_"] = GetK();
-    j["world"][id]["type"] = GetType();
+    if(!BoxOwnsThis(id)){
+        j["world"][id]["x0_"] = GetX0();
+        j["world"][id]["x1_"] = GetX1();
+        j["world"][id]["y0_"] = GetY0();
+        j["world"][id]["y1_"] = GetY1();
+        j["world"][id]["k_"] = GetK();
+        j["world"][id]["type"] = GetType();
+    }else{
+        id.pop_back();
+        size_t end = id.length();
+        std::string number = std::to_string(id[end]);
+        id.pop_back();
+        j["world"][id]["Content"][number]["x0_"] = GetX0();
+        j["world"][id]["Content"][number]["x1_"] = GetX1();
+        j["world"][id]["Content"][number]["y0_"] = GetY0();
+        j["world"][id]["Content"][number]["y1_"] = GetY1();
+        j["world"][id]["Content"][number]["k_"] = GetK();
+        j["world"][id]["Content"][number]["type"] = GetType();
+    }
     std::cout<<GetType()<<std::endl;
 }
 void XzRect::ToJson(json& j,std::string& id)const {
-    j["world"][id]["x0_"] = GetX0();
-    j["world"][id]["x1_"] = GetX1();
-    j["world"][id]["z0_"] = GetZ0();
-    j["world"][id]["z1_"] = GetZ1();
-    j["world"][id]["k_"] = GetK();
-    j["world"][id]["type"] = GetType();
+    if(!BoxOwnsThis(id)){
+        j["world"][id]["x0_"] = GetX0();
+        j["world"][id]["x1_"] = GetX1();
+        j["world"][id]["z0_"] = GetZ0();
+        j["world"][id]["z1_"] = GetZ1();
+        j["world"][id]["k_"] = GetK();
+        j["world"][id]["type"] = GetType();
+    }else{
+        id.pop_back();
+        size_t end = id.length();
+        std::string number = std::to_string(id[end]);
+        id.pop_back();
+        j["world"][id]["Content"][number]["x0_"] = GetX0();
+        j["world"][id]["Content"][number]["x1_"] = GetX1();
+        j["world"][id]["Content"][number]["z0_"] = GetZ0();
+        j["world"][id]["Content"][number]["z1_"] = GetZ1();
+        j["world"][id]["Content"][number]["k_"] = GetK();
+        j["world"][id]["Content"][number]["type"] = GetType();
+    }
     std::cout<<GetType()<<std::endl;
 }
 void YzRect::ToJson(json& j,std::string& id) const {
-    j["world"][id]["y0_"] = GetY0();
-    j["world"][id]["y1_"] = GetY1();
-    j["world"][id]["z0_"] = GetZ0();
-    j["world"][id]["z1_"] = GetZ1();
-    j["world"][id]["k_"] = GetK();
-    j["world"][id]["type"] = GetType();
+    if(!BoxOwnsThis(id)){
+        j["world"][id]["y0_"] = GetY0();
+        j["world"][id]["y1_"] = GetY1();
+        j["world"][id]["z0_"] = GetZ0();
+        j["world"][id]["z1_"] = GetZ1();
+        j["world"][id]["k_"] = GetK();
+        j["world"][id]["type"] = GetType();
+    }else{
+        id.pop_back();
+        size_t end = id.length();
+        std::string number = std::to_string(id[end]);
+        id.pop_back();
+        j["world"][id]["Content"][number]["y0_"] = GetY0();
+        j["world"][id]["Content"][number]["y1_"] = GetY1();
+        j["world"][id]["Content"][number]["z0_"] = GetZ0();
+        j["world"][id]["Content"][number]["z1_"] = GetZ1();
+        j["world"][id]["Content"][number]["k_"] = GetK();
+        j["world"][id]["Content"][number]["type"] = GetType();
+    }
 
     std::cout<<GetType()<<std::endl;
 }
@@ -365,12 +431,62 @@ void FlipNormals::ToJson(json& j,std::string& id) const {
     j["world"][id]["type"] = GetType();
     std::cout<<GetType()<<std::endl;
 }
-void Box::ToJson(json& j,std::string& id) const {
-    std::cout<<GetType()<<std::endl;
-}
+
 void BoundingVolumeNode::ToJson(json& j,std::string& id) const {
 
     std::cout<<GetType()<<std::endl;
     left_->ToJson(j,id);
     right_->ToJson(j,id);
+}
+
+std::vector<std::shared_ptr<Material>> FlipNormals::GetMaterials() const{
+    std::vector<std::shared_ptr<Material>> matvec;
+    std::vector<std::shared_ptr<Material>> temp = ptr_->GetMaterials();
+    matvec.push_back(temp[0]);
+    return matvec;
+
+}
+
+std::vector<std::shared_ptr<Material>> BoundingVolumeNode::GetMaterials() const{
+    std::vector<std::shared_ptr<Material>> matvec;
+    return matvec;
+}
+
+std::vector<std::shared_ptr<Material>> Box::GetMaterials() const{
+    std::vector<std::shared_ptr<Material>> matvec;
+    auto list = list_ptr_->GetObjects();
+    for(int i = 0; i<6;i++){
+        std::vector<std::shared_ptr<Material>> temp = list[i]->GetMaterials();
+        matvec.push_back(temp[0]);
+    }
+    return matvec;
+}
+
+std::vector<std::shared_ptr<Material>> Sphere::GetMaterials() const{
+    std::vector<std::shared_ptr<Material>> matvec;
+    matvec.push_back(material_);
+    return matvec;
+}
+
+std::vector<std::shared_ptr<Material>> XyRect::GetMaterials() const{
+    std::vector<std::shared_ptr<Material>> matvec;
+    matvec.push_back(material_);
+    return matvec;
+}
+
+std::vector<std::shared_ptr<Material>> XzRect::GetMaterials() const{
+    std::vector<std::shared_ptr<Material>> matvec;
+    matvec.push_back(material_);
+    return matvec;
+}
+
+std::vector<std::shared_ptr<Material>> YzRect::GetMaterials() const{
+    std::vector<std::shared_ptr<Material>> matvec;
+    matvec.push_back(material_);
+    return matvec;
+}
+
+std::vector<std::shared_ptr<Material>> Geomlist::GetMaterials() const{
+    std::vector<std::shared_ptr<Material>> matvec;
+    return matvec;
 }

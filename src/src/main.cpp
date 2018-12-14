@@ -349,12 +349,12 @@ int main(int argc, char* argv[ ]) {
     float fov = 40;
     float aspect = float(nx) / float(ny);
 
-    //Camera camera(look_from, look_at, vec3<float>(0, 1, 0), fov, aspect, aperture, dist_to_focus);
-    Camera camera = LoadCamera("xxx.json");
+    Camera camera(look_from, look_at, vec3<float>(0, 1, 0), fov, aspect, aperture, dist_to_focus);
+    //Camera camera = LoadCamera("xxx.json");
     std::vector<std::shared_ptr<Geometry>> object_list;
-    //CornellBoxScene(object_list);
+    CornellBoxScene(object_list);
     //GetRandomObjectList(number_of_objects, object_list);
-    LoadObjectList("xxx.json",object_list);
+    //LoadObjectList("xxx.json",object_list);
     auto world = std::make_shared<Geomlist>(object_list);
 
 

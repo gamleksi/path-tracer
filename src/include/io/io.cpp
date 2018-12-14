@@ -18,14 +18,39 @@ using json = nlohmann::json;
 json ToJson(std::shared_ptr<Geomlist> &world, Camera& camera){
 
     json j;
-    std::cout<<world->GetListSize()<<std::endl;
-    std::cout<<world->NumberOfObjects()<<std::endl;
     std::vector<std::shared_ptr<Geometry>> list = world->GetObjects();
     int x = world->GetListSize();
     j["objnum"] = x;
     camera.ToJson(j);
+    for(int i=0; i< world->GetListSize(); i++){
+        std::cout<<world->GetListSize()<<std::endl;
+        std::string str = "object";
+        std::string s = std::to_string(i);
+        str.insert(6,s);
+        list[i]->ToJson(j,str);
+        auto mat = list[i]->GetMaterials();
+        if (mat.size()>1){
+            for (int k = 0; k<mat.size();k++){
+                std::string number = std::to_string(k);
+                str += number;
+                str+="b";
+                mat[k]->ToJson(j,str);
+                str.pop_back();
+                str.pop_back();
+            }
+        }else{
+            mat[0]->ToJson(j, str);
+        }
+
+    }
+
+
+    std::cout<<world->NumberOfObjects()<<std::endl;
+
+
+
     std::string str = "Initiating Saving algorithm";
-    world->ToJson(j,str);
+    //world->ToJson(j,str);
 
     return j;
 }
