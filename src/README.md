@@ -2,7 +2,7 @@
 ## Getting started
 
 Make sure you have [openCV](https://www.opencv.org) installed in your $PATH
-* MacOS ```brew install opencv``` ```brew install libomp```
+* MacOS ```brew install opencv``` ```brew install libomp``` ```brew install sfml``` ```brew install boost```
 * Ubuntu 18.04: ```sudo apt update && sudo apt install python3-opencv```
 
 Project uses Cmake for compiling. ```CMakeLists.txt``` file can be found from the ```/src```. Use it to compile. Project has tests written with gtest. Those can be found from the ```/tests``` folder.
