@@ -17,7 +17,7 @@ class Texture {
 public:
     // u & v are texture mapping coordinates used with image textures
     virtual vec3<float> Value(float u, float v, const vec3<float>& p) const = 0;
-    //virtual void ToJson(json& j, std::string& id) const =0;
+    virtual void ToJson(json& j, std::string& id) const =0;
 };
 
 
@@ -30,11 +30,11 @@ public:
     virtual vec3<float> Value(float u, float v, const vec3<float>& p) const {
         return color;
     }
-    //virtual void ToJson(json& j, std::string& id)const;
+    virtual void ToJson(json& j, std::string& id)const;
 
 private:
     vec3<float> color;
-    const std::string type = "Constant_texture";
+    const std::string type = "constant_texture";
 };
 
 
@@ -50,13 +50,13 @@ public:
         else
             return even->Value(u,v,p);
     }
-    //virtual void ToJson(json& j, std::string& id) const;
+    virtual void ToJson(json& j, std::string& id) const;
 
 private:
     std::shared_ptr<Texture> odd;
     std::shared_ptr<Texture> even;
     int size;
-    const std::string type = "Checker_texture";
+    const std::string type = "checker_texture";
 };
 
 
@@ -70,11 +70,11 @@ public:
     virtual vec3<float> Value(float u, float v, const vec3<float>& p) const {
         return vec3<float>(1,1,1)*noise.Noise(p);
     }
-    //virtual void ToJson(json& j, std::string& id) const;
+    virtual void ToJson(json& j, std::string& id) const;
 private:
     Perlin noise;
     float scale;
-    const std::string type = "Perlin_texture";
+    const std::string type = "perlin_texture";
 };
 
 #endif //PATH_TRACER_TEXTURE_H

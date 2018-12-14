@@ -99,6 +99,8 @@ bool Dielectric::Scatter(const ray<float> &r_in, const Hit_record &rec, vec3<flo
 void Lambertian::ToJson(json& j,std::string& id)const{
     if(!BoxOwnsThis(id)){
         j["world"][id]["material"]["type"] = type;
+        albedo->ToJson(j,id);
+
     }else{
         std::string id2 = id;
         id2.pop_back();

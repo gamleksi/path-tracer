@@ -13,6 +13,8 @@
 // for convenience
 using json = nlohmann::json;
 
+class Texture;
+
 class Material {
 public:
     virtual bool Scatter(const ray<float>& r_in, const Hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const = 0;
