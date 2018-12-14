@@ -289,7 +289,8 @@ sf::Image CreateImage(int nx, int ny, sf::Uint8 (*pixels)[3]) {
     return image;
 }
 
-void SaveImage(const sf::Image& image, const std::string& save_to) {
+void SaveImage(const sf::Image& image, std::string& save_to) {
+
     image.saveToFile(save_to);
 }
 
@@ -318,8 +319,9 @@ int main(int argc, const char *argv[]) {
               ("threads", boost::program_options::value<int>(), "The number of threads used. If not defined, the path tracer utilizes fully the capicity of your computer cpu capacity.")
               ("samples,s", boost::program_options::value<unsigned int>()->default_value(antialias_samples), "The number of samples for each pixel.")
               ("save-to,f", boost::program_options::value<std::string>()->default_value(image_path), "File is saved to.")
-              ("random,r", boost::program_options::value<bool>()->default_value(random_scene), "Intoduce the random scene. If false the cornell box scene is used.")
-              ("num-objects,o", boost::program_options::value<unsigned int>()->default_value(number_of_objects), "The number of objects in the random scene. This parameter only applies for the random scene.");
+              ("random,r", boost::program_options::value<bool>()->default_value(random_scene), "Introduces the random scene. If false the cornell box scene is used.")
+              ("num-objects,o", boost::program_options::value<unsigned int>()->default_value(number_of_objects), "The number of objects in the random scene. This parameter only applies for the random scene.")
+              ("fov", boost::program_options::value<float>(), "Horizontal field of view");
 
           boost::program_options::variables_map vm;
           store(parse_command_line(argc, argv, desc), vm);
@@ -350,8 +352,12 @@ int main(int argc, const char *argv[]) {
                 omp_set_num_threads(threads);
             }
             if (vm.count("save-to")) {
-              // TODO: Only in png format!!
+
               image_path = vm["save-to"].as<std::string>();
+              if(image_path.substr(image_path.length() - 4) != ".png") {
+                image_path = image_path + ".png";
+                std::cout << "SMLF reads only .png formats. Your image is saved to " << image_path << std::endl;
+              }
             }
             if (vm.count("random")) {
               random_scene = vm["random"].as<bool>();
@@ -382,7 +388,8 @@ int main(int argc, const char *argv[]) {
          look_from = vec3<float>(278, 278, -800);
          look_at = vec3<float>(278, 278, 0);
          fov = 40;
-      }
+     }
+
      Camera camera(look_from, look_at, vec3<float>(0, 1, 0), fov, aspect, aperture, dist_to_focus);
 
      std::vector<std::shared_ptr<Geometry>> object_list;
