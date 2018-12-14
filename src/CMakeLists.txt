@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.5.1)
 project(path_tracer)
 
-find_file (DEBIAN_FOUND debian_version debconf.conf
-          PATHS /etc
-                )
 
 if(${APPLE})
 message("You are using an Apple product.")
@@ -16,8 +13,7 @@ set(OpenMP_omp_LIBRARY /usr/local/opt/libomp/lib/libomp.dylib)
 find_package(OpenMP REQUIRED)
 include_directories("${OpenMP_CXX_LIB_LIBRARY}")
 else(${APPLE})
-# If UBUNTU
-message("You are hopefully using Ubuntu.")
+message("You are using Ubuntu.")
 message("This CMake does not take into account Windows :) .")
 find_package(OpenMP REQUIRED)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
