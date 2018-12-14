@@ -18,7 +18,7 @@
 // Used to inform compiler
 class Material;
 
-struct Hit_record{
+struct HitRecord{
   float time;
   float u;
   float v;
@@ -34,7 +34,7 @@ struct Hit_record{
  */
 class Geometry {
  public:
- virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const = 0;
+ virtual bool RayHits(const ray<float>& r, float t_min, float t_max, HitRecord& rec) const = 0;
  virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const = 0;
  virtual int NumberOfObjects() const=0;
 };

@@ -43,11 +43,11 @@ BoundingVolumeNode::BoundingVolumeNode(std::vector<std::shared_ptr<Geometry>>& o
    return right_->NumberOfObjects();
  }
 
- bool BoundingVolumeNode::RayHits(const ray<float>& ray, float t_min, float t_max, Hit_record& rec) const {
+ bool BoundingVolumeNode::RayHits(const ray<float>& ray, float t_min, float t_max, HitRecord& rec) const {
 
   if (bounding_box_.RayHits(ray, t_min, t_max)) {
-    Hit_record left_record{};
-    Hit_record right_record{};
+    HitRecord left_record{};
+    HitRecord right_record{};
 
     bool left_hits = left_ -> RayHits(ray, t_min, t_max, left_record);
     bool right_hits = right_ -> RayHits(ray, t_min, t_max, right_record);

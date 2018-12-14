@@ -13,7 +13,7 @@ public:
     Box() { }
     Box(const vec3<float>& p0, const vec3<float>& p1, std::shared_ptr<Material> mat);
     ~Box() { };
-    virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
+    virtual bool RayHits(const ray<float>& r, float t_min, float t_max, HitRecord& rec) const;
     virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const;
     virtual int NumberOfObjects() const;
 private:
@@ -26,7 +26,7 @@ public:
     XyRect(float x0, float x1, float y0, float y1, float k, std::shared_ptr<Material> mat);
 
     ~XyRect() { };
-    virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
+    virtual bool RayHits(const ray<float>& r, float t_min, float t_max, HitRecord& rec) const;
     virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const;
     virtual int NumberOfObjects() const;
 private:
@@ -39,7 +39,7 @@ public:
     XzRect(float x0, float x1, float z0, float z1, float k, std::shared_ptr<Material> mat);
 
     ~XzRect() { };
-    virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
+    virtual bool RayHits(const ray<float>& r, float t_min, float t_max, HitRecord& rec) const;
     virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const;
     virtual int NumberOfObjects() const;
 private:
@@ -52,7 +52,7 @@ public:
     YzRect(float y0, float y1, float z0, float z1, float k, std::shared_ptr<Material> mat);
 
     ~YzRect() { };
-    virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
+    virtual bool RayHits(const ray<float>& r, float t_min, float t_max, HitRecord& rec) const;
     virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const;
     virtual int NumberOfObjects() const;
 private:
@@ -64,7 +64,7 @@ class FlipNormals : public Geometry{
 public:
     FlipNormals(std::shared_ptr<Geometry> p) : ptr_(p) { }
     ~FlipNormals() { }
-    virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const {
+    virtual bool RayHits(const ray<float>& r, float t_min, float t_max, HitRecord& rec) const {
         if (ptr_->RayHits(r, t_min, t_max, rec)) {
             rec.normal = -rec.normal;
             return true;

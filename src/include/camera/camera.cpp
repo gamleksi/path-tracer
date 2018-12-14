@@ -27,7 +27,7 @@ Camera::Camera(const vec3<float>& look_from, const vec3<float>& look_at, const v
 
 
 vec3<float> Color(const ray<float>& r, const std::shared_ptr<Geometry>& geom, int depth) {
-    Hit_record rec;
+    HitRecord rec;
     if (geom->RayHits(r, 0.001, std::numeric_limits<float>::max(), rec))
     {
         ray<float> scattered;
@@ -45,7 +45,7 @@ vec3<float> Color(const ray<float>& r, const std::shared_ptr<Geometry>& geom, in
 
 
 vec3<float> DayLight(const ray<float>& r, const std::shared_ptr<Geometry>& geom, int depth) {
-    Hit_record rec;
+    HitRecord rec;
 
     if (geom->RayHits(r, 0.001, std::numeric_limits<float>::max(), rec)) {
         ray<float> scattered{};
@@ -65,7 +65,7 @@ vec3<float> DayLight(const ray<float>& r, const std::shared_ptr<Geometry>& geom,
 
 vec3<float> NormalMapping(const ray<float>& r, const std::shared_ptr<Geometry>& geom)
 {
-  Hit_record rec{};
+    HitRecord rec{};
   if(geom->RayHits(r, 0.0, std::numeric_limits<float>::max(), rec)){ // TODO std::numeric_limits<float>::max() fix
     return (float)0.5*vec3<float>(rec.normal[0]+1,rec.normal[1]+1,rec.normal[2]+1);
   }else{

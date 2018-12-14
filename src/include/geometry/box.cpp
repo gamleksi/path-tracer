@@ -19,7 +19,7 @@ Box::Box(const vec3<float> &p0, const vec3<float> &p1, std::shared_ptr<Material>
     list_ptr_ = std::make_shared<Geomlist>(rect_list);
 }
 
-bool Box::RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &rec) const {
+bool Box::RayHits(const ray<float> &r, float t_min, float t_max, HitRecord &rec) const {
     return list_ptr_->RayHits(r, t_min, t_max, rec);
 }
 
@@ -37,7 +37,7 @@ XzRect::XzRect(float x0, float x1, float z0, float z1, float k, std::shared_ptr<
 YzRect::YzRect(float y0, float y1, float z0, float z1, float k, std::shared_ptr<Material> mat)
     : y0_(y0), y1_(y1), z0_(z0), z1_(z1), k_(k), material_(std::move(mat)) { }
 
-bool XyRect::RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &rec) const {
+bool XyRect::RayHits(const ray<float> &r, float t_min, float t_max, HitRecord &rec) const {
     float t = (k_ - r.Origin().Z()) / r.Direction().Z();
     if (t < t_min || t > t_max){ return false; }
     float x = r.Origin().X() + t * r.Direction().X();
@@ -52,7 +52,7 @@ bool XyRect::RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &
     return true;
 }
 
-bool XzRect::RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &rec) const {
+bool XzRect::RayHits(const ray<float> &r, float t_min, float t_max, HitRecord &rec) const {
     float t = (k_ - r.Origin().Y()) / r.Direction().Y();
     if (t < t_min || t > t_max) { return false; }
     float x = r.Origin().X() + t * r.Direction().X();
@@ -67,7 +67,7 @@ bool XzRect::RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &
     return true;
 }
 
-bool YzRect::RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &rec) const {
+bool YzRect::RayHits(const ray<float> &r, float t_min, float t_max, HitRecord &rec) const {
     float t = (k_ - r.Origin().X()) / r.Direction().X();
     if (t < t_min || t > t_max) { return false; }
     float y = r.Origin().Y() + t * r.Direction().Y();

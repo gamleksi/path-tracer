@@ -4,8 +4,8 @@
 
 #include "geomlist.h"
 
-bool Geomlist::RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const{
-    Hit_record temp_rec{};
+bool Geomlist::RayHits(const ray<float>& r, float t_min, float t_max, HitRecord& rec) const{
+    HitRecord temp_rec{};
     bool hit = false;
     float closest_distance = t_max;
     for (int i = 0; i < list_size_; i++){

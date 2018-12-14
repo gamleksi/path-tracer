@@ -241,7 +241,7 @@ int main(int argc, const char *argv[]) {
      int nx = 500;
      int ny = 500;
 
-     unsigned int antialias_samples = 600;
+     unsigned int antialias_samples = 6;
      unsigned int number_of_objects = 10;
 
      bool normal_mapping = false;
