@@ -32,7 +32,7 @@ bool Metal::Scatter(const ray<float> &r_in, const Hit_record &rec,
                     vec3<float> &attenuation, ray<float> &scattered) const {
     vec3<float> reflected = Reflect(r_in.Direction().Turn_unit(), rec.normal);
     scattered = ray<float>(rec.point, reflected + fuzz * RandomInUnitSphere());
-    attenuation = albedo->Value(0, 0, rec.point);
+    attenuation = albedo;
     return (Dot(scattered.Direction(), rec.normal) > 0);
 }
 
@@ -75,16 +75,17 @@ bool Dielectric::Scatter(const ray<float> &r_in, const Hit_record &rec, vec3<flo
     float cosine;
     if (Dot(r_in.Direction(), rec.normal) > 0) {
         outward_normal = -rec.normal;
-        ni_over_nt = this->ref_idx;
-        cosine = ref_idx * Dot(r_in.Direction(), rec.normal) / sqrt(r_in.Direction().Squared_length());
+        ni_over_nt = ref_idx;
+        cosine = ref_idx * Dot(r_in.Direction(), rec.normal) / r_in.Direction().Norm2();
     } else {
         outward_normal = rec.normal;
-        ni_over_nt = (float)1.0 / this->ref_idx;
-        cosine = -Dot(r_in.Direction(), rec.normal) / sqrt(r_in.Direction().Squared_length());
+        ni_over_nt = (float)1.0 / ref_idx;
+        cosine = -Dot(r_in.Direction(), rec.normal) / r_in.Direction().Norm2();
     }
     if (Refract(r_in.Direction(), outward_normal, ni_over_nt, refracted)) {
         reflect_prob = Schkick(cosine, ref_idx);
     } else {
+        scattered = ray<float>(rec.point, reflected);
         reflect_prob = 1.0;
     }
     if (drand48() < reflect_prob) {

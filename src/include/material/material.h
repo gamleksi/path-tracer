@@ -34,13 +34,14 @@ private:
 class Metal : public Material {
 
 public:
-    Metal(std::shared_ptr<Texture> a, float f) : albedo(a) { if (f<1) fuzz = f; else fuzz = 1;}
+    //Metal(std::shared_ptr<Texture> a, float f) : albedo(a) { if (f<1) fuzz = f; else fuzz = 1;}
+    Metal(vec3<float> a, float f) : albedo(a) { if (f<1) fuzz = f; else fuzz = 1;}
 
     virtual bool Scatter(const ray<float>& r_in, const Hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const;
 
 private:
     // The proportion of the total light striking the surface of an object which is reflected from that surface.
-    std::shared_ptr<Texture> albedo;
+    vec3<float> albedo;
     // Defines how clearly metallic objects reflect light
     float fuzz;
 };
@@ -65,7 +66,7 @@ private:
     bool Refract(const vec3<float>& v, const vec3<float>& n, float ni_over_nt, vec3<float> refracted) const;
 
     // Christophe Schlick polynimial approx
-    float Schkick(float cosine, float ref_idx) const ;
+    float Schkick(float cosine, float ref_idx) const;
 
     float ref_idx;
 };
