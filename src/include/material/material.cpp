@@ -50,7 +50,7 @@ bool Dielectric::Refract(const vec3<float> &v, const vec3<float> &n, float ni_ov
     float dt = Dot(uv, n);
     float discriminant = (float)1.0 - ni_over_nt * ni_over_nt * (1 - dt * dt);
     if (discriminant > 0) {
-        refracted = ni_over_nt * (uv - n * dt) - n * sqrt(discriminant);
+        refracted = ni_over_nt * (uv - n * dt) - n * (float)sqrt(discriminant);
         return true;
     } else {
         return false;
