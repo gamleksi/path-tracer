@@ -77,22 +77,17 @@ std::shared_ptr<XyRect> LoadXyRect(json& j,std::string& id){
     y0=j["world"][id]["y0_"];
     y1=j["world"][id]["y1_"];
     k=j["world"][id]["k_"];
-    std::string type;
-    type = j["world"][id]["material"]["texture"]["type"];
-    vec3<float> color(0, 0, 0);
-    if (type == "constant_texture"){
-        color[0] = j["world"][id]["material"]["texture"]["color"]["x"];
-        color[1] = j["world"][id]["material"]["texture"]["color"]["y"];
-        color[2] = j["world"][id]["material"]["texture"]["color"]["z"];
-    }
-    std::shared_ptr<Material> material;
-    material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(color));
+
+    vec3<float> grey(0.3, 0.3, 0.3);
+    std::shared_ptr<Material> grey_material;
+    grey_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(grey));
 
 
     std::shared_ptr<XyRect> rect;
-    rect=std::make_shared<XyRect>(x0,x1,y0,y1,k,material);
+    rect=std::make_shared<XyRect>(x0,x1,y0,y1,k,grey_material);
     return rect;
 }
+
 
 std::shared_ptr<XyRect> LoadBoxesXyRect(json& j,std::string& id,std::string& number){
     float x0,x1,y0,y1,k;
@@ -101,22 +96,17 @@ std::shared_ptr<XyRect> LoadBoxesXyRect(json& j,std::string& id,std::string& num
     y0=j["world"][id]["Content"][number]["y0_"];
     y1=j["world"][id]["Content"][number]["y1_"];
     k=j["world"][id]["Content"][number]["k_"];
-    std::string type;
-    type = j["world"][id]["Content"][number]["material"]["texture"]["type"];
-    vec3<float> color(0, 0, 0);
-    if (type == "constant_texture"){
-        color[0] = j["world"][id]["Content"][number]["material"]["texture"]["color"]["x"];
-        color[1] = j["world"][id]["Content"][number]["material"]["texture"]["color"]["y"];
-        color[2] = j["world"][id]["Content"][number]["material"]["texture"]["color"]["z"];
-    }
-    std::shared_ptr<Material> material;
-    material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(color));
+
+    vec3<float> grey(0.3, 0.3, 0.3);
+    std::shared_ptr<Material> grey_material;
+    grey_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(grey));
 
 
     std::shared_ptr<XyRect> rect;
-    rect=std::make_shared<XyRect>(x0,x1,y0,y1,k,color);
+    rect=std::make_shared<XyRect>(x0,x1,y0,y1,k,grey_material);
     return rect;
 }
+
 
 std::shared_ptr<XzRect> LoadXzRect(json& j,std::string& id){
     float x0,x1,z0,z1,k;
@@ -125,22 +115,16 @@ std::shared_ptr<XzRect> LoadXzRect(json& j,std::string& id){
     z0=j["world"][id]["z0_"];
     z1=j["world"][id]["z1_"];
     k=j["world"][id]["k_"];
-    std::string type;
-    type = j["world"][id]["material"]["texture"]["type"];
-    vec3<float> color(0, 0, 0);
-    if (type == "constant_texture"){
-        color[0] = j["world"][id]["material"]["texture"]["color"]["x"];
-        color[1] = j["world"][id]["material"]["texture"]["color"]["y"];
-        color[2] = j["world"][id]["material"]["texture"]["color"]["z"];
-    }
-    std::shared_ptr<Material> material;
-    material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(color));
 
+    vec3<float> grey(0.3, 0.3, 0.3);
+    std::shared_ptr<Material> grey_material;
+    grey_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(grey));
 
     std::shared_ptr<XzRect> rect;
-    rect=std::make_shared<XzRect>(x0,x1,z0,z1,k,color);
+    rect=std::make_shared<XzRect>(x0,x1,z0,z1,k,grey_material);
     return rect;
 }
+
 
 std::shared_ptr<XzRect> LoadBoxesXzRect(json& j,std::string& id,std::string& number){
     float x0,x1,z0,z1,k;
@@ -149,19 +133,13 @@ std::shared_ptr<XzRect> LoadBoxesXzRect(json& j,std::string& id,std::string& num
     z0=j["world"][id]["Content"][number]["z0_"];
     z1=j["world"][id]["Content"][number]["z1_"];
     k=j["world"][id]["Content"][number]["k_"];
-    std::string type;
-    type = j["world"][id]["Content"][number]["material"]["texture"]["type"];
-    vec3<float> color(0, 0, 0);
-    if (type == "constant_texture"){
-        color[0] = j["world"][id]["Content"][number]["material"]["texture"]["color"]["x"];
-        color[1] = j["world"][id]["Content"][number]["material"]["texture"]["color"]["y"];
-        color[2] = j["world"][id]["Content"][number]["material"]["texture"]["color"]["z"];
-    }
-    std::shared_ptr<Material> material;
-    material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(color));
+
+    vec3<float> grey(0.3, 0.3, 0.3);
+    std::shared_ptr<Material> grey_material;
+    grey_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(grey));
 
     std::shared_ptr<XzRect> rect;
-    rect=std::make_shared<XzRect>(x0,x1,z0,z1,k,color);
+    rect=std::make_shared<XzRect>(x0,x1,z0,z1,k,grey_material);
     return rect;
 }
 
@@ -172,21 +150,16 @@ std::shared_ptr<YzRect> LoadYzRect(json& j,std::string& id){
     z0=j["world"][id]["z0_"];
     z1=j["world"][id]["z1_"];
     k=j["world"][id]["k_"];
-    std::string type;
-    type = j["world"][id]["material"]["texture"]["type"];
-    vec3<float> color(0, 0, 0);
-    if (type == "constant_texture"){
-        color[0] = j["world"][id]["material"]["texture"]["color"]["x"];
-        color[1] = j["world"][id]["material"]["texture"]["color"]["y"];
-        color[2] = j["world"][id]["material"]["texture"]["color"]["z"];
-    }
-    std::shared_ptr<Material> material;
-    material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(color));
+
+    vec3<float> grey(0.3, 0.3, 0.3);
+    std::shared_ptr<Material> grey_material;
+    grey_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(grey));
 
     std::shared_ptr<YzRect> rect;
-    rect=std::make_shared<YzRect>(y0,y1,z0,z1,k,color);
+    rect=std::make_shared<YzRect>(y0,y1,z0,z1,k,grey_material);
     return rect;
 }
+
 
 std::shared_ptr<YzRect> LoadBoxesYzRect(json& j,std::string& id, std::string &number){
     float y0,y1,z0,z1,k;
@@ -195,21 +168,16 @@ std::shared_ptr<YzRect> LoadBoxesYzRect(json& j,std::string& id, std::string &nu
     z0=j["world"][id]["Content"][number]["z0_"];
     z1=j["world"][id]["Content"][number]["z1_"];
     k=j["world"][id]["Content"][number]["k_"];
-    std::string type;
-    type = j["world"][id]["Content"][number]["material"]["texture"]["type"];
-    vec3<float> color(0, 0, 0);
-    if (type == "constant_texture"){
-        color[0] = j["world"][id]["Content"][number]["material"]["texture"]["color"]["x"];
-        color[1] = j["world"][id]["Content"][number]["material"]["texture"]["color"]["y"];
-        color[2] = j["world"][id]["Content"][number]["material"]["texture"]["color"]["z"];
-    }
-    std::shared_ptr<Material> material;
-    material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(color));
+
+    vec3<float> grey(0.3, 0.3, 0.3);
+    std::shared_ptr<Material> grey_material;
+    grey_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(grey));
 
     std::shared_ptr<YzRect> rect;
-    rect=std::make_shared<YzRect>(y0,y1,z0,z1,k,color);
+    rect=std::make_shared<YzRect>(y0,y1,z0,z1,k,grey_material);
     return rect;
 }
+
 
 
 std::shared_ptr<Sphere> LoadSphere(json& j, std::string& id){
@@ -227,17 +195,10 @@ std::shared_ptr<Sphere> LoadSphere(json& j, std::string& id){
     std::string type;
     type = j["world"][id]["material"]["texture"]["type"];
 
-    if (type == "constant_texture"){
-        color[0] = j["world"][id]["material"]["texture"]["color"]["x"];
-        color[1] = j["world"][id]["material"]["texture"]["color"]["y"];
-        color[2] = j["world"][id]["material"]["texture"]["color"]["z"];
-    }
-    std::shared_ptr<Material> material;
-    material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(color));
-
-    sphere = std::make_shared<Sphere>(vec3<float>(X,Y,Z), radius, color);
+    sphere = std::make_shared<Sphere>(vec3<float>(X,Y,Z), radius, white_material);
     return sphere;
 }
+
 std::shared_ptr<Box> LoadBox(json& j,std::string& id){
     //Box(vec3<float>& p0, vec3<float> &p1, std::shared_ptr<Geomlist> g)
 
