@@ -26,6 +26,10 @@ std::shared_ptr<Sphere> LoadSphere(json& j,std::string& id);
 std::shared_ptr<XyRect> LoadXyRect(json& j,std::string& id);
 std::shared_ptr<XzRect> LoadXzRect(json& j,std::string& id);
 std::shared_ptr<YzRect> LoadYzRect(json& j,std::string& id);
+std::shared_ptr<YzRect> LoadBoxesYzRect(json& j,std::string& id, std::string &number);
+std::shared_ptr<XzRect> LoadBoxesXzRect(json& j,std::string& id,std::string& number);
+std::shared_ptr<XyRect> LoadBoxesXyRect(json& j,std::string& id,std::string& number);
+std::shared_ptr<Box> LoadBox(json& j,std::string& id);
 
 //namespace ns {
 //    void to_json(json& j, const person& p) {

@@ -429,6 +429,7 @@ void YzRect::ToJson(json& j,std::string& id) const {
 }
 void FlipNormals::ToJson(json& j,std::string& id) const {
     j["world"][id]["type"] = GetType();
+    ptr_->ToJson(j,id);
     std::cout<<GetType()<<std::endl;
 }
 

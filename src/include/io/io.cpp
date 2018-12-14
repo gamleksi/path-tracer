@@ -13,7 +13,7 @@
 // for convenience
 using json = nlohmann::json;
 
-// Own functions for saving and loading for camera, geomlist and Sphere
+// Own functions for saving and loading for camera and Geometry objects
 
 json ToJson(std::shared_ptr<Geomlist> &world, Camera& camera){
 
@@ -50,7 +50,6 @@ json ToJson(std::shared_ptr<Geomlist> &world, Camera& camera){
 
 
     std::string str = "Initiating Saving algorithm";
-    //world->ToJson(j,str);
 
     return j;
 }
@@ -88,6 +87,25 @@ std::shared_ptr<XyRect> LoadXyRect(json& j,std::string& id){
     rect=std::make_shared<XyRect>(x0,x1,y0,y1,k,grey_material);
     return rect;
 }
+
+std::shared_ptr<XyRect> LoadBoxesXyRect(json& j,std::string& id,std::string& number){
+    float x0,x1,y0,y1,k;
+    x0=j["world"][id]["Content"][number]["x0_"];
+    x1=j["world"][id]["Content"][number]["x1_"];
+    y0=j["world"][id]["Content"][number]["y0_"];
+    y1=j["world"][id]["Content"][number]["y1_"];
+    k=j["world"][id]["Content"][number]["k_"];
+
+    vec3<float> grey(0.3, 0.3, 0.3);
+    std::shared_ptr<Material> grey_material;
+    grey_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(grey));
+
+
+    std::shared_ptr<XyRect> rect;
+    rect=std::make_shared<XyRect>(x0,x1,y0,y1,k,grey_material);
+    return rect;
+}
+
 std::shared_ptr<XzRect> LoadXzRect(json& j,std::string& id){
     float x0,x1,z0,z1,k;
     x0=j["world"][id]["x0_"];
@@ -104,6 +122,24 @@ std::shared_ptr<XzRect> LoadXzRect(json& j,std::string& id){
     rect=std::make_shared<XzRect>(x0,x1,z0,z1,k,grey_material);
     return rect;
 }
+
+std::shared_ptr<XzRect> LoadBoxesXzRect(json& j,std::string& id,std::string& number){
+    float x0,x1,z0,z1,k;
+    x0=j["world"][id]["Content"][number]["x0_"];
+    x1=j["world"][id]["Content"][number]["x1_"];
+    z0=j["world"][id]["Content"][number]["z0_"];
+    z1=j["world"][id]["Content"][number]["z1_"];
+    k=j["world"][id]["Content"][number]["k_"];
+
+    vec3<float> grey(0.3, 0.3, 0.3);
+    std::shared_ptr<Material> grey_material;
+    grey_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(grey));
+
+    std::shared_ptr<XzRect> rect;
+    rect=std::make_shared<XzRect>(x0,x1,z0,z1,k,grey_material);
+    return rect;
+}
+
 std::shared_ptr<YzRect> LoadYzRect(json& j,std::string& id){
     float y0,y1,z0,z1,k;
     y0=j["world"][id]["y0_"];
@@ -111,6 +147,23 @@ std::shared_ptr<YzRect> LoadYzRect(json& j,std::string& id){
     z0=j["world"][id]["z0_"];
     z1=j["world"][id]["z1_"];
     k=j["world"][id]["k_"];
+
+    vec3<float> grey(0.3, 0.3, 0.3);
+    std::shared_ptr<Material> grey_material;
+    grey_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(grey));
+
+    std::shared_ptr<YzRect> rect;
+    rect=std::make_shared<YzRect>(y0,y1,z0,z1,k,grey_material);
+    return rect;
+}
+
+std::shared_ptr<YzRect> LoadBoxesYzRect(json& j,std::string& id, std::string &number){
+    float y0,y1,z0,z1,k;
+    y0=j["world"][id]["Content"][number]["y0_"];
+    y1=j["world"][id]["Content"][number]["y1_"];
+    z0=j["world"][id]["Content"][number]["z0_"];
+    z1=j["world"][id]["Content"][number]["z1_"];
+    k=j["world"][id]["Content"][number]["k_"];
 
     vec3<float> grey(0.3, 0.3, 0.3);
     std::shared_ptr<Material> grey_material;
@@ -134,20 +187,45 @@ std::shared_ptr<Sphere> LoadSphere(json& j, std::string& id){
     Y = j["world"][id]["position"]["y"];
     Z = j["world"][id]["position"]["z"];
     radius = j["world"][id]["radius"];
-//        a = j["world"][id]["mat"]["albedo"]["0"];
-//        b = j["world"][id]["mat"]["albedo"]["1"];
-//        c = j["world"][id]["mat"]["albedo"]["2"];
 
     sphere = std::make_shared<Sphere>(vec3<float>(X,Y,Z), radius, white_material);
     return sphere;
 }
+std::shared_ptr<Box> LoadBox(json& j,std::string& id){
+    //Box(vec3<float>& p0, vec3<float> &p1, std::shared_ptr<Geomlist> g)
+
+    float x,y,z,xmax,ymax,zmax;
+    x=j["world"][id]["pmin"]["x"];
+    y=j["world"][id]["pmin"]["y"];
+    z=j["world"][id]["pmin"]["z"];
+    xmax=j["world"][id]["pmax"]["x"];
+    ymax=j["world"][id]["pmax"]["y"];
+    zmax=j["world"][id]["pmax"]["z"];
+    vec3<float>p0(x,y,z);
+    vec3<float>p1(xmax,ymax,zmax);
+
+    std::vector<std::shared_ptr<Geometry>> rect_list;
+
+    for(int i = 0; i<6;i++){
+        std::string number = std::to_string(i);
+        if(j["world"][id]["content"][number]["type"]=="XyRect"){
+            rect_list.push_back(LoadBoxesXyRect(j,id,number));
+        }else if(j["world"][id]["content"][number]["type"]=="XzRect"){
+            rect_list.push_back(LoadBoxesXzRect(j,id,number));
+        }else if(j["world"][id]["content"][number]["type"]=="YzRect"){
+            rect_list.push_back(LoadBoxesYzRect(j,id,number));
+        }else{
+            std::cout<<"no way Im loading a flipnormal"<<std::endl;
+        }
+    }
+    auto rects = std::make_shared<Geomlist>(rect_list);
+    std::shared_ptr<Box> box;
+    box = std::make_shared<Box>(p0,p1,rects);
+    return box;
+}
 
 void FromJson(const std::string& str,std::vector<std::shared_ptr<Geometry>>& object_list) {
 
-    //std::cout << j << std::endl;
-    //auto j2 = nlohmann::detail::parser<std::string>();
-    //std::cout<<j2<<"!!!!!!"<<std::endl;
-    //std::cout << "j.dump()" << j.dump() << std::endl;
     std::string type_sphere = "Sphere";
     std::string type_XyRect = "XyRect";
     std::string type_XzRect = "XzRect";
@@ -157,11 +235,7 @@ void FromJson(const std::string& str,std::vector<std::shared_ptr<Geometry>>& obj
     json j = json::parse(str);
     int x = j["objnum"];
 
-    //std::cout << " We are here!!!" << j << std::endl;
-
     for (auto i = 0; i < x; i++) {
-
-
 
         std::string str = "object";
         std::string s = std::to_string(i);
@@ -180,15 +254,11 @@ void FromJson(const std::string& str,std::vector<std::shared_ptr<Geometry>>& obj
             auto object = LoadYzRect(j, str);
             object_list.push_back(object);
         }
+        else if(j["world"][str]["type"]==type_BOX){
+            auto object = LoadBox(j, str);
+            object_list.push_back(object);
+        }
     }
-
-//        std::shared_ptr<Sphere> sphere =
-//                std::make_shared<Sphere>(vec3<float>(X, Y, Z), radius, std::make_shared<Metal>(vec3<float>(a,b,c)));
-
-//        object_list.push_back(sphere);
-//    }
-//    Geomlist world(x, object_list);
- //   return world;
 }
 
 

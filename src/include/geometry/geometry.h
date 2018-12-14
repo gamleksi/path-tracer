@@ -192,6 +192,7 @@ class Box : public Geometry {
 public:
     Box() { }
     Box(const vec3<float>& p0, const vec3<float>& p1, std::shared_ptr<Material> mat);
+    Box(vec3<float>& p0, vec3<float> &p1, std::shared_ptr<Geomlist> g) : pmin_(p0), pmax_(p1), list_ptr_(g) {}
     ~Box() = default;
     virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const;
     virtual bool GetBoundingBox(float t0, float t1, BoundingBox& box) const;

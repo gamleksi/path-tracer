@@ -108,6 +108,7 @@ void Lambertian::ToJson(json& j,std::string& id)const{
         std::string number = std::to_string(id2[end]);
         id2.pop_back();
         j["world"][id2]["content"][number]["material"]["type"] = type;
+        albedo->ToJson(j,id);
     }
 
     //albedo->ToJson(j, id);
@@ -116,6 +117,7 @@ void Metal::ToJson(json& j,std::string& id)const{
     if(!BoxOwnsThis(id)){
         j["world"][id]["material"]["type"] = type;
         j["world"][id]["material"]["fuzz"] = fuzz;
+        albedo->ToJson(j,id);
     }else{
         std::string id2 = id;
         id2.pop_back();
@@ -124,6 +126,7 @@ void Metal::ToJson(json& j,std::string& id)const{
         id2.pop_back();
         j["world"][id2]["content"][number]["material"]["type"] = type;
         j["world"][id2]["content"][number]["material"]["fuzz"] = fuzz;
+        albedo->ToJson(j,id);
     }
 
     //albedo->ToJson(j, id);
@@ -131,6 +134,7 @@ void Metal::ToJson(json& j,std::string& id)const{
 void DiffuseLight::ToJson(json& j,std::string& id)const{
     if(!BoxOwnsThis(id)){
         j["world"][id]["material"]["type"] = type;
+        emit->ToJson(j,id);
     }else{
         std::string id2 = id;
         id2.pop_back();
@@ -138,6 +142,7 @@ void DiffuseLight::ToJson(json& j,std::string& id)const{
         std::string number = std::to_string(id2[end]);
         id2.pop_back();
         j["world"][id2]["content"][number]["material"]["type"] = type;
+        emit->ToJson(j,id);
     }
     //emit->ToJson(j, id);
 }
