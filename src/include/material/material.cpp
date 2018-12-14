@@ -83,15 +83,9 @@ bool Dielectric::Scatter(const ray<float> &r_in, const HitRecord &hrec, ScatterI
         ni_over_nt = ref_idx;
         cosine = ref_idx * Dot(r_in.Direction(), hrec.normal) / sqrt(r_in.Direction().Squared_length());
     } else {
-<<<<<<< HEAD
         outward_normal = hrec.normal;
-        ni_over_nt = 1.0 / ref_idx;
+        ni_over_nt = (float)1.0 / ref_idx;
         cosine = -Dot(r_in.Direction(), hrec.normal) / sqrt(r_in.Direction().Squared_length());
-=======
-        outward_normal = rec.normal;
-        ni_over_nt = (float)1.0 / this->ref_idx;
-        cosine = -Dot(r_in.Direction(), rec.normal) / sqrt(r_in.Direction().Squared_length());
->>>>>>> master
     }
     if (Refract(r_in.Direction(), outward_normal, ni_over_nt, refracted)) {
         reflect_prob = Schkick(cosine, ref_idx);

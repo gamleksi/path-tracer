@@ -24,8 +24,8 @@ Camera::Camera(const vec3<float> &look_from, const vec3<float> &look_at, const v
     vertical_ = half_height * 2 * v * dist_to_focus;
 }
 
-<<<<<<< HEAD
 vec3<float> Color(const ray<float> &r, std::shared_ptr<Geometry> world, std::shared_ptr<Geometry> lights, int depth) {
+
     HitRecord hrec;
     if (world->RayHits(r, 0.001, MAXFLOAT, hrec)) {
         ScatterInfo srec;
@@ -34,77 +34,37 @@ vec3<float> Color(const ray<float> &r, std::shared_ptr<Geometry> world, std::sha
             if (srec.isSpecular) {
                 return srec.attenuation * Color(srec.specularRay, world, lights, depth + 1);
             } else {
-=======
-vec3<float> Color(const ray<float>& r, const std::shared_ptr<Geometry>& geom, int depth)
-{
-    Hit_record rec;
-    if (geom->RayHits(r, 0.001, std::numeric_limits<float>::max(), rec)) // TODO std::numeric_limits<float>::max() fix
-    {
-        ray<float> scattered;
-        vec3<float> attenuation;
-        vec3<float> emitted = rec.mat_ptr->Emitted(rec.u, rec.v, rec.point);
-        if (depth < 50 && rec.mat_ptr->Scatter(r, rec, attenuation, scattered))
-        {
-            return emitted + attenuation * Color(scattered, geom, depth+1);
-        }
-        else
-        {
-            return emitted;
-        }
-    }
-    else
-    {
-        return vec3<float>(0,0,0);
-    }
-
-
->>>>>>> master
-
-                MixturePdf p(std::make_shared<HitablePdf>(lights, hrec.point), srec.pdf_ptr);
-                ray<float> scattered = ray<float>(hrec.point, p.Generate());
-                float pdf_val = p.Value(scattered.Direction());
+                std::shared_ptr<HitablePdf> plight;
+                plight = std::make_shared<HitablePdf>(lights, hrec.point);
+                std::shared_ptr<MixturePdf> p;
+                p = std::make_shared<MixturePdf>(plight, srec.pdf_ptr);
+                ray<float> scattered = ray<float>(hrec.point, p->Generate());
+                float pdf_val = p->Value(scattered.Direction());
                 return emitted + srec.attenuation * hrec.mat_ptr->ScatteringPdf(r, hrec, scattered) *
                                  Color(scattered, world, lights, depth + 1) / pdf_val;
             }
         } else
             return emitted;
     } else
-        return vec3<float>(0, 0, 0);
+        return vec3<float>(0,0,0);
 }
 
+
 vec3<float> NormalMapping(const ray<float> &r, const std::shared_ptr<Geometry> &geom) {
-    HitRecord rec{};
-    if (geom->RayHits(r, 0.0, MAXFLOAT, rec)) {
+    HitRecord rec;
+    if (geom->RayHits(r, 0.0, std::numeric_limits<float>::max(), rec)) { // TODO std::numeric_limits<float>::max() fix
         return (float) 0.5 * vec3<float>(rec.normal[0] + 1, rec.normal[1] + 1, rec.normal[2] + 1);
     } else {
         vec3<float> unit_direction = r.Direction().Unit();
-<<<<<<< HEAD
         float t = 0.5 * (unit_direction[1] + 1.0);
         return ((float) 1.0 - t) * vec3<float>(1.0, 1.0, 1.0) + t * vec3<float>(0.5, 0.7, 1.0);
     }
-=======
-        float t = (float)0.5*(unit_direction[1]+ (float)1.0);
-        return ((float)1.0-t)*vec3<float>(1.0,1.0,1.0) + t*vec3<float>(0.5,0.7,1.0);
-    }*/
-}
-
-vec3<float> NormalMapping(const ray<float>& r, const std::shared_ptr<Geometry>& geom)
-{
-  Hit_record rec{};
-  if(geom->RayHits(r, 0.0, std::numeric_limits<float>::max(), rec)){ // TODO std::numeric_limits<float>::max() fix
-    return (float)0.5*vec3<float>(rec.normal[0]+1,rec.normal[1]+1,rec.normal[2]+1);
-  }else{
-    vec3<float> unit_direction = r.Direction().Unit();
-    float t = 0.5*(unit_direction[1]+1.0);
-    return ((float)1.0-t)*vec3<float>(1.0,1.0,1.0) + t*vec3<float>(0.5,0.7,1.0);
-  }
->>>>>>> master
-
 }
 
 
 vec3<float> RandomUnitDiscCoord() {
-    vec3<float> coord{}; // = (float)2.0 * vec3<float>((float)drand48(), (float)drand48(), 0) - vec3<float>(1.0, 1.0, 0.0);
+    vec3<float>
+            coord{}; // = (float)2.0 * vec3<float>((float)drand48(), (float)drand48(), 0) - vec3<float>(1.0, 1.0, 0.0);
     do {
         coord = (float) 2.0 * vec3<float>((float) drand48(), (float) drand48(), 0) - vec3<float>(1.0, 1.0, 0.0);
     } while (Dot(coord, coord) >= 1);

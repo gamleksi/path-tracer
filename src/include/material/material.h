@@ -95,5 +95,16 @@ private:
 };
 
 
+//class Noise : public Texture {
+//public:
+//    Noise() {}
+//    Noise(float sc) : scale(sc) {}
+//    virtual vec3<float> Value(float u, float v, const vec3<float>& p) const {
+//            return vec3<float>(1,1,1)*(float)0.5*(1 + noise(p));
+//    }
+//    Perlin noise;
+//    float scale;
+//};
+
 #endif //PATH_TRACER_MATERIAL_H
 
