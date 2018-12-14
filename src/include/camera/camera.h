@@ -5,10 +5,12 @@
 #ifndef PATH_TRACER_CAMERA_H
 #define PATH_TRACER_CAMERA_H
 
+#include <memory.h>
 #include "vector/vec3.h"
 #include "geometry/geometry.h"
 #include "material/material.h"
 #include "ray/ray.h"
+
 
 class Camera {
 public:

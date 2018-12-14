@@ -1,5 +1,5 @@
 #include <iostream>
-#include <vector>
+#include <memory.h>
 #include "vector/vec3.h"
 #include "ray/ray.h"
 #include "geometry/geometry.h"

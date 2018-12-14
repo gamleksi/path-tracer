@@ -6,6 +6,7 @@
 #define PATH_TRACER_TEXTURE_H
 
 
+#include <memory.h>
 #include <vector/vec3.h>
 #include <camera/camera.h>
 #include "perlin.h"
