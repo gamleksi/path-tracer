@@ -1,5 +1,6 @@
 #include <iostream>
 #include <memory>
+#include <vector>
 #include "vector/vec3.h"
 #include "ray/ray.h"
 #include "geometry/geometry.h"
@@ -243,7 +244,7 @@ void CornellBoxScene(std::vector<std::shared_ptr<Geometry>> &object_list) {
 }
 
 
-void Render(const int nx, const int ny, uint8_t (*image)[3], const std::shared_ptr<Geometry> &world, const Camera cam,
+void Render(const int nx, const int ny, sf::Uint8 (*pixels)[3], const std::shared_ptr<Geometry> &world, const Camera cam,
             unsigned int ns, const bool normal) {
 
     std::cout << "Rendering.." << std::endl;
@@ -267,31 +268,38 @@ void Render(const int nx, const int ny, uint8_t (*image)[3], const std::shared_p
 
                 col /= float(ns);
                 col = vec3<float>(sqrt(col[0]), sqrt(col[1]), sqrt(col[2]));
-                auto ir = uint8_t(255.99 * col[0]);
-                auto ig = uint8_t(255.99 * col[1]);
-                auto ib = uint8_t(255.99 * col[2]);
-                std::cout <<
+                auto ir = sf::Uint8(255.99 * col[0]);
+                auto ig = sf::Uint8(255.99 * col[1]);
+                auto ib = sf::Uint8(255.99 * col[2]);
 
-                // BGR format
-                image[j * nx + i][0] = ib;
-                image[j * nx + i][1] = ig;
-                image[j * nx + i][2] = ir;
+                // RGB format
+                pixels[j * nx + i][0] = ir;
+                pixels[j * nx + i][1] = ig;
+                pixels[j * nx + i][2] = ib;
+
+                // std::cout << pixels[j * nx + i][0] << " " << pixels[j * nx + i][1] << " " <<  pixels[j * nx + i][2] << std::endl;
             }
         }
     }
     std::cout << "Done!" << std::endl;
 }
 
-// void ShowImage(int nx, int ny, uchar (*image)[3]) {
-//     cv::Mat rgb_mat(ny, nx, CV_8UC3, image);
-//     cv::imshow("Image is shown!", rgb_mat);
-//     cv::waitKey(0);
-// }
-//
-// void SaveImage(int nx, int ny, uchar (*image)[3], std::string save_to) {
-//     cv::Mat rgb_mat(ny, nx, CV_8UC3, image);
-//     cv::imwrite(save_to, rgb_mat);
-// }
+sf::Image CreateImage(int nx, int ny, sf::Uint8 (*pixels)[3]) {
+    sf::Image image;
+    image.create(nx, ny);
+    for (int j = 0; j < ny; j++) {
+        for (int i = 0; i < nx; i++) {
+            sf::Color color(pixels[j * nx + i][0], pixels[j * nx + i][1], pixels[j * nx + i][2]);
+            image.setPixel(i, j, color);
+        }
+    }
+    return image;
+}
+
+void SaveImage(const sf::Image& image, std::string save_to) {
+    image.saveToFile(save_to);
+}
+
 
 int main() {
 
@@ -302,7 +310,7 @@ int main() {
     unsigned int antialias_samples = 2;
     unsigned int number_of_objects = 10;
 
-    bool normal_mapping = false;
+    bool normal_mapping = true;
 
 /**
  * In order to get everything out of your computer the number of threads should be dividable by 8 and nx * ny % num_threads == 0
@@ -333,16 +341,15 @@ int main() {
     // Rendering bounding box
     const auto t0 = Clock::now();
 
-    uint8_t bb_image[ny * nx][3];
-    Render(nx, ny, bb_image, world, camera, antialias_samples, normal_mapping);
+    sf::Uint8 pixels[ny * nx][3];
+    Render(nx, ny, pixels, world, camera, antialias_samples, normal_mapping);
     const auto t1 = Clock::now();
 
     auto bb_rendering_duration = std::chrono::duration_cast<std::chrono::seconds>(t1 - t0).count();
     std::cout << "Bounding Box Rendering Duration: "
               << bb_rendering_duration
               << " seconds" << std::endl;
-
-//    SaveImage(nx, ny, bb_image, "../image_10000.jpg"); // TODO: fix path
-//    ShowImage(nx, ny, bb_image);
+    sf::Image image =  CreateImage(nx, ny, pixels);
+    SaveImage(image, "../sf_image.png");
 
 }
