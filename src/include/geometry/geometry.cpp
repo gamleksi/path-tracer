@@ -54,6 +54,7 @@ bool XyRect::RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &
     if (x < x0_ || x > x1_ || y < y0_ || y > y1_) { return false; }
     rec.u = (x - x0_) / (x1_ - x0_);
     rec.v = (y - y0_) / (y1_ - y0_);
+    rec.time = t;
     rec.mat_ptr = material_;
     rec.point = r.Point(t);
     rec.normal = vec3<float>(0,0,1);
@@ -68,6 +69,7 @@ bool XzRect::RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &
     if (x < x0_ || x > x1_ || z < z0_ || z > z1_) { return false; }
     rec.u = (x - x0_) / (x1_ - x0_);
     rec.v = (z - z0_) / (z1_ - z0_);
+    rec.time = t;
     rec.mat_ptr = material_;
     rec.point = r.Point(t);
     rec.normal = vec3<float>(0, 1, 0);
@@ -82,6 +84,7 @@ bool YzRect::RayHits(const ray<float> &r, float t_min, float t_max, Hit_record &
     if (y < y0_ || y > y1_ || z < z0_ || z > z1_) { return false; }
     rec.u = (y - y0_) / (y1_ - y0_);
     rec.v = (z - z0_) / (z1_ - z0_);
+    rec.time = t;
     rec.mat_ptr = material_;
     rec.point = r.Point(t);
     rec.normal = vec3<float>(1, 0, 0);
@@ -94,7 +97,7 @@ bool Sphere::GetBoundingBox(float t0, float t1, BoundingBox& box) const {
 }
 
 bool XyRect::GetBoundingBox(float t0, float t1, BoundingBox &box) const {
-    box = BoundingBox(vec3<float>(x0_,y0_,k_-0001), vec3<float>(x1_,y1_,k_+0001));
+    box = BoundingBox(vec3<float>(x0_,y0_,k_-0.001), vec3<float>(x1_,y1_,k_+0.001));
     return true;
 }
 

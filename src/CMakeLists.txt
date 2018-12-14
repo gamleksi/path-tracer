@@ -26,7 +26,7 @@ endif()
 
 # SFML
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
-find_package(SFML REQUIRED Graphics)
+find_package(SFML COMPONENTS Graphics REQUIRED)
 include_directories(${SFML_INCLUDE_DIR})
 
 set(CMAKE_CXX_STANDARD 11)
