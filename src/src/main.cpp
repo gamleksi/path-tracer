@@ -298,10 +298,10 @@ int main() {
     int nx = 500;
     int ny = 500;
 
-    unsigned int antialias_samples = 10000;
-    unsigned int number_of_objects = 100;
+    unsigned int antialias_samples = 2;
+    unsigned int number_of_objects = 10;
 
-    bool normal_mapping = false;
+    bool normal_mapping = true;
 
 /**
  * In order to get everything out of your computer the number of threads should be dividable by 8 and nx * ny % num_threads == 0

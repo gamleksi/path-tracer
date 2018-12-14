@@ -4,13 +4,15 @@ project(path_tracer)
 find_package(OpenCV REQUIRED)
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 
+
+if(${APPLE})
 set(OpenMP_C_FLAGS "-Xpreprocessor -fopenmp -I /usr/local/opt/libomp/include")
 set(OpenMP_CXX_FLAGS "-Xpreprocessor -fopenmp -I /usr/local/opt/libomp/include")
 set(OpenMP_CXX_LIB_LIBRARY "/usr/local/opt/libomp/lib")
-
 set(OpenMP_C_LIB_NAMES "omp")
 set(OpenMP_CXX_LIB_NAMES "omp")
 set(OpenMP_omp_LIBRARY /usr/local/opt/libomp/lib/libomp.dylib)
+endif()
 
 find_package(OpenMP REQUIRED)
 include_directories("${OpenMP_CXX_LIB_LIBRARY}")
