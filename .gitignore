@@ -28,3 +28,6 @@ src/tests/ray_tests/ray_tests.cbp
 src/tests/vector_tests/CMakeFiles/
 src/tests/vector_tests/Makefile
 src/tests/vector_tests/cmake_install.cmake
+libgtest.a
+libgtest_main.a
+ray_tests
