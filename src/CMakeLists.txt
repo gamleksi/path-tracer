@@ -20,7 +20,7 @@ set(OpenMP_omp_LIBRARY /usr/local/opt/libomp/lib/libomp.dylib)
 endif()
 
 find_package(OpenMP REQUIRED)
-include_directories("${OpenMP_CXX_LIB_LIBRARY}")
+include_directories(${OpenMP_CXX_LIB_LIBRARY})
 
 set(CMAKE_CXX_STANDARD 11)
 include_directories(include)
