@@ -19,50 +19,9 @@ typedef std::chrono::high_resolution_clock Clock;
 void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geometry>> &object_list) {
     auto num = int(sqrt(amount) / 2);
 
-    vec3<float> mat_vec(0.5, 0.5, 0.5);
-    vec3<float> light_vec(4, 4, 4);
-    std::shared_ptr<Material> material;
-    material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(mat_vec));
-    //material = std::make_shared<DiffuseLight>(std::make_shared<Constant_texture>(light_vec));
-
-    std::shared_ptr<Sphere> floor_sphere =
-            std::make_shared<Sphere>(vec3<float>(0, -1000, 0), 200, material); //default radius 1000
-
-    object_list.push_back(floor_sphere);
-
-    std::vector<std::shared_ptr<Geometry>> li;
-
-    std::shared_ptr<Material> light;
-    light = std::make_shared<DiffuseLight>(std::make_shared<Constant_texture>(light_vec));
-    std::shared_ptr<XyRect> light_rect = std::make_shared<XyRect>(-2.0, 3.0, 0.0, 1.0, 4, light);
-    li.push_back(light_rect);
-    std::shared_ptr<XyRect> light_rect2 = std::make_shared<XyRect>(1.0, 6.0, 0.5, 6.0, -4.0, light);
-    li.push_back(light_rect2);
-
-    unsigned int i = 1;
-    for (int a = -num; a < num; a++) {
-        for (int b = -num; b < num; b++) {
-            float choose_mat = drand48();
-            vec3<float> object_coord(a + 0.9 * drand48(), 0.2, b + 0.9 * drand48());
-            if ((object_coord - vec3<float>(4, 0.2, 0)).Norm2() > 0.9) {
-                if (choose_mat < 0.8) {
-                    vec3<float> mat_vec(drand48() * drand48(), drand48() * drand48(), drand48() * drand48());
-                    material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(mat_vec));
-                    li.push_back(std::make_shared<Sphere>(object_coord, 0.2, material));
-                    i++;
-                } else {
-                    vec3<float> mat_vec(0.5 * (1 + drand48()), 0.5 * (1 + drand48()), 0.5 * (1 + drand48()));
-                    material = std::make_shared<Metal>(std::make_shared<Constant_texture>(mat_vec), 0.5);
-                    li.push_back(std::make_shared<Sphere>(object_coord, 0.2, material));
-                    i++;
-                }
-            }
-        }
-    }
-    //Checker colors
-    vec3<float> odd = vec3<float>(0.5, 0.3, 0.1);
+    vec3<float> odd = vec3<float>(0.2, 0.3, 0.1);
     vec3<float> even = vec3<float>(0.9, 0.9, 0.9);
-    int checker_size = 3;
+    int checker_size = 10;
     std::shared_ptr<Constant_texture> even_texture;
     even_texture = std::make_shared<Constant_texture>(even);
     std::shared_ptr<Constant_texture> odd_texture;
@@ -73,15 +32,55 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
     std::shared_ptr<Lambertian> checker_material;
     checker_material = std::make_shared<Lambertian>(checker);
 
-    //std::shared_ptr<Material> metal_material;
-    //metal_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(vec3<float>(0.7,0.6,0.5)));
-    //li.push_back(std::make_shared<Sphere>(vec3<float>(4,1,0), 1.0, metal_material));
-    li.push_back(std::make_shared<Sphere>(vec3<float>(-4, 1, 0), 1.0, checker_material));
-    //li.push_back(std::make_shared<Sphere>(vec3<float>(-4,1,0), 1.0, std::make_shared<Lambertian>(vec3<float>(0.4,0.2,0.1))));
+    vec3<float> mat_vec(0.5, 0.5, 0.5);
+    std::shared_ptr<Material> material;
+    material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(mat_vec));
 
-    //playing with boxes
-    std::shared_ptr<Box> kuutio = std::make_shared<Box>(vec3<float>(4, 1, 0), vec3<float>(5, 2, 1), light);
-    li.push_back(kuutio);
+    std::shared_ptr<Sphere> floor_sphere =
+            std::make_shared<Sphere>(vec3<float>(0, -1000, 0), 1000, checker_material); //default radius 1000
+
+    object_list.push_back(floor_sphere);
+    std::vector<std::shared_ptr<Geometry>> li;
+
+    unsigned int i = 1;
+    for (int a = -num; a < num; a++) {
+        for (int b = -num; b < num; b++) {
+            float choose_mat = drand48();
+            vec3<float> object_coord(a + 0.9 * drand48(), 0.2, b + 0.9 * drand48());
+            if ((object_coord - vec3<float>(4, 0.2, 0)).Norm2() > 0.9) {
+                if (choose_mat < 0.8) {//diffuse
+                    vec3<float> mat_vec(drand48() * drand48(), drand48() * drand48(), drand48() * drand48());
+                    material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(mat_vec));
+                    li.push_back(std::make_shared<Sphere>(object_coord, 0.2, material));
+                    i++;
+                } else {//metal
+                    vec3<float> mat_vec(0.5 * (1 + drand48()), 0.5 * (1 + drand48()), 0.5 * (1 + drand48()));
+                    //material = std::make_shared<Metal>(std::make_shared<Constant_texture>(mat_vec), 0.5);
+                    material = std::make_shared<Metal>(mat_vec, 0.5);
+                    li.push_back(std::make_shared<Sphere>(object_coord, 0.2, material));
+                    i++;
+                }
+            }
+        }
+    }
+
+    vec3<float> odd1 = vec3<float>(0.2, 0.3, 0.1);
+    vec3<float> even1 = vec3<float>(0.9, 0.2, 0.2);
+    int checker_size1 = 15;
+    std::shared_ptr<Constant_texture> even_texture1;
+    even_texture1 = std::make_shared<Constant_texture>(even1);
+    std::shared_ptr<Constant_texture> odd_texture1;
+    odd_texture1 = std::make_shared<Constant_texture>(odd1);
+
+    std::shared_ptr<Checker_texture> checker1;
+    checker1 = std::make_shared<Checker_texture>(odd_texture1, even_texture1, checker_size1);
+    std::shared_ptr<Lambertian> checker_material1;
+    checker_material1 = std::make_shared<Lambertian>(checker1);
+
+    std::shared_ptr<Material> metal_material;
+    metal_material = std::make_shared<Metal>(vec3<float>(0.7,0.6,0.5),0);
+    li.push_back(std::make_shared<Sphere>(vec3<float>(4,1,0), 1.0, metal_material));
+    li.push_back(std::make_shared<Sphere>(vec3<float>(-4, 1, 0), 1.0, checker_material1));
 
     auto bb_world = std::make_shared<BoundingVolumeNode>(BoundingVolumeNode(li, 0.0, 1.0));
     object_list.push_back(bb_world);
@@ -162,7 +161,8 @@ void CornellBoxScene(std::vector<std::shared_ptr<Geometry>> &object_list) {
     red_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(red));
     green_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(green));
     glass_material = std::make_shared<Dielectric>(1.5);
-    metal_material = std::make_shared<Metal>(std::make_shared<Constant_texture>(copper), 0.5);
+    //metal_material = std::make_shared<Metal>(std::make_shared<Constant_texture>(copper), 0.5);
+    metal_material = std::make_shared<Metal>(copper, 0.5);
     white_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(white));
 
     // Green
@@ -238,7 +238,7 @@ void CornellBoxScene(std::vector<std::shared_ptr<Geometry>> &object_list) {
 
 
 void Render(const int nx, const int ny, sf::Uint8 (*pixels)[3], const std::shared_ptr<Geometry> &world, const Camera cam,
-            unsigned int ns, const bool normal) {
+            unsigned int ns, const bool normal, const bool day_light) {
 
     std::cout << "Rendering.." << std::endl;
 #pragma omp parallel
@@ -254,7 +254,10 @@ void Render(const int nx, const int ny, sf::Uint8 (*pixels)[3], const std::share
                     const ray<float> r = cam.GetRay(u, v);
                     if (normal) {
                         col += NormalMapping(r, world);
-                    } else {
+                    } else if (day_light){
+                        col += DayLight(r, world, 0);
+                    }
+                    else {
                         col += Color(r, world, 0);
                     }
                 }
@@ -303,6 +306,7 @@ int main(int argc, const char *argv[]) {
      unsigned int number_of_objects = 10;
 
      bool normal_mapping = false;
+     bool day_light = false;
      std::string image_path = "image.png";
 
      bool random_scene = false;
@@ -388,6 +392,7 @@ int main(int argc, const char *argv[]) {
      std::vector<std::shared_ptr<Geometry>> object_list;
      if (random_scene) {
        GetRandomObjectList(number_of_objects, object_list);
+       day_light = true;
      } else {
        CornellBoxScene(object_list);
      }
@@ -396,7 +401,7 @@ int main(int argc, const char *argv[]) {
 
      const auto t0 = Clock::now();
      sf::Uint8 pixels[ny * nx][3];
-     Render(nx, ny, pixels, world, camera, antialias_samples, normal_mapping);
+     Render(nx, ny, pixels, world, camera, antialias_samples, normal_mapping, day_light);
      const auto t1 = Clock::now();
 
      auto rendering_duration = std::chrono::duration_cast<std::chrono::seconds>(t1 - t0).count();
