@@ -186,7 +186,7 @@ int main() {
     int nx = 1200;
     int ny = 600;
 
-    unsigned int antialias_samples = 500;
+    unsigned int antialias_samples = 20;
     unsigned int number_of_objects = 3;
 
 /**
