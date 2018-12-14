@@ -9,6 +9,9 @@
 
 #include <vector/vec3.h>
 #include <vector>
+#include <nlohmann/json.hpp>
+// for convenience
+using json = nlohmann::json;
 
 class Perlin {
 public:
@@ -50,6 +53,7 @@ public:
         int k = int(4*p[2] ) & 255;
         return ranfloat[perm_x[i] ^ perm_y[j] ^ perm_z[k]];
     }
+    // TODO: void ToJson(json& j, std::string & id);?
 
 private:
     std::vector<float> ranfloat = Perlin_generate();

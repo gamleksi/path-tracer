@@ -45,6 +45,58 @@ void SaveWorld(std::shared_ptr<Geomlist> &world, Camera& camera){
     std::cout<<"sending this ref: "<<ref<<std::endl;
 }
 
+
+std::shared_ptr<XyRect> LoadXyRect(json& j,std::string& id){
+    float x0,x1,y0,y1,k;
+    x0=j["world"][id]["x0_"];
+    x1=j["world"][id]["x1_"];
+    y0=j["world"][id]["y0_"];
+    y1=j["world"][id]["y1_"];
+    k=j["world"][id]["k_"];
+
+    vec3<float> grey(0.3, 0.3, 0.3);
+    std::shared_ptr<Material> grey_material;
+    grey_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(grey));
+
+
+    std::shared_ptr<XyRect> rect;
+    rect=std::make_shared<XyRect>(x0,x1,y0,y1,k,grey_material);
+    return rect;
+}
+std::shared_ptr<XzRect> LoadXzRect(json& j,std::string& id){
+    float x0,x1,z0,z1,k;
+    x0=j["world"][id]["x0_"];
+    x1=j["world"][id]["x1_"];
+    z0=j["world"][id]["z0_"];
+    z1=j["world"][id]["z1_"];
+    k=j["world"][id]["k_"];
+
+    vec3<float> grey(0.3, 0.3, 0.3);
+    std::shared_ptr<Material> grey_material;
+    grey_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(grey));
+
+    std::shared_ptr<XzRect> rect;
+    rect=std::make_shared<XzRect>(x0,x1,z0,z1,k,grey_material);
+    return rect;
+}
+std::shared_ptr<YzRect> LoadYzRect(json& j,std::string& id){
+    float y0,y1,z0,z1,k;
+    y0=j["world"][id]["y0_"];
+    y1=j["world"][id]["y1_"];
+    z0=j["world"][id]["z0_"];
+    z1=j["world"][id]["z1_"];
+    k=j["world"][id]["k_"];
+
+    vec3<float> grey(0.3, 0.3, 0.3);
+    std::shared_ptr<Material> grey_material;
+    grey_material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(grey));
+
+    std::shared_ptr<YzRect> rect;
+    rect=std::make_shared<YzRect>(y0,y1,z0,z1,k,grey_material);
+    return rect;
+}
+
+
 std::shared_ptr<Sphere> LoadSphere(json& j, std::string& id){
     vec3<float> white(0.9,0.9,0.9);
     std::shared_ptr<Material> white_material;
@@ -76,6 +128,7 @@ void FromJson(const std::string& str,std::vector<std::shared_ptr<Geometry>>& obj
     std::string type_XzRect = "XzRect";
     std::string type_YzRect = "YzRect";
     std::string type_FlipNormal = "FlipNormal";
+    std::string type_BOX = "Box";
     json j = json::parse(str);
     int x = j["objnum"];
 
@@ -90,6 +143,16 @@ void FromJson(const std::string& str,std::vector<std::shared_ptr<Geometry>>& obj
         str.insert(6, s);
         if(j["world"][str]["type"]==type_sphere){
             auto object = LoadSphere(j, str);
+            object_list.push_back(object);
+        }else if(j["world"][str]["type"]==type_XyRect){
+            auto object = LoadXyRect(j, str);
+            object_list.push_back(object);
+        }else if(j["world"][str]["type"]==type_XzRect){
+            auto object = LoadXzRect(j, str);
+            object_list.push_back(object);
+        }
+        else if(j["world"][str]["type"]==type_YzRect){
+            auto object = LoadYzRect(j, str);
             object_list.push_back(object);
         }
     }

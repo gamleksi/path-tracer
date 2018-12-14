@@ -23,7 +23,9 @@ void LoadObjectList(const std::string & filename, std::vector<std::shared_ptr<Ge
 void FromJson(const std::string& j, std::vector<std::shared_ptr<Geometry>>& object_list);
 Camera LoadCamera(const std::string & filename);
 std::shared_ptr<Sphere> LoadSphere(json& j,std::string& id);
-
+std::shared_ptr<XyRect> LoadXyRect(json& j,std::string& id);
+std::shared_ptr<XzRect> LoadXzRect(json& j,std::string& id);
+std::shared_ptr<YzRect> LoadYzRect(json& j,std::string& id);
 
 //namespace ns {
 //    void to_json(json& j, const person& p) {

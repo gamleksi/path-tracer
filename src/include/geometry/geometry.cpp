@@ -316,6 +316,7 @@ void Sphere::ToJson(json& j,std::string& id) const{
     j["world"][id]["position"]["z"] = GetPosition()[2];
     j["world"][id]["radius"] = GetRadius();
     j["world"][id]["type"] = GetType();
+    material_->ToJson(j,id);
     //j["world"][id]["material"]["0"]= GetMaterial()->
     std::cout<<GetType()<<std::endl;
 }

@@ -96,6 +96,23 @@ bool Dielectric::Scatter(const ray<float> &r_in, const Hit_record &rec, vec3<flo
 
 }
 
+void Lambertian::ToJson(json& j,std::string& id)const{
+    j["world"][id]["material"]["type"] = type;
+    //albedo->ToJson(j, id);
+}
+void Metal::ToJson(json& j,std::string& id)const{
+    j["world"][id]["material"]["type"] = type;
+    j["world"][id]["material"]["fuzz"] = fuzz;
+    //albedo->ToJson(j, id);
+}
+void DiffuseLight::ToJson(json& j,std::string& id)const{
+    j["world"][id]["material"]["type"] = type;
+    //emit->ToJson(j, id);
+}
+void Dielectric::ToJson(json& j,std::string& id)const{
+    j["world"][id]["material"]["type"] = type;
+    j["world"][id]["material"]["ref_idx"] =ref_idx;
+}
 
 
 
