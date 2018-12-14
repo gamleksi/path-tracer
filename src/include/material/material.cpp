@@ -48,9 +48,9 @@ vec3<float> DiffuseLight::Emitted(float u, float v, const vec3<float> &p) const 
 bool Dielectric::Refract(const vec3<float> &v, const vec3<float> &n, float ni_over_nt, vec3<float> refracted) const {
     vec3<float> uv = v.Unit();
     float dt = Dot(uv, n);
-    float discriminant = 1.0 - ni_over_nt * ni_over_nt * (1 - dt * dt);
+    float discriminant = (float)1.0 - ni_over_nt * ni_over_nt * (1 - dt * dt);
     if (discriminant > 0) {
-        refracted = ni_over_nt * (uv - n * dt) - n * sqrt(discriminant);
+        refracted = ni_over_nt * (uv - n * dt) - n * (float)sqrt(discriminant);
         return true;
     } else {
         return false;
@@ -60,7 +60,7 @@ bool Dielectric::Refract(const vec3<float> &v, const vec3<float> &n, float ni_ov
 float Dielectric::Schkick(float cosine, float ref_idx) const {
     float r0 = (1 - ref_idx) / (1 + ref_idx);
     r0 = r0 * r0;
-    return r0 + (1 - r0) * pow((1 - cosine), 5);
+    return r0 + (1 - r0) * (float)pow((1 - cosine), 5);
 }
 
 
@@ -79,7 +79,7 @@ bool Dielectric::Scatter(const ray<float> &r_in, const Hit_record &rec, vec3<flo
         cosine = ref_idx * Dot(r_in.Direction(), rec.normal) / sqrt(r_in.Direction().Squared_length());
     } else {
         outward_normal = rec.normal;
-        ni_over_nt = 1.0 / this->ref_idx;
+        ni_over_nt = (float)1.0 / this->ref_idx;
         cosine = -Dot(r_in.Direction(), rec.normal) / sqrt(r_in.Direction().Squared_length());
     }
     if (Refract(r_in.Direction(), outward_normal, ni_over_nt, refracted)) {

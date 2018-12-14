@@ -6,6 +6,8 @@
 #include "material/material.h"
 #include "ray/ray.h"
 #include "vector/vec3.h"
+#include <limits>
+
 
 Camera::Camera(const vec3<float>& look_from, const vec3<float>& look_at, const vec3<float>& view_up,
     float vfov, float aspect, float aperture, float dist_to_focus)
@@ -26,7 +28,7 @@ Camera::Camera(const vec3<float>& look_from, const vec3<float>& look_at, const v
 vec3<float> Color(const ray<float>& r, const std::shared_ptr<Geometry>& geom, int depth)
 {
     Hit_record rec;
-    if (geom->RayHits(r, 0.001, MAXFLOAT, rec))
+    if (geom->RayHits(r, 0.001, std::numeric_limits<float>::max(), rec)) // TODO std::numeric_limits<float>::max() fix
     {
         ray<float> scattered;
         vec3<float> attenuation;
@@ -67,7 +69,7 @@ vec3<float> Color(const ray<float>& r, const std::shared_ptr<Geometry>& geom, in
 vec3<float> NormalMapping(const ray<float>& r, const std::shared_ptr<Geometry>& geom)
 {
   Hit_record rec{};
-  if(geom->RayHits(r, 0.0, MAXFLOAT, rec)){
+  if(geom->RayHits(r, 0.0, std::numeric_limits<float>::max(), rec)){ // TODO std::numeric_limits<float>::max() fix
     return (float)0.5*vec3<float>(rec.normal[0]+1,rec.normal[1]+1,rec.normal[2]+1);
   }else{
     vec3<float> unit_direction = r.Direction().Unit();
