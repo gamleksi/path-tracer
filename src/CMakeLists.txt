@@ -16,7 +16,7 @@ find_package(OpenMP REQUIRED)
 include_directories("${OpenMP_CXX_LIB_LIBRARY}")
 
 set(CMAKE_CXX_STANDARD 11)
-include_directories(include)
+include_directories(lib include)
 
 add_subdirectory(tests)
 add_executable(path_tracer src/main.cpp include include/intersection/bounding_box.cpp
