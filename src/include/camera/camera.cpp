@@ -25,14 +25,15 @@ Camera::Camera(const vec3<float>& look_from, const vec3<float>& look_at, const v
     vertical_ = half_height * 2* v * dist_to_focus;
 }
 
+
 vec3<float> Color(const ray<float>& r, const std::shared_ptr<Geometry>& geom, int depth) {
     Hit_record rec;
-    if (geom->RayHits(r, 0.001, std::numeric_limits<float>::max(), rec)) // TODO std::numeric_limits<float>::max() fix
+    if (geom->RayHits(r, 0.001, std::numeric_limits<float>::max(), rec))
     {
         ray<float> scattered;
         vec3<float> attenuation;
         vec3<float> emitted = rec.mat_ptr->Emitted(rec.u, rec.v, rec.point);
-        if (depth < 50 && rec.mat_ptr->Scatter(r, rec, attenuation, scattered)) {
+        if (depth < 40 && rec.mat_ptr->Scatter(r, rec, attenuation, scattered)) {
             return emitted + attenuation * Color(scattered, geom, depth + 1);
         } else {
             return emitted;
@@ -41,6 +42,7 @@ vec3<float> Color(const ray<float>& r, const std::shared_ptr<Geometry>& geom, in
         return vec3<float>(0, 0, 0);
     }
 }
+
 
 vec3<float> DayLight(const ray<float>& r, const std::shared_ptr<Geometry>& geom, int depth) {
     Hit_record rec;
@@ -59,6 +61,7 @@ vec3<float> DayLight(const ray<float>& r, const std::shared_ptr<Geometry>& geom,
         return ((float) 1.0 - t) * vec3<float>(1.0, 1.0, 1.0) + t * vec3<float>(0.5, 0.7, 1.0);
     }
 }
+
 
 vec3<float> NormalMapping(const ray<float>& r, const std::shared_ptr<Geometry>& geom)
 {

@@ -10,6 +10,10 @@
 #include <vector/vec3.h>
 #include <vector>
 
+
+/*
+ * Generates basic perlin noise used as texture. Doesn't include interpolation smoothing etc.
+ */
 class Perlin {
 public:
 

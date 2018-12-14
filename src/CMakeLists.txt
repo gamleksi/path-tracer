@@ -35,7 +35,9 @@ include_directories(include)
 # add_subdirectory(tests)
 add_executable(path_tracer src/main.cpp include include/intersection/bounding_box.cpp
         include/geometry/geometry.cpp include/camera/camera.cpp
-        include/material/material.cpp include/geometry/sphere.cpp include/geometry/sphere.h include/geometry/box.cpp include/geometry/box.h include/geometry/bv_node.cpp include/geometry/bv_node.h include/geometry/geomlist.cpp include/geometry/geomlist.h)
+        include/material/material.cpp include/geometry/sphere.cpp include/geometry/sphere.h
+        include/geometry/box.cpp include/geometry/box.h include/geometry/bv_node.cpp include/geometry/bv_node.h
+        include/geometry/geomlist.cpp include/geometry/geomlist.h)
 
 if(${APPLE})
 target_link_libraries(path_tracer OpenMP::OpenMP_CXX ${SFML_LIBRARIES} ${Boost_LIBRARIES})

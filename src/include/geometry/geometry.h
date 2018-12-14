@@ -15,9 +15,10 @@
 #include "ray/ray.h"
 #include "intersection/bounding_box.h"
 
+// Used to inform compiler
 class Material;
 
-struct Hit_record{ // TODO Fix the name
+struct Hit_record{
   float time;
   float u;
   float v;
@@ -26,6 +27,11 @@ struct Hit_record{ // TODO Fix the name
   std::shared_ptr<Material> mat_ptr;
 };
 
+
+/*
+ * Geometry abstract class contains different geometries. RayHits function calculates did the ray hit certain geometry.
+ * GetBoundingBox is used by bounding volume calculations
+ */
 class Geometry {
  public:
  virtual bool RayHits(const ray<float>& r, float t_min, float t_max, Hit_record& rec) const = 0;

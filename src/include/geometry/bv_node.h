@@ -7,6 +7,10 @@
 
 #include "geometry/geometry.h"
 
+/*
+ * BoundingVolumeNode creates geometry groups. It makes it possible to render faster when scene contains
+ * hundreds of object which are far away from each other. Only relevant objects are used in calculations
+ */
 class BoundingVolumeNode : public Geometry {
 
  public:

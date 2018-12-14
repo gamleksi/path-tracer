@@ -69,10 +69,6 @@ vec3<T> cross(const vec3<T> &v1, const vec3<T> &v2);
 template <typename T>
 T Dot(const vec3<T> &v1, const vec3<T> &v2);
 
-/**
- * Source code
- */
-
 // Returns ith element
 template <typename T>
 T vec3<T>::operator[](int i) const {

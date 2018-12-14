@@ -7,6 +7,11 @@
 
 #include "vector/vec3.h"
 
+
+
+/*
+ * Ray
+ */
 template <typename T>
 class ray
 {

@@ -11,14 +11,28 @@
 #include <ray/ray.h>
 #include <texture/texture.h>
 
+
+/*
+ * Abstract class for materials. Materials have 2 base methods "scatter" and "emitted".
+ */
 class Material {
 public:
+    /*
+     * Different materials scatter light differently
+     */
     virtual bool Scatter(const ray<float>& r_in, const Hit_record& rec, vec3<float>& attenuation, ray<float>& scattered) const = 0;
+
+    /*
+     * Some materials can emit light
+     */
     virtual vec3<float> Emitted(float u, float v, const vec3<float>& p) const
     { return vec3<float>(0,0,0); }
 };
 
 
+/*
+ * Basic lambertian material represents ideal matte material.
+ */
 class Lambertian : public Material {
 public:
     Lambertian(std::shared_ptr<Texture> a) : albedo(a) {}
@@ -31,6 +45,10 @@ private:
 };
 
 
+
+/*
+ * Metal material, if fuzz is close to 0 acts as mirror. More fuzz => less sharp reflection
+ */
 class Metal : public Material {
 
 public:
@@ -46,6 +64,10 @@ private:
     float fuzz;
 };
 
+
+/*
+ * DiffuseLight acts as light source
+ */
 class DiffuseLight : public Material {
 public:
     DiffuseLight(std::shared_ptr<Texture> a) : emit(a) {}
@@ -55,8 +77,15 @@ private:
     std::shared_ptr<Texture> emit;
 };
 
+
+/*
+ * Helping function for Dielectric
+ */
 vec3<float> Reflect(const vec3<float>& v, const vec3<float>& n);
 
+/*
+ * Dielectric is glass like material which reflects and refracts rays.
+ */
 class Dielectric : public Material {
 public:
     Dielectric(float ri) : ref_idx(ri) {}
@@ -65,7 +94,7 @@ public:
 private:
     bool Refract(const vec3<float>& v, const vec3<float>& n, float ni_over_nt, vec3<float> refracted) const;
 
-    // Christophe Schlick polynimial approx
+    // Christophe Schlick polynimial approx ( https://en.wikipedia.org/wiki/Schlick%27s_approximation )
     float Schkick(float cosine, float ref_idx) const;
 
     float ref_idx;
