@@ -319,8 +319,8 @@ int main() {
  * If you don't have it, brew install htop.
  */
 
-    int num_threads = 8;
-    omp_set_num_threads(num_threads);
+//    int num_threads = 8; TODO we may want give this as an argument. Paniikki's computers have more cores than our macs have
+//    omp_set_num_threads(num_threads);
 
     // Default Camera Settings
     vec3<float> look_from(278, 278, -800);
