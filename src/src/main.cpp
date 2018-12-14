@@ -9,10 +9,13 @@
 #include <chrono>
 #include <SFML/Graphics/Image.hpp>
 #include <omp.h>
-
 #include <boost/program_options.hpp>
 #include <iostream>
 
+#include "geometry/sphere.h"
+#include "geometry/box.h"
+#include "geometry/bv_node.h"
+#include "geometry/geomlist.h"
 
 typedef std::chrono::high_resolution_clock Clock;
 
@@ -37,7 +40,7 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
     material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(mat_vec));
 
     std::shared_ptr<Sphere> floor_sphere =
-            std::make_shared<Sphere>(vec3<float>(0, -1000, 0), 1000, checker_material); //default radius 1000
+            std::make_shared<Sphere>(vec3<float>(0, -1000, 0), 1000, checker_material);
 
     object_list.push_back(floor_sphere);
     std::vector<std::shared_ptr<Geometry>> li;
@@ -48,14 +51,13 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
             float choose_mat = drand48();
             vec3<float> object_coord(a + 0.9 * drand48(), 0.2, b + 0.9 * drand48());
             if ((object_coord - vec3<float>(4, 0.2, 0)).Norm2() > 0.9) {
-                if (choose_mat < 0.8) {//diffuse
+                if (choose_mat < 0.8) {// Do a diffuse material
                     vec3<float> mat_vec(drand48() * drand48(), drand48() * drand48(), drand48() * drand48());
                     material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(mat_vec));
                     li.push_back(std::make_shared<Sphere>(object_coord, 0.2, material));
                     i++;
-                } else {//metal
+                } else {// Do a metal material
                     vec3<float> mat_vec(0.5 * (1 + drand48()), 0.5 * (1 + drand48()), 0.5 * (1 + drand48()));
-                    //material = std::make_shared<Metal>(std::make_shared<Constant_texture>(mat_vec), 0.5);
                     material = std::make_shared<Metal>(mat_vec, 0.5);
                     li.push_back(std::make_shared<Sphere>(object_coord, 0.2, material));
                     i++;
@@ -86,55 +88,6 @@ void GetRandomObjectList(unsigned int amount, std::vector<std::shared_ptr<Geomet
     object_list.push_back(bb_world);
 
 }
-//
-//
-////can be modified, does not work with current camera settings
-//void GetDebugObjectList(unsigned int amount, std::vector<std::shared_ptr<Geometry>> &object_list) {
-//
-//    float y_step = 9;
-//    float x_step = 10;
-//
-//    unsigned int layers = 8;
-//
-//    int columns = amount / layers;
-//
-//    vec3<float> mat_vec(0.5, 0.5, 0.5);
-//    std::shared_ptr<Material> material;
-//    material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(mat_vec));
-//
-//    std::shared_ptr<Sphere> floor_sphere =
-//            std::make_shared<Sphere>(vec3<float>(0, -1000, 0), 1000, material);
-//
-//    object_list.push_back(floor_sphere);
-//
-//    std::vector<std::shared_ptr<Geometry>> random_objects;
-//
-//    for (unsigned int j = 0; j < layers; j++) {
-//
-//        auto y = -100.0 + j * y_step;
-//
-//        for (unsigned int i = 0; i < columns; i++) {
-//
-//            float radius = 3;
-//            auto x = -80 + x_step * i;
-//            auto z = -50;  // + 10 * drand48();
-//            vec3<float> object_coord(x, y, z);
-//
-//            vec3<float> mat_vec(drand48(), drand48(), drand48());
-//            std::shared_ptr<Material> material;
-//
-//            if (drand48() < 0.5) {
-//                material = std::make_shared<Metal>(std::make_shared<Constant_texture>(mat_vec), 0.5);
-//            } else {
-//                material = std::make_shared<Lambertian>(std::make_shared<Constant_texture>(mat_vec));
-//            }
-//            random_objects.push_back(std::make_shared<Sphere>(object_coord, radius, material));
-//        }
-//    }
-//    auto bb_world = std::make_shared<BoundingVolumeNode>(BoundingVolumeNode(random_objects, 0.0, 1.0));
-//    object_list.push_back(bb_world);
-//}
-
 
 void CornellBoxScene(std::vector<std::shared_ptr<Geometry>> &object_list) {
 
@@ -212,28 +165,14 @@ void CornellBoxScene(std::vector<std::shared_ptr<Geometry>> &object_list) {
     // World
     std::vector<std::shared_ptr<Geometry>> li;
 
-
     object_list.push_back(sphere);
     object_list.push_back(sphere2);
-//    object_list.push_back(sphere3);
-//    object_list.push_back(sphere4);
     object_list.push_back(flipped_red);
     object_list.push_back(green_rect);
     object_list.push_back(light_source);
     object_list.push_back(floor_rect);
     object_list.push_back(flipped_ceiling);
     object_list.push_back(flipped_wall);
-
-//    li.push_back(flipped_red);
-//    li.push_back(green_rect);
-//    li.push_back(light_source);
-//    li.push_back(ceiling_rect);
-//    li.push_back(floor_rect);
-//    li.push_back(wall_rect);
-//    li.push_back(sphere);
-
-    //auto bb_world = std::make_shared<BoundingVolumeNode>(BoundingVolumeNode(li, 0.0, 1.0));
-    //object_list.push_back(bb_world);
 }
 
 
@@ -272,8 +211,6 @@ void Render(const int nx, const int ny, sf::Uint8 (*pixels)[3], const std::share
                 pixels[j * nx + i][0] = ir;
                 pixels[j * nx + i][1] = ig;
                 pixels[j * nx + i][2] = ib;
-
-                // std::cout << pixels[j * nx + i][0] << " " << pixels[j * nx + i][1] << " " <<  pixels[j * nx + i][2] << std::endl;
             }
         }
     }
@@ -320,7 +257,7 @@ int main(int argc, const char *argv[]) {
               ("width", boost::program_options::value<int>()->default_value(nx), "Image width.")
               ("height", boost::program_options::value<int>()->default_value(ny), "Image height.")
               ("normal-mapping,n", boost::program_options::value<bool>()->default_value(normal_mapping), "Produces a normal mapping of the scene.")
-              ("threads", boost::program_options::value<int>(), "The number of threads used. If not defined, the path tracer utilizes fully the capicity of your computer cpu capacity.")
+              ("threads", boost::program_options::value<int>(), "The number of threads used. If not defined, the path tracer utilizes full the capicity of your computer cpu capacity.")
               ("samples,s", boost::program_options::value<unsigned int>()->default_value(antialias_samples), "The number of samples for each pixel.")
               ("save-to,f", boost::program_options::value<std::string>()->default_value(image_path), "File is saved to.")
               ("random,r", boost::program_options::value<bool>()->default_value(random_scene), "Introduces the random scene. If false the cornell box scene is used.")
