@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.5.1)
 project(path_tracer)
 
 
+find_package( Boost COMPONENTS program_options REQUIRED )
+include_directories(${Boost_INCLUDE_DIR} )
+
 if(${APPLE})
 message("You are using an Apple product.")
 set(OpenMP_C_FLAGS "-Xpreprocessor -fopenmp -I /usr/local/opt/libomp/include")
@@ -35,9 +38,9 @@ add_executable(path_tracer src/main.cpp include include/intersection/bounding_bo
         include/material/material.cpp)
 
 if(${APPLE})
-target_link_libraries(path_tracer OpenMP::OpenMP_CXX ${SFML_LIBRARIES})
+target_link_libraries(path_tracer OpenMP::OpenMP_CXX ${SFML_LIBRARIES} ${Boost_LIBRARIES})
 else(${APPLE})
-target_link_libraries(path_tracer ${SFML_LIBRARIES})
+target_link_libraries(path_tracer ${SFML_LIBRARIES} ${Boost_LIBRARIES})
 endif()
 
 
