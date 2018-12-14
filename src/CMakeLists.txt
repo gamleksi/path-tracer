@@ -1,8 +1,13 @@
 cmake_minimum_required(VERSION 3.12)
 project(path_tracer)
 
-find_package(OpenCV REQUIRED)
-include_directories( ${OpenCV_INCLUDE_DIRS} )
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+
+find_package(SFML REQUIRED Graphics) # TODO get only needed components
+include_directories(${SFML_INCLUDE_DIR})
+
+#find_package(OpenCV REQUIRED)
+#include_directories( ${OpenCV_INCLUDE_DIRS} )
 
 
 if(${APPLE})
@@ -25,7 +30,7 @@ add_executable(path_tracer src/main.cpp include include/intersection/bounding_bo
         include/geometry/geometry.cpp include/camera/camera.cpp
         include/material/material.cpp)
 
-target_link_libraries(path_tracer ${OpenCV_LIBS} OpenMP::OpenMP_CXX)
+target_link_libraries(path_tracer ${OpenCV_LIBS} OpenMP::OpenMP_CXX ${SFML_LIBRARIES})
 
 # https://iscinumpy.gitlab.io/post/omp-on-high-sierra/
 # https://stackoverflow.com/questions/46414660/macos-cmake-and-openmp
