@@ -4,3 +4,8 @@ The path tracer supports physical geometries, precisely spheres, rectangles (xy,
 
 Performance-wise rendering is accelerated by a bounding volume hierarchy. The software is also parallelized to enable computing with all cores of the CPU.
 
+Here are a couple of rendered outcomes:
+
+![A light source environment](image.png?raw=true "light source environment")
+![A light source environment](image2.png?raw=true "Random Ball positions Environemnt")
+![A light source environment](image3.png?raw=true "Normal mapping rendering")
