@@ -1,21 +1,6 @@
-# Sample README file for C++ programming project
+# Path-Tracer for C++ programming project
 
-This is an initial git repository for your programming project.
-It contains an initial directory structure that we wish you could
-use as follows:
+The path tracer supports physical geometries, precisely spheres, rectangles (xy, xz and yz planes) and boxes. Each object can be built with different material models like dielectrics (e.g. glass, water), solid textures (e.g. RGB colors and textures like checker) as well as metal (albedo). In addition, each object can be assigned as diffuse material meaning that it emits light to the scene. Also, a normal map is available. Images are constructed with minimal noise by anti-aliasing meaning that rays are sent multiple times through pixels and the result is averaged. The amount of anti-aliasing can be controlled by the user. The camera can be moved to all directions as well as rotated. In addition, focus distance, field of view, aspect and aperture can be modified.
 
-  * `plan/' -- Here is your project plan. You may use different sources,
-    but we hope to get the pan **also as pdf file**.
+Performance-wise rendering is accelerated by a bounding volume hierarchy. The software is also parallelized to enable computing with all cores of the CPU.
 
-  * `doc/` -- here are the documentation sources related to your project.
-    You may use different tools for documentation (e.g. latex),
-    but we hope to get the final version of the document
-    **also as pdf file**.
-
-  * `src/` -- here are the C++ source files. You can have subfolders as needed.
-
-  * `README.md` -- This file that you should modify to represent
-    your project.
-
-You may also add other new directories as needed, for example
-for testing tools.
